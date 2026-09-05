@@ -1,0 +1,98 @@
+# ==========================================
+# Antigravity Agent & Indexer Ignore Rules
+# Project: ChessGrid
+# ==========================================
+
+# Dependencies
+node_modules/
+.pnpm-store/
+.yarn/
+vendor/
+
+# Build and Distribution Outputs
+dist/
+dist-ssr/
+build/
+out/
+.output/
+
+# Cache and Temporary Directories
+.cache/
+.vite/
+.turbo/
+.parcel-cache/
+.rollup.cache/
+.temp/
+.tmp/
+tmp/
+temp/
+
+# Testing and Coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Environment and Local Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.cert
+
+# Logs and Debug Dumps
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# System and OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE & Editor Internal Caches (preserving essential workspace configs)
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.sublime-project
+*.sublime-workspace
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*~
+
+# Source Maps & Minified Bundles (not useful for code reasoning)
+*.map
+*.min.js
+*.min.css
+
+# Large Binary & Media Archives (not required for code context)
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+*.mp4
+*.webm
+*.mov
+*.avi
+*.mp3
+*.wav
+
+# System / Scratch / Telemetry dumps
+.system_generated/
+*.bak
+*.orig
