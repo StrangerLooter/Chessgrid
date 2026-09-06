@@ -1,3 +1,5 @@
+import { deviceManager } from './deviceApi';
+
 // Web Audio API procedural audio effects - zero external file dependencies!
 
 class SoundEngine {
@@ -32,6 +34,7 @@ class SoundEngine {
 
   // Soft mechanical chess clock tap
   public playClockClick() {
+    deviceManager.triggerHaptic(12);
     if (this.isMuted) return;
     try {
       const ctx = this.getContext();

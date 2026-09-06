@@ -4,12 +4,11 @@ import { ScrollOrchestrator } from './ScrollOrchestrator';
 import { FloatingNav } from './FloatingNav';
 import { HeroTypography } from './HeroTypography';
 import { TournamentIntroScene } from './TournamentIntroScene';
-import { InteractivePieceVisualizer } from './InteractivePieceVisualizer';
 import { LandingFeaturesGrid } from './LandingFeaturesGrid';
 import { NewTournamentModal } from '../common/NewTournamentModal';
+import { CinematicVideoBackground } from './CinematicVideoBackground';
 
-// Lazy-load heavy cinematic scenes
-const HeroScene = React.lazy(() => import('./HeroScene'));
+// Lazy-load rich cinematic scenes for instant initial boot performance
 const TournamentCreationScene = React.lazy(() => import('./TournamentCreationScene'));
 const PlayerGalleryScene = React.lazy(() => import('./PlayerGalleryScene'));
 const PairingChamberScene = React.lazy(() => import('./PairingChamberScene'));
@@ -20,9 +19,9 @@ const AnalysisStatsScene = React.lazy(() => import('./AnalysisStatsScene'));
 const FinalArenaScene = React.lazy(() => import('./FinalArenaScene'));
 const ChampionPodiumScene = React.lazy(() => import('./ChampionPodiumScene'));
 
-/** Suspense fallback with luxury chess piece */
+/** Suspense fallback with subtle golden glyph */
 const SceneFallback: React.FC<{ icon: string }> = ({ icon }) => (
-  <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(201,168,76,0.3)', fontSize: '2rem' }}>
+  <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(201,168,76,0.3)', fontSize: '2rem' }}>
     {icon}
   </div>
 );
@@ -40,30 +39,33 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
 
   return (
     <ScrollProvider>
-      {/* GSAP ScrollTrigger controller */}
+      {/* GSAP ScrollTrigger controller that maps scroll percentage to context */}
       <ScrollOrchestrator />
 
-      {/* Floating navigation */}
+      {/* Floating navigation dock */}
       <FloatingNav 
         onCommandCenter={onCommandCenter} 
-        onOpenNewTournament={handleOpenTournament}
+        onOpenNewTournament={handleOpenTournament} 
       />
 
-      {/* Scroll container — measured by GSAP */}
+      {/* Persistent Hardware-Accelerated Video Background Engine */}
+      <CinematicVideoBackground />
+
+      {/* Main interactive UI overlay container */}
       <main
         ref={scrollContainerRef}
         id="cg-cinematic-container"
         role="main"
-        aria-label="ChessGrid 3D Tournament Experience"
+        aria-label="ChessGrid 3D Cinematic Arena Experience"
         style={{
           position: 'relative',
-          background: 'var(--cg-obsidian)',
+          zIndex: 10,
+          background: 'transparent',
           overflowX: 'hidden',
         }}
       >
-
         {/* ════════════════════════════════════════════
-            CHAPTER 01 — HERO (sticky 3D canvas)
+            CHAPTER 01 — HERO
             ════════════════════════════════════════════ */}
         <section
           id="cg-section-hero"
@@ -73,75 +75,37 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
             top: 0,
             height: '100vh',
             overflow: 'hidden',
-            background: '#0a0a0b',
+            background: 'transparent',
           }}
         >
-          {/* 3D Canvas — full bleed */}
-          <div style={{ position: 'absolute', inset: 0 }}>
-            <Suspense
-              fallback={
-                <div
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    background: 'var(--cg-obsidian)',
-                  }}
-                >
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-cinematic)',
-                      fontSize: '1.5rem',
-                      letterSpacing: '0.3em',
-                      color: 'rgba(201,168,76,0.5)',
-                    }}
-                  >
-                    ♛
-                  </div>
-                </div>
-              }
-            >
-              <HeroScene />
-            </Suspense>
-          </div>
-
-          {/* Typography layer — transitions between hero text and tournament intro */}
+          {/* Typography & Controls layer */}
           <div style={{ position: 'relative', zIndex: 10, height: '100%' }}>
             <HeroTypography 
               onEnter={onCommandCenter} 
-              onOpenNewTournament={handleOpenTournament}
+              onOpenNewTournament={handleOpenTournament} 
             />
             <TournamentIntroScene />
           </div>
 
-          {/* Bottom vignette */}
+          {/* Subtle bottom vignette feathering */}
           <div
             style={{
               position: 'absolute',
               bottom: 0,
               left: 0,
               right: 0,
-              height: '200px',
-              background: 'linear-gradient(to bottom, transparent, var(--cg-obsidian))',
+              height: '140px',
+              background: 'linear-gradient(to bottom, transparent, rgba(10, 10, 11, 0.4))',
               pointerEvents: 'none',
             }}
           />
         </section>
 
-        {/* Scroll spacer — hero section (150vh = hero scroll range) */}
-        <div style={{ height: '150vh' }} aria-hidden="true" />
+        {/* Scroll spacer — hero range (150vh) */}
+        <div style={{ height: '120vh' }} aria-hidden="true" />
 
         {/* ════════════════════════════════════════════
-            CHAPTER 02 — 3D PIECE INSPECTOR LAB
-            ════════════════════════════════════════════ */}
-        <div className="cg-content-visibility">
-          <InteractivePieceVisualizer />
-        </div>
-
-        {/* ════════════════════════════════════════════
-            CHAPTER 03 — TOURNAMENT CREATION & GOVERNANCE
+            CHAPTER 02 — TOURNAMENT CREATION & GOVERNANCE
             ════════════════════════════════════════════ */}
         <div className="cg-content-visibility">
           <Suspense fallback={<SceneFallback icon="♔" />}>
@@ -159,17 +123,8 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
           id="cg-section-players"
           aria-label="Tournament Players Gallery"
           className="cg-content-visibility"
-          style={{ position: 'relative', overflow: 'hidden' }}
+          style={{ position: 'relative', overflow: 'hidden', background: 'transparent' }}
         >
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background:
-                'radial-gradient(ellipse at 30% 50%, rgba(201,168,76,0.04) 0%, transparent 60%), radial-gradient(ellipse at 70% 30%, rgba(26,122,94,0.03) 0%, transparent 50%)',
-              pointerEvents: 'none',
-            }}
-          />
           <Suspense fallback={<SceneFallback icon="♟" />}>
             <PlayerGalleryScene />
           </Suspense>
@@ -182,7 +137,7 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
           id="cg-section-pairing"
           aria-label="Tournament Pairing Chamber"
           className="cg-content-visibility"
-          style={{ position: 'relative' }}
+          style={{ position: 'relative', background: 'transparent' }}
         >
           <Suspense fallback={<SceneFallback icon="⇌" />}>
             <PairingChamberScene />
@@ -190,13 +145,13 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
         </section>
 
         {/* ════════════════════════════════════════════
-            CHAPTER 06 — GIANT 3D KNOCKOUT BRACKET
+            CHAPTER 06 — GIANT KNOCKOUT BRACKET
             ════════════════════════════════════════════ */}
         <section
           id="cg-section-bracket"
           aria-label="Knockout Bracket Structure"
           className="cg-content-visibility"
-          style={{ position: 'relative' }}
+          style={{ position: 'relative', background: 'transparent' }}
         >
           <Suspense fallback={<SceneFallback icon="♜" />}>
             <BracketStructureScene />
@@ -210,7 +165,7 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
           id="cg-section-match"
           aria-label="Live Match Arena"
           className="cg-content-visibility"
-          style={{ position: 'relative' }}
+          style={{ position: 'relative', background: 'transparent' }}
         >
           <Suspense fallback={<SceneFallback icon="♞" />}>
             <MatchArenaScene />
@@ -242,7 +197,7 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
           id="cg-section-final"
           aria-label="The Decisive Final Arena"
           className="cg-content-visibility"
-          style={{ position: 'relative' }}
+          style={{ position: 'relative', background: 'transparent' }}
         >
           <Suspense fallback={<SceneFallback icon="♛" />}>
             <FinalArenaScene />
@@ -256,7 +211,7 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
           id="cg-section-champion"
           aria-label="Champion Podium"
           className="cg-content-visibility"
-          style={{ position: 'relative' }}
+          style={{ position: 'relative', background: 'transparent' }}
         >
           <Suspense fallback={<SceneFallback icon="★" />}>
             <ChampionPodiumScene />
@@ -270,7 +225,6 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
           onCommandCenter={onCommandCenter} 
           onOpenNewTournament={handleOpenTournament} 
         />
-
       </main>
 
       {/* New Tournament Creation Modal */}

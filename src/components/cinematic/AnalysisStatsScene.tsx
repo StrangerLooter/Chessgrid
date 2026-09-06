@@ -95,7 +95,7 @@ export const AnalysisStatsScene: React.FC = () => {
         position: 'relative',
         minHeight: '100vh',
         padding: '6rem 1.5rem',
-        background: 'radial-gradient(ellipse at 50% 25%, rgba(201,168,76,0.06) 0%, rgba(10,10,11,0.98) 75%)',
+        background: 'transparent',
         borderTop: '1px solid rgba(201,168,76,0.1)',
         borderBottom: '1px solid rgba(201,168,76,0.1)',
         overflow: 'hidden',

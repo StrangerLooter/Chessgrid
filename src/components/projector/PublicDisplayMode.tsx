@@ -11,6 +11,7 @@ import {
   Layers
 } from 'lucide-react';
 import { formatTime } from '../../utils/formatters';
+import { deviceManager } from '../../utils/deviceApi';
 
 export const PublicDisplayMode: React.FC = () => {
   const { 
@@ -24,6 +25,14 @@ export const PublicDisplayMode: React.FC = () => {
 
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
+
+  // Keep display awake during live broadcast
+  useEffect(() => {
+    deviceManager.requestWakeLock();
+    return () => {
+      deviceManager.releaseWakeLock();
+    };
+  }, []);
 
   // Clock time update every second
   useEffect(() => {

@@ -49,7 +49,10 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter, onOpenN
   };
 
   const scrollToNext = () => {
-    const nextSection = document.getElementById('cg-section-piece-visualizer') || document.getElementById('cg-section-players');
+    const nextSection = 
+      document.getElementById('cg-section-piece-visualizer') || 
+      document.getElementById('cg-section-tournament-creation') || 
+      document.getElementById('cg-section-players');
     if (nextSection) {
       nextSection.scrollIntoView({ behavior: 'smooth' });
     } else {
@@ -137,26 +140,15 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter, onOpenN
           PLAN <span>·</span> ORGANIZE <span>·</span> COMPETE <span>·</span> EXPERIENCE
         </p>
 
-        {/* ── Grand 3D Chiseled Metallic Logo Title ── */}
-        <div className="cg-hero-title-group">
-          <h1 className="cg-hero-title-main">CHESS</h1>
-          
-          {/* Glowing 8-Pointed Star Sword Cross */}
-          <div className="cg-hero-star-cross">
-            <svg className="w-[0.55em] h-[0.55em]" viewBox="0 0 36 36">
-              <polygon points="18,0 21,14 36,18 21,22 18,36 15,22 0,18 15,14" fill="url(#heroGoldStar)" />
-              <circle cx="18" cy="18" r="2.8" fill="#ffffff" />
-              <defs>
-                <linearGradient id="heroGoldStar" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#ffffff" />
-                  <stop offset="45%" stopColor="#f7dc8c" />
-                  <stop offset="100%" stopColor="#c9a84c" />
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
-
-          <h1 className="cg-hero-title-main">GRID</h1>
+        {/* ── High-Res Chiseled Metallic Logo Image Asset ── */}
+        <div className="cg-hero-logo-container my-2 sm:my-3">
+          <img
+            src="/chessgrid-logo.png"
+            alt="CHESSGRID — The Digital Arena For Chess Tournaments"
+            className="cg-hero-logo-img w-full max-w-[560px] sm:max-w-[700px] md:max-w-[820px] lg:max-w-[920px] xl:max-w-[980px] h-auto object-contain select-none pointer-events-none"
+            loading="eager"
+            decoding="async"
+          />
         </div>
 
         {/* ── Subtitle Block ── */}

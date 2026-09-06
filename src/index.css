@@ -117,6 +117,20 @@
 }
 
 /* ============================================================
+   PERFORMANCE & RENDERING OPTIMIZATIONS
+   ============================================================ */
+.cg-content-visibility {
+  content-visibility: auto;
+  contain-intrinsic-size: 800px;
+}
+
+.cg-gpu-layer {
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* ============================================================
    CHESSGRID GLASS PANEL SYSTEM
    ============================================================ */
 .cg-glass {
@@ -934,36 +948,191 @@ button:focus-visible,
   --blur: blur(16px);
 }
 
-/* ── Top Angular HUD Navigation ── */
-.cg-hud-nav-bar {
-  background: rgba(14, 18, 24, 0.82);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(200, 210, 225, 0.22);
-  box-shadow: 
-    0 10px 30px rgba(0, 0, 0, 0.8),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    0 0 15px rgba(201, 168, 76, 0.08);
-  clip-path: polygon(
-    14px 0%, 
-    calc(100% - 14px) 0%, 
-    100% 14px, 
-    100% calc(100% - 14px), 
-    calc(100% - 14px) 100%, 
-    14px 100%, 
-    0% calc(100% - 14px), 
-    0% 14px
-  );
+/* ── Futuristic Metallic Framed HUD Navigation Bar ── */
+.cg-framed-navbar {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1160px;
+  height: 58px;
+  padding: 0 16px 0 20px;
+  background: linear-gradient(180deg, rgba(14, 16, 22, 0.9) 0%, rgba(8, 9, 13, 0.96) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  box-shadow: 
+    0 15px 45px rgba(0, 0, 0, 0.85),
+    0 0 25px rgba(201, 168, 76, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.6);
+  clip-path: polygon(
+    18px 0%, 
+    calc(100% - 18px) 0%, 
+    100% 18px, 
+    100% calc(100% - 18px), 
+    calc(100% - 18px) 100%, 
+    18px 100%, 
+    0% calc(100% - 18px), 
+    0% 18px
+  );
+  transition: all 0.3s ease;
 }
 
-.cg-hud-nav-bar::before {
-  content: '';
+/* Wing tabs on left and right */
+.cg-framed-navbar-wing-left,
+.cg-framed-navbar-wing-right {
   position: absolute;
-  inset: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 28px;
+  background: linear-gradient(180deg, #c9a84c 0%, #8a7035 100%);
+  clip-path: polygon(100% 0, 0 50%, 100% 100%);
   pointer-events: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
-  border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+  filter: drop-shadow(0 0 8px rgba(201, 168, 76, 0.5));
+}
+.cg-framed-navbar-wing-left { left: -9px; }
+.cg-framed-navbar-wing-right { right: -9px; transform: translateY(-50%) scaleX(-1); }
+
+/* Stepped Metallic Gold Bracket Plates (Clamps) */
+.cg-nav-clamp-top-left {
+  position: absolute;
+  top: -2px;
+  left: 24%;
+  width: 70px;
+  height: 5px;
+  background: linear-gradient(180deg, #f7dc8c 0%, #c9a84c 40%, #7d6023 100%);
+  border-radius: 1px;
+  box-shadow: 0 0 10px rgba(201, 168, 76, 0.6);
+  pointer-events: none;
+}
+.cg-nav-clamp-top-right {
+  position: absolute;
+  top: -2px;
+  right: 24%;
+  width: 70px;
+  height: 5px;
+  background: linear-gradient(180deg, #f7dc8c 0%, #c9a84c 40%, #7d6023 100%);
+  border-radius: 1px;
+  box-shadow: 0 0 10px rgba(201, 168, 76, 0.6);
+  pointer-events: none;
+}
+.cg-nav-clamp-bottom-left {
+  position: absolute;
+  bottom: -2px;
+  left: 20%;
+  width: 60px;
+  height: 5px;
+  background: linear-gradient(0deg, #f7dc8c 0%, #c9a84c 40%, #7d6023 100%);
+  border-radius: 1px;
+  box-shadow: 0 0 10px rgba(201, 168, 76, 0.6);
+  pointer-events: none;
+}
+.cg-nav-clamp-bottom-center {
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 5px;
+  background: linear-gradient(0deg, #f7dc8c 0%, #c9a84c 40%, #7d6023 100%);
+  border-radius: 1px;
+  box-shadow: 0 0 10px rgba(201, 168, 76, 0.6);
+  pointer-events: none;
+}
+.cg-nav-clamp-bottom-right {
+  position: absolute;
+  bottom: -2px;
+  right: 20%;
+  width: 60px;
+  height: 5px;
+  background: linear-gradient(0deg, #f7dc8c 0%, #c9a84c 40%, #7d6023 100%);
+  border-radius: 1px;
+  box-shadow: 0 0 10px rgba(201, 168, 76, 0.6);
+  pointer-events: none;
+}
+
+/* Framed Action Button */
+.cg-nav-cta-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: linear-gradient(180deg, rgba(20, 22, 28, 0.95) 0%, rgba(10, 11, 15, 0.98) 100%);
+  border: 1px solid rgba(201, 168, 76, 0.65);
+  border-radius: 6px;
+  clip-path: polygon(
+    8px 0%, 
+    calc(100% - 8px) 0%, 
+    100% 8px, 
+    100% calc(100% - 8px), 
+    calc(100% - 8px) 100%, 
+    8px 100%, 
+    0% calc(100% - 8px), 
+    0% 8px
+  );
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.6),
+    0 0 15px rgba(201, 168, 76, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cg-nav-cta-button:hover {
+  border-color: #f7dc8c;
+  background: linear-gradient(180deg, rgba(35, 38, 48, 0.98) 0%, rgba(18, 20, 26, 1) 100%);
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.8),
+    0 0 25px rgba(201, 168, 76, 0.55),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Active Nav Flare under selected link */
+.cg-nav-active-flare {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 42px;
+  height: 4px;
+  background: radial-gradient(ellipse at center, #ffeaa7 0%, #e8c45a 50%, transparent 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 12px 2px #e8c45a;
+  animation: pulseFlare 2s ease-in-out infinite alternate;
+}
+
+@keyframes pulseFlare {
+  0% { opacity: 0.75; transform: translateX(-50%) scaleX(0.85); }
+  100% { opacity: 1; transform: translateX(-50%) scaleX(1.2); }
+}
+
+/* ── Hero Logo Image Styling ── */
+.cg-hero-logo-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.cg-hero-logo-img {
+  filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 45px rgba(201, 168, 76, 0.35));
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+}
+
+.cg-hero-logo-img:hover {
+  transform: scale(1.015);
+  filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.98)) drop-shadow(0 0 60px rgba(232, 196, 90, 0.5));
 }
 
 /* ── Left Sidebar Dock ── */

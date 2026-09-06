@@ -602,7 +602,7 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       description: `${winnerName} defeated ${loserName} in ${targetMatch?.roundName || 'Match'} (${resultType})`,
       snapshotState: snapshot,
     };
-    setHistoryLogs(prev => [logItem, ...prev]);
+    setHistoryLogs(prev => [logItem, ...prev].slice(0, 25));
 
     if (result.winner?.status === 'champion') {
       soundEffects.playVictoryChime();

@@ -98,7 +98,7 @@ export const TournamentCreationScene: React.FC<TournamentCreationSceneProps> = (
         position: 'relative',
         minHeight: '100vh',
         padding: '6rem 1.5rem',
-        background: 'radial-gradient(ellipse at 50% 20%, rgba(201,168,76,0.05) 0%, rgba(10,10,11,0.98) 70%)',
+        background: 'transparent',
         borderTop: '1px solid rgba(201,168,76,0.1)',
         borderBottom: '1px solid rgba(201,168,76,0.1)',
         overflow: 'hidden',

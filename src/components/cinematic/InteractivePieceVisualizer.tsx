@@ -129,10 +129,10 @@ export const InteractivePieceVisualizer: React.FC = () => {
       <div
         className="p-8 sm:p-12 rounded-3xl relative overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, rgba(20, 20, 24, 0.9) 0%, rgba(10, 10, 12, 0.98) 100%)',
-          backdropFilter: 'blur(30px)',
-          border: '1px solid rgba(201, 168, 76, 0.28)',
-          boxShadow: '0 25px 60px -15px rgba(0,0,0,0.9), 0 0 35px rgba(201,168,76,0.1)',
+          background: 'linear-gradient(135deg, rgba(20, 20, 24, 0.55) 0%, rgba(10, 10, 12, 0.75) 100%)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(201, 168, 76, 0.25)',
+          boxShadow: '0 25px 60px -15px rgba(0,0,0,0.8), 0 0 35px rgba(201,168,76,0.08)',
         }}
       >
         {/* Header */}
