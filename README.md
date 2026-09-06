@@ -7,6 +7,9 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Three.js](https://img.shields.io/badge/Three.js-0.185-000000?logo=threedotjs&logoColor=white)](https://threejs.org/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.x-38B2AC?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Deployment](https://img.shields.io/badge/Deployment-chessgrid--nine.vercel.app-10b981?logo=vercel&logoColor=white)](https://chessgrid-nine.vercel.app/)
+
+**Live Production App**: [https://chessgrid-nine.vercel.app/](https://chessgrid-nine.vercel.app/)
 
 ---
 
