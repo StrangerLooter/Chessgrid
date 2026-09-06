@@ -486,16 +486,20 @@ export const HeroScene: React.FC<{ isDev?: boolean }> = ({ isDev = false }) => {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 scale-105 pointer-events-none"
         style={{ 
-          backgroundImage: "url('/hero-arena-bg.png')",
-          filter: 'brightness(0.92) contrast(1.08)',
+          backgroundImage: "url('/hero-arena-bg.jpg')",
+          filter: 'brightness(0.85) contrast(1.05)',
         }} 
       />
 
-      {/* Atmospheric Vignette & Sunbeams Overlay */}
+      {/* Atmospheric Vignette & Dark Gradient Overlays (matching reference) */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at 50% 40%, rgba(10,10,11,0.15) 0%, rgba(10,10,11,0.6) 60%, rgba(10,10,11,0.92) 100%)',
+          background: `
+            linear-gradient(to right, rgba(10,8,7,0.65) 0%, transparent 28%, transparent 72%, rgba(10,8,7,0.65) 100%),
+            linear-gradient(to bottom, rgba(10,8,7,0.3) 0%, transparent 35%, rgba(10,8,7,0.7) 100%),
+            radial-gradient(ellipse at 50% 45%, transparent 0%, rgba(10,8,7,0.4) 65%, rgba(10,8,7,0.85) 100%)
+          `,
         }}
       />
 

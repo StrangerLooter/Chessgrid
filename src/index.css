@@ -918,15 +918,28 @@ button:focus-visible,
 }
 
 /* ============================================================
-   CHESSGRID FANTASY ARENA — HUD & METALLIC ASSETS (REF IMAGE)
+   CHESSGRID FANTASY ARENA — PIXEL-PERFECT HERO SYSTEM (REF DESIGN)
    ============================================================ */
+
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8C97A;
+  --gold-dark: #9A7B30;
+  --white: #F5F0E8;
+  --white-dim: rgba(245,240,232,0.75);
+  --white-faint: rgba(245,240,232,0.45);
+  --dark: #0A0807;
+  --sidebar-bg: rgba(10,8,7,0.82);
+  --nav-bg: rgba(10,8,7,0.88);
+  --blur: blur(16px);
+}
 
 /* ── Top Angular HUD Navigation ── */
 .cg-hud-nav-bar {
-  background: rgba(14, 18, 24, 0.75);
+  background: rgba(14, 18, 24, 0.82);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(200, 210, 225, 0.25);
+  border: 1px solid rgba(200, 210, 225, 0.22);
   box-shadow: 
     0 10px 30px rgba(0, 0, 0, 0.8),
     inset 0 1px 0 rgba(255, 255, 255, 0.2),
@@ -953,105 +966,446 @@ button:focus-visible,
   border-bottom: 1px solid rgba(201, 168, 76, 0.2);
 }
 
-/* ── Chiseled 3D Metallic Hero Title ── */
-.cg-title-metallic {
-  font-family: 'Cinzel', 'Cinzel Decorative', Georgia, serif;
-  font-weight: 700;
+/* ── Left Sidebar Dock ── */
+.cg-sidebar-left {
+  position: fixed;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 64px;
+  z-index: 45;
+  background: rgba(10, 8, 7, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(201, 168, 76, 0.18);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+  gap: 4px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(201, 168, 76, 0.06);
+}
+
+.cg-sl-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 9px 0;
+  width: 100%;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+.cg-sl-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+.cg-sl-item svg {
+  width: 19px;
+  height: 19px;
+  stroke: var(--white-faint);
+  fill: none;
+  stroke-width: 1.6;
+  transition: stroke 0.2s, transform 0.2s;
+}
+.cg-sl-item:hover svg {
+  stroke: var(--gold-light);
+  transform: scale(1.12);
+}
+.cg-sl-item span {
+  font-size: 8.5px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: var(--white-faint);
+  transition: color 0.2s;
+}
+.cg-sl-item:hover span {
+  color: var(--gold-light);
+}
+
+/* ── Right Sidebar Dock ── */
+.cg-sidebar-right {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  z-index: 45;
+  background: rgba(10, 8, 7, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(201, 168, 76, 0.18);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px 0;
+  gap: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(201, 168, 76, 0.06);
+}
+
+.cg-sr-icon {
+  width: 18px;
+  height: 18px;
+  fill: var(--white-faint);
+  cursor: pointer;
+  transition: fill 0.2s, transform 0.2s;
+  display: grid;
+  place-items: center;
+}
+.cg-sr-icon:hover {
+  fill: var(--gold-light);
+  transform: scale(1.18);
+}
+
+/* ── Right Vertical Side Banner ── */
+.cg-side-banner {
+  position: absolute;
+  right: 76px;
+  top: 48%;
+  transform: translateY(-50%);
+  z-index: 20;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-family: 'Cinzel', serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(245, 240, 232, 0.55);
+  line-height: 2.2;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── Centerpiece Hero Content ── */
+.cg-hero-content {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 40px;
+  max-width: 960px;
+  margin: auto;
+}
+
+.cg-hero-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--white-dim);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cg-hero-eyebrow span {
+  color: var(--gold);
+}
+
+/* ── Chiseled 3D Metallic Hero Title ── */
+.cg-hero-title-group {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15em;
+  user-select: none;
+  margin: 4px 0 12px 0;
+}
+
+.cg-hero-title-main {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(52px, 8.5vw, 102px);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: 0.04em;
   background: linear-gradient(
     180deg,
     #ffffff 0%,
-    #f2ebdb 22%,
-    #d8c69d 45%,
-    #c4a356 65%,
-    #8c6a28 85%,
-    #574013 100%
+    #f8f2e2 22%,
+    #dfcb9b 48%,
+    #c4a356 68%,
+    #8f6e27 88%,
+    #5c4515 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.9))
-          drop-shadow(0 0 25px rgba(232, 196, 90, 0.3));
-  position: relative;
-  letter-spacing: 0.08em;
+  filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.95))
+          drop-shadow(0 0 40px rgba(232, 196, 90, 0.35));
 }
 
-/* ── Glowing Center Sword Star ── */
-.cg-star-cross {
+/* Glowing Center Sword Star Cross */
+.cg-hero-star-cross {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   position: relative;
   color: #ffd875;
-  filter: drop-shadow(0 0 12px #e8c45a) drop-shadow(0 0 24px #c9a84c);
-  margin: 0 0.15em;
+  filter: drop-shadow(0 0 16px #e8c45a) drop-shadow(0 0 35px #c9a84c);
+  margin: 0 0.1em;
   transform: translateY(-2px);
 }
 
-/* ── Floating Side Docks ── */
-.cg-floating-dock {
-  background: rgba(14, 16, 22, 0.72);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(201, 168, 76, 0.22);
-  box-shadow: 
-    0 15px 40px rgba(0, 0, 0, 0.85),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    0 0 20px rgba(201, 168, 76, 0.06);
-  border-radius: 12px;
+/* ── Hero Subtitle ── */
+.cg-hero-subtitle-block {
+  margin-top: 4px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
 
-/* ── Hero Buttons ── */
-.cg-btn-hero-primary {
-  background: linear-gradient(180deg, rgba(201, 168, 76, 0.25) 0%, rgba(138, 102, 28, 0.45) 100%);
-  border: 1px solid #d4af37;
-  box-shadow: 
-    0 0 25px rgba(201, 168, 76, 0.35),
-    inset 0 1px 1px rgba(255, 255, 255, 0.4),
-    0 10px 25px rgba(0, 0, 0, 0.5);
-  color: #fce8a6;
+.cg-hero-subtitle-top {
   font-family: var(--font-sans);
-  font-weight: 700;
-  letter-spacing: 0.18em;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
-  border-radius: 8px;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--white-dim);
 }
 
-.cg-btn-hero-primary:hover {
-  background: linear-gradient(180deg, rgba(232, 196, 90, 0.35) 0%, rgba(170, 130, 40, 0.55) 100%);
-  border-color: #ffd875;
+.cg-hero-subtitle-bottom {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(16px, 2.2vw, 22px);
+  font-weight: 700;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  text-shadow: 0 0 20px rgba(201, 168, 76, 0.45);
+}
+
+/* ── 4 Feature Icons Row ── */
+.cg-hero-features {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(24px, 4vw, 56px);
+  margin-bottom: 30px;
+}
+
+.cg-hero-feat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  background: none;
+  border: none;
+  padding: 0;
+}
+.cg-hero-feat:hover {
+  transform: translateY(-2px);
+}
+.cg-hero-feat svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--gold-light);
+  fill: none;
+  stroke-width: 1.6;
+  filter: drop-shadow(0 0 8px rgba(232, 196, 90, 0.3));
+  transition: all 0.2s ease;
+}
+.cg-hero-feat:hover svg {
+  stroke: #ffffff;
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.6));
+  transform: scale(1.1);
+}
+.cg-hero-feat span {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--white-faint);
+  transition: color 0.2s ease;
+}
+.cg-hero-feat:hover span {
+  color: var(--white);
+}
+
+/* ── Hero Actions / CTA Buttons ── */
+.cg-hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 520px;
+}
+
+.cg-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 28px;
+  background: linear-gradient(180deg, rgba(201, 168, 76, 0.32) 0%, rgba(138, 102, 28, 0.55) 100%);
+  border: 1px solid var(--gold-light);
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #fff6d9;
+  cursor: pointer;
+  text-decoration: none;
   box-shadow: 
-    0 0 35px rgba(232, 196, 90, 0.55),
-    inset 0 1px 2px rgba(255, 255, 255, 0.6),
-    0 12px 30px rgba(0, 0, 0, 0.6);
+    0 0 24px rgba(201, 168, 76, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.35),
+    0 8px 20px rgba(0, 0, 0, 0.6);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cg-btn-primary:hover {
+  background: linear-gradient(180deg, rgba(232, 196, 90, 0.45) 0%, rgba(170, 130, 40, 0.7) 100%);
+  border-color: #ffffff;
+  box-shadow: 0 0 35px rgba(201, 168, 76, 0.6), 0 12px 28px rgba(0, 0, 0, 0.7);
   color: #ffffff;
   transform: translateY(-2px);
 }
 
-.cg-btn-hero-secondary {
-  background: rgba(18, 22, 28, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(201, 168, 76, 0.35);
-  box-shadow: 
-    0 10px 25px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  color: #e5dfd3;
+.cg-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 28px;
+  background: rgba(10, 8, 7, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(245, 240, 232, 0.35);
+  border-radius: 6px;
   font-family: var(--font-sans);
+  font-size: 11.5px;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  border-radius: 8px;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--white);
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cg-btn-secondary:hover {
+  border-color: var(--gold);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 20px rgba(201, 168, 76, 0.25), 0 10px 24px rgba(0, 0, 0, 0.6);
+  transform: translateY(-2px);
+  color: #ffffff;
 }
 
-.cg-btn-hero-secondary:hover {
-  background: rgba(28, 34, 44, 0.9);
-  border-color: rgba(232, 196, 90, 0.6);
-  color: #ffffff;
-  box-shadow: 
-    0 0 20px rgba(201, 168, 76, 0.25),
-    0 12px 30px rgba(0, 0, 0, 0.6);
-  transform: translateY(-2px);
+/* ── Bottom Corner Texts & Scroll Indicator ── */
+.cg-corner-text-left {
+  position: absolute;
+  left: 96px;
+  bottom: 28px;
+  z-index: 20;
+  font-family: var(--font-sans);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--white-faint);
+  line-height: 1.8;
+  pointer-events: none;
 }
+.cg-corner-text-left b {
+  color: var(--white-dim);
+  font-weight: 700;
+}
+
+.cg-corner-text-right {
+  position: absolute;
+  right: 96px;
+  bottom: 28px;
+  z-index: 20;
+  font-family: var(--font-sans);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--white-faint);
+  text-align: right;
+  line-height: 1.8;
+  pointer-events: none;
+}
+.cg-corner-text-right b {
+  color: var(--white-dim);
+  font-weight: 700;
+}
+
+.cg-scroll-indicator {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+.cg-scroll-indicator span {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--white-faint);
+  transition: color 0.2s;
+}
+.cg-scroll-indicator:hover span {
+  color: var(--gold-light);
+}
+.cg-scroll-arrow {
+  width: 1px;
+  height: 28px;
+  background: linear-gradient(to bottom, var(--white-faint), var(--gold), transparent);
+  position: relative;
+  transition: height 0.3s ease;
+}
+.cg-scroll-indicator:hover .cg-scroll-arrow {
+  height: 36px;
+}
+.cg-scroll-arrow::after {
+  content: '∨';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: var(--gold-light);
+}
+
+@media (max-width: 1024px) {
+  .cg-sidebar-left { display: none; }
+  .cg-sidebar-right { display: none; }
+  .cg-side-banner { display: none; }
+  .cg-corner-text-left, .cg-corner-text-right { display: none; }
+}
+
+@media (max-width: 640px) {
+  .cg-hero-features { gap: 16px; }
+  .cg-hero-actions { flex-direction: column; width: 100%; }
+  .cg-btn-primary, .cg-btn-secondary { width: 100%; }
+}
+
 
