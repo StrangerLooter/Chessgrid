@@ -969,10 +969,10 @@ button:focus-visible,
 /* ── Left Sidebar Dock ── */
 .cg-sidebar-left {
   position: fixed;
-  left: 20px;
+  left: 18px;
   top: 50%;
   transform: translateY(-50%);
-  width: 64px;
+  width: 68px;
   z-index: 45;
   background: rgba(10, 8, 7, 0.78);
   backdrop-filter: blur(16px);
@@ -983,7 +983,7 @@ button:focus-visible,
   flex-direction: column;
   align-items: center;
   padding: 16px 0;
-  gap: 4px;
+  gap: 6px;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(201, 168, 76, 0.06);
 }
 
@@ -993,7 +993,7 @@ button:focus-visible,
   align-items: center;
   justify-content: center;
   gap: 3px;
-  padding: 9px 0;
+  padding: 8px 0;
   width: 100%;
   cursor: pointer;
   background: transparent;
@@ -1002,7 +1002,7 @@ button:focus-visible,
   text-decoration: none;
 }
 .cg-sl-item:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.08);
 }
 .cg-sl-item svg {
   width: 19px;
@@ -1017,12 +1017,13 @@ button:focus-visible,
   transform: scale(1.12);
 }
 .cg-sl-item span {
-  font-size: 8.5px;
+  font-size: 8px;
   font-family: var(--font-sans);
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--white-faint);
+  white-space: nowrap;
   transition: color 0.2s;
 }
 .cg-sl-item:hover span {
@@ -1032,10 +1033,10 @@ button:focus-visible,
 /* ── Right Sidebar Dock ── */
 .cg-sidebar-right {
   position: fixed;
-  right: 20px;
+  right: 18px;
   top: 50%;
   transform: translateY(-50%);
-  width: 46px;
+  width: 44px;
   z-index: 45;
   background: rgba(10, 8, 7, 0.78);
   backdrop-filter: blur(16px);
@@ -1064,11 +1065,11 @@ button:focus-visible,
   transform: scale(1.18);
 }
 
-/* ── Right Vertical Side Banner ── */
+/* ── Right Vertical Castle Banner (Positioned on Castle Wall in Artwork) ── */
 .cg-side-banner {
   position: absolute;
-  right: 76px;
-  top: 48%;
+  right: clamp(140px, 18.5vw, 320px);
+  top: 36%;
   transform: translateY(-50%);
   z-index: 20;
   writing-mode: vertical-rl;
@@ -1076,11 +1077,11 @@ button:focus-visible,
   font-family: 'Cinzel', serif;
   font-size: 10.5px;
   font-weight: 600;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: rgba(245, 240, 232, 0.55);
+  color: rgba(245, 240, 232, 0.5);
   line-height: 2.2;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
   pointer-events: none;
   user-select: none;
 }
@@ -1093,19 +1094,19 @@ button:focus-visible,
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 0 40px;
+  padding: 0 30px;
   max-width: 960px;
   margin: auto;
 }
 
 .cg-hero-eyebrow {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 600;
   letter-spacing: 0.38em;
   text-transform: uppercase;
   color: var(--white-dim);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1120,22 +1121,22 @@ button:focus-visible,
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.15em;
+  gap: 0.16em;
   user-select: none;
-  margin: 4px 0 12px 0;
+  margin: 4px 0 14px 0;
 }
 
 .cg-hero-title-main {
   font-family: 'Cinzel', serif;
-  font-size: clamp(52px, 8.5vw, 102px);
+  font-size: clamp(56px, 9vw, 108px);
   font-weight: 900;
   line-height: 0.92;
   letter-spacing: 0.04em;
   background: linear-gradient(
     180deg,
     #ffffff 0%,
-    #f8f2e2 22%,
-    #dfcb9b 48%,
+    #faf4e6 20%,
+    #e2cf9e 46%,
     #c4a356 68%,
     #8f6e27 88%,
     #5c4515 100%
@@ -1154,32 +1155,32 @@ button:focus-visible,
   position: relative;
   color: #ffd875;
   filter: drop-shadow(0 0 16px #e8c45a) drop-shadow(0 0 35px #c9a84c);
-  margin: 0 0.1em;
+  margin: 0 0.12em;
   transform: translateY(-2px);
 }
 
 /* ── Hero Subtitle ── */
 .cg-hero-subtitle-block {
   margin-top: 4px;
-  margin-bottom: 24px;
+  margin-bottom: 26px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 
 .cg-hero-subtitle-top {
   font-family: var(--font-sans);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.32em;
+  letter-spacing: 0.34em;
   text-transform: uppercase;
   color: var(--white-dim);
 }
 
 .cg-hero-subtitle-bottom {
   font-family: 'Cinzel', serif;
-  font-size: clamp(16px, 2.2vw, 22px);
+  font-size: clamp(16px, 2.3vw, 23px);
   font-weight: 700;
   letter-spacing: 0.38em;
   text-transform: uppercase;
@@ -1192,8 +1193,8 @@ button:focus-visible,
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(24px, 4vw, 56px);
-  margin-bottom: 30px;
+  gap: clamp(24px, 4.5vw, 60px);
+  margin-bottom: 32px;
 }
 
 .cg-hero-feat {
@@ -1407,5 +1408,6 @@ button:focus-visible,
   .cg-hero-actions { flex-direction: column; width: 100%; }
   .cg-btn-primary, .cg-btn-secondary { width: 100%; }
 }
+
 
 
