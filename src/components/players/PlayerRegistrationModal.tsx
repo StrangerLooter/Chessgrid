@@ -9,6 +9,17 @@ interface PlayerRegistrationModalProps {
   playerToEdit?: Player | null;
 }
 
+const PLAYER_CATEGORIES = [
+  'Grandmaster (GM)',
+  'International Master (IM)',
+  'FIDE Master (FM)',
+  'Candidate Master (CM)',
+  'Rated Open (2000-2400)',
+  'Rated Intermediate (1600-2000)',
+  'Club Challenger (Open)',
+  'Junior / Youth Division',
+];
+
 export const PlayerRegistrationModal: React.FC<PlayerRegistrationModalProps> = ({
   isOpen,
   onClose,
@@ -18,9 +29,9 @@ export const PlayerRegistrationModal: React.FC<PlayerRegistrationModalProps> = (
 
   const [name, setName] = useState('');
   const [rollNumber, setRollNumber] = useState('');
-  const [course, setCourse] = useState('B.Sc Physics Hons');
-  const [year, setYear] = useState('1st Year');
-  const [semester, setSemester] = useState('Semester I');
+  const [course, setCourse] = useState(PLAYER_CATEGORIES[0]);
+  const [year, setYear] = useState('Masters Tier');
+  const [semester, setSemester] = useState('Division I');
   const [section, setSection] = useState('A');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -38,9 +49,9 @@ export const PlayerRegistrationModal: React.FC<PlayerRegistrationModalProps> = (
     } else {
       setName('');
       setRollNumber('');
-      setCourse('B.Sc Physics Hons');
-      setYear('1st Year');
-      setSemester('Semester I');
+      setCourse(PLAYER_CATEGORIES[0]);
+      setYear('Masters Tier');
+      setSemester('Division I');
       setSection('A');
       setPhone('');
       setEmail('');
@@ -120,14 +131,14 @@ export const PlayerRegistrationModal: React.FC<PlayerRegistrationModalProps> = (
               {playerToEdit ? 'Edit Contender Profile' : 'Register Tournament Contender'}
             </h3>
             <p className="text-xs text-[#c8c0ae]/60">
-              {playerToEdit ? 'Update participant record and department affiliation' : 'Add eligible student into the knockout seed pool'}
+              {playerToEdit ? 'Update participant record, rating, and organization credentials' : 'Add eligible contender into the knockout seed pool'}
             </p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           
-          {/* Full Name & Roll Number */}
+          {/* Full Name & Player ID */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-[#c8c0ae]/80 mb-1" style={{ fontFamily: 'var(--font-sans)' }}>
@@ -138,7 +149,7 @@ export const PlayerRegistrationModal: React.FC<PlayerRegistrationModalProps> = (
                 required
                 value={name}
                 onChange={e => setName(e.target.value)}
-                placeholder="e.g. Ram Vishwakarma"
+                placeholder="e.g. Alexander Chen"
                 className="w-full px-3.5 py-2.5 rounded-xl text-xs focus:outline-none transition-all"
                 style={{
                   background: 'rgba(10, 10, 11, 0.7)',
@@ -151,14 +162,14 @@ export const PlayerRegistrationModal: React.FC<PlayerRegistrationModalProps> = (
 
             <div>
               <label className="block text-xs font-semibold text-[#c8c0ae]/80 mb-1" style={{ fontFamily: 'var(--font-sans)' }}>
-                College Roll Number *
+                Player ID / FIDE ID *
               </label>
               <input
                 type="text"
                 required
                 value={rollNumber}
                 onChange={e => setRollNumber(e.target.value)}
-                placeholder="e.g. IEHE-PHY-2401"
+                placeholder="e.g. CG-GM-101"
                 className="w-full px-3.5 py-2.5 rounded-xl text-xs focus:outline-none transition-all font-mono"
                 style={{
                   background: 'rgba(10, 10, 11, 0.7)',
@@ -169,96 +180,87 @@ export const PlayerRegistrationModal: React.FC<PlayerRegistrationModalProps> = (
             </div>
           </div>
 
-          {/* Course & Academic Year */}
+          {/* Rating Title & Tier */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-[#c8c0ae]/80 mb-1" style={{ fontFamily: 'var(--font-sans)' }}>
-                Department Degree Course *
+                Title / Rating Tier *
               </label>
               <select
                 value={course}
                 onChange={e => setCourse(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-xl text-xs focus:outline-none transition-all"
                 style={{
-                  background: 'rgba(10, 10, 11, 0.7)',
+                  background: 'rgba(10, 10, 11, 0.9)',
                   border: '1px solid rgba(201, 168, 76, 0.2)',
                   color: 'var(--cg-ivory)',
                   fontFamily: 'var(--font-sans)',
                 }}
               >
-                <option value="B.Sc Physics Hons">B.Sc Physics Hons</option>
-                <option value="M.Sc Physics">M.Sc Physics</option>
-                <option value="B.Sc Computer Science">B.Sc Computer Science</option>
-                <option value="M.Sc Computer Science">M.Sc Computer Science</option>
-                <option value="B.Sc Mathematics">B.Sc Mathematics</option>
-                <option value="M.Sc Mathematics">M.Sc Mathematics</option>
-                <option value="B.Sc Statistics">B.Sc Statistics</option>
-                <option value="B.Com Hons">B.Com Hons</option>
-                <option value="B.A. Hons">B.A. Hons</option>
-                <option value="Other Department">Other Department</option>
+                {PLAYER_CATEGORIES.map(cat => (
+                  <option key={cat} value={cat} style={{ background: '#111114', color: '#fff' }}>
+                    {cat}
+                  </option>
+                ))}
               </select>
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-[#c8c0ae]/80 mb-1" style={{ fontFamily: 'var(--font-sans)' }}>
-                Academic Year *
+                Competitive Tier *
               </label>
               <select
                 value={year}
                 onChange={e => setYear(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-xl text-xs focus:outline-none transition-all"
                 style={{
-                  background: 'rgba(10, 10, 11, 0.7)',
+                  background: 'rgba(10, 10, 11, 0.9)',
                   border: '1px solid rgba(201, 168, 76, 0.2)',
                   color: 'var(--cg-ivory)',
                   fontFamily: 'var(--font-sans)',
                 }}
               >
-                <option value="1st Year">1st Year</option>
-                <option value="2nd Year">2nd Year</option>
-                <option value="3rd Year">3rd Year</option>
-                <option value="Postgraduate 1st Yr">Postgraduate 1st Yr</option>
-                <option value="Postgraduate 2nd Yr">Postgraduate 2nd Yr</option>
+                <option value="Masters Tier" style={{ background: '#111114', color: '#fff' }}>Masters Tier</option>
+                <option value="Pro Tier" style={{ background: '#111114', color: '#fff' }}>Pro Tier</option>
+                <option value="Candidate Tier" style={{ background: '#111114', color: '#fff' }}>Candidate Tier</option>
+                <option value="Challenger Tier" style={{ background: '#111114', color: '#fff' }}>Challenger Tier</option>
               </select>
             </div>
           </div>
 
-          {/* Semester & Section */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Division & Section */}
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-[#c8c0ae]/80 mb-1" style={{ fontFamily: 'var(--font-sans)' }}>
-                Semester
+                Division
               </label>
               <select
                 value={semester}
                 onChange={e => setSemester(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-xl text-xs focus:outline-none transition-all"
                 style={{
-                  background: 'rgba(10, 10, 11, 0.7)',
+                  background: 'rgba(10, 10, 11, 0.9)',
                   border: '1px solid rgba(201, 168, 76, 0.2)',
                   color: 'var(--cg-ivory)',
                   fontFamily: 'var(--font-sans)',
                 }}
               >
-                <option value="Semester I">Semester I</option>
-                <option value="Semester II">Semester II</option>
-                <option value="Semester III">Semester III</option>
-                <option value="Semester IV">Semester IV</option>
-                <option value="Semester V">Semester V</option>
-                <option value="Semester VI">Semester VI</option>
+                <option value="Division I" style={{ background: '#111114', color: '#fff' }}>Division I</option>
+                <option value="Division II" style={{ background: '#111114', color: '#fff' }}>Division II</option>
+                <option value="Open Pool" style={{ background: '#111114', color: '#fff' }}>Open Pool</option>
               </select>
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-[#c8c0ae]/80 mb-1" style={{ fontFamily: 'var(--font-sans)' }}>
-                Section / Batch
+                Group / Section
               </label>
               <input
                 type="text"
                 value={section}
                 onChange={e => setSection(e.target.value)}
-                placeholder="A / B / C"
-                className="w-full px-3.5 py-2.5 rounded-xl text-xs focus:outline-none transition-all"
+                placeholder="A"
+                className="w-full px-3.5 py-2.5 rounded-xl text-xs focus:outline-none transition-all uppercase"
                 style={{
                   background: 'rgba(10, 10, 11, 0.7)',
                   border: '1px solid rgba(201, 168, 76, 0.2)',
@@ -269,7 +271,7 @@ export const PlayerRegistrationModal: React.FC<PlayerRegistrationModalProps> = (
             </div>
           </div>
 
-          {/* Optional Phone & Email */}
+          {/* Contact Details */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-[#c8c0ae]/80 mb-1" style={{ fontFamily: 'var(--font-sans)' }}>
@@ -279,7 +281,7 @@ export const PlayerRegistrationModal: React.FC<PlayerRegistrationModalProps> = (
                 type="tel"
                 value={phone}
                 onChange={e => setPhone(e.target.value)}
-                placeholder="+91 98765 43210"
+                placeholder="+1 (555) 019-2831"
                 className="w-full px-3.5 py-2.5 rounded-xl text-xs focus:outline-none transition-all font-mono"
                 style={{
                   background: 'rgba(10, 10, 11, 0.7)',
@@ -291,13 +293,13 @@ export const PlayerRegistrationModal: React.FC<PlayerRegistrationModalProps> = (
 
             <div>
               <label className="block text-xs font-semibold text-[#c8c0ae]/80 mb-1" style={{ fontFamily: 'var(--font-sans)' }}>
-                College Email (Optional)
+                Contact Email (Optional)
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                placeholder="student@iehe.ac.in"
+                placeholder="player@chessgrid.org"
                 className="w-full px-3.5 py-2.5 rounded-xl text-xs focus:outline-none transition-all"
                 style={{
                   background: 'rgba(10, 10, 11, 0.7)',
@@ -330,3 +332,4 @@ export const PlayerRegistrationModal: React.FC<PlayerRegistrationModalProps> = (
   );
 };
 
+export default PlayerRegistrationModal;

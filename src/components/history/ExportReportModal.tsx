@@ -101,7 +101,7 @@ export const ExportReportModal: React.FC<ExportReportModalProps> = ({ isOpen, on
               {settings.departmentName}
             </h2>
             <div className="text-xs font-semibold text-[#c8c0ae]/80 print:text-black mt-1.5">
-              {settings.name} • Academic Session: <span className="text-white font-mono print:text-black">{settings.academicSession}</span>
+              {settings.name} • Season: <span className="text-white font-mono print:text-black">{settings.academicSession}</span>
             </div>
             <div className="text-xs text-[#c8c0ae]/60 print:text-black mt-0.5 font-mono">
               Date: {formatFullDate(settings.date)} • Venue: {settings.venue}
@@ -227,12 +227,12 @@ export const ExportReportModal: React.FC<ExportReportModalProps> = ({ isOpen, on
                 {settings.organizerName}
               </div>
               <div className="text-[#e8c45a] print:text-black font-semibold">Chief Arbiter / Coordinator</div>
-              <div className="text-[10px] text-[#c8c0ae]/50 print:text-black">IEHE Chess Tournament Committee</div>
+              <div className="text-[10px] text-[#c8c0ae]/50 print:text-black">ChessGrid Tournament Organizing Committee</div>
             </div>
 
             <div className="text-center space-y-1">
               <div className="w-52 border-b border-[#c9a84c]/40 print:border-black pb-1.5 mb-1 font-bold text-white print:text-black" style={{ fontFamily: 'var(--font-cinematic)', fontSize: '1rem' }}>
-                Head of Department
+                Tournament Director
               </div>
               <div className="text-[#e8c45a] print:text-black font-semibold">{settings.departmentName}</div>
               <div className="text-[10px] text-[#c8c0ae]/50 print:text-black">{settings.collegeName}</div>

@@ -123,7 +123,7 @@ export const TournamentSettingsView: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-[#c8c0ae]/80 mb-1" style={{ fontFamily: 'var(--font-sans)' }}>
-                  Tournament Official Title *
+                  Tournament Title *
                 </label>
                 <input
                   type="text"
@@ -142,7 +142,7 @@ export const TournamentSettingsView: React.FC = () => {
 
               <div>
                 <label className="block text-xs font-semibold text-[#c8c0ae]/80 mb-1" style={{ fontFamily: 'var(--font-sans)' }}>
-                  Host College / Institute *
+                  Organization / Club / Host *
                 </label>
                 <input
                   type="text"
@@ -163,7 +163,7 @@ export const TournamentSettingsView: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-[#c8c0ae]/80 mb-1" style={{ fontFamily: 'var(--font-sans)' }}>
-                  Department / Organizing Branch *
+                  Category / Division / Section *
                 </label>
                 <input
                   type="text"
@@ -433,7 +433,7 @@ export const TournamentSettingsView: React.FC = () => {
               }}
             >
               <RefreshCw className="w-3.5 h-3.5 text-[#c9a84c]" />
-              <span>Reload IEHE Championship Demo</span>
+              <span>Reload Sample Masters Demo</span>
             </button>
 
             <button
@@ -483,8 +483,8 @@ export const TournamentSettingsView: React.FC = () => {
       {/* Reload Demo Confirmation Dialog */}
       <ConfirmDialog
         isOpen={showResetConfirm}
-        title="Reload Sample IEHE Championship?"
-        message="This will reload the pre-configured 8-player IEHE Department Championship dataset with live matches, results, and round states."
+        title="Reload Sample Masters Championship?"
+        message="This will reload the pre-configured 8-player Masters Championship dataset with live matches, results, and round states."
         confirmLabel="Reload Demo"
         variant="primary"
         onConfirm={() => {

@@ -163,7 +163,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
               textTransform: 'uppercase',
             }}
           >
-            INTER-COLLEGE KNOCKOUT CHESS CHAMPIONSHIP
+            THE DIGITAL ARENA FOR CHESS TOURNAMENTS
           </p>
         </div>
 

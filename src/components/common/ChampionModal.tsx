@@ -208,7 +208,7 @@ export const ChampionModal: React.FC<ChampionModalProps> = ({ isOpen, onClose })
           </div>
 
           <div className="mt-5 text-[11px] text-[#c8c0ae]/50 font-mono">
-            Certified by Chief Arbiter: <strong className="text-white">{settings.organizerName}</strong> (IEHE Coordinator)
+            Certified by Chief Arbiter: <strong className="text-white">{settings.organizerName}</strong> (Tournament Arbiter / Director)
           </div>
         </div>
       </div>

@@ -506,7 +506,7 @@ export const AnalysisStatsScene: React.FC = () => {
                 }}
               >
                 <span style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', color: 'var(--cg-ivory-dim)' }}>
-                  Longest Collegiate Clash
+                  Longest Tournament Match
                 </span>
                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--cg-gold-bright)', fontWeight: 700 }}>
                   {stats.longestGame}

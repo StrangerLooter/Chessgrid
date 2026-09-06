@@ -384,7 +384,7 @@ export const ChampionPodiumScene: React.FC = () => {
             margin: 0,
           }}
         >
-          INTER-COLLEGE KNOCKOUT CHESS CHAMPIONSHIP
+          GLOBAL KNOCKOUT CHESS TOURNAMENT MANAGEMENT PLATFORM
         </p>
       </div>
     </div>

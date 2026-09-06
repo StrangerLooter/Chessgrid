@@ -153,7 +153,7 @@ export const ProjectorBroadcastScene: React.FC = () => {
               lineHeight: 1.6,
             }}
           >
-            Designed for arena LED jumbotrons, stage beamers, and collegiate auditoriums. Broadcast multi-board grandmaster clashes with zero latency.
+            Designed for arena LED jumbotrons, venue stage displays, and live broadcast walls. Direct multi-board grandmaster clashes with zero latency.
           </p>
         </div>
 
@@ -224,7 +224,7 @@ export const ProjectorBroadcastScene: React.FC = () => {
                   color: 'var(--cg-ivory)',
                 }}
               >
-                {settings.name} • {settings.collegeName || 'State Championship'}
+                {settings.name} • {settings.collegeName || 'Championship Arena Stage'}
               </div>
             </div>
 

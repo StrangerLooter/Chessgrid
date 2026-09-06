@@ -163,7 +163,7 @@ export const PlayerTable: React.FC<PlayerTableProps> = ({
               className="cg-btn cg-btn-ghost"
             >
               <Upload className="w-4 h-4 text-amber-400" />
-              Bulk / IEHE Roster
+              Bulk / CSV Roster
             </button>
 
             {stats.isReadyToStart && settings.status === 'setup' && (
@@ -218,7 +218,7 @@ export const PlayerTable: React.FC<PlayerTableProps> = ({
             type="text"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            placeholder="Search by name, roll no, or course..."
+            placeholder="Search by name, player ID, or federation..."
             className="w-full pl-10 pr-4 py-2 rounded text-xs text-white focus:outline-none"
             style={{
               background: 'rgba(17, 17, 20, 0.8)',
@@ -285,10 +285,10 @@ export const PlayerTable: React.FC<PlayerTableProps> = ({
                 }}
               >
                 <th className="py-3.5 px-4">SEED</th>
-                <th className="py-3.5 px-4">CONTENDER / GM</th>
-                <th className="py-3.5 px-4">ROLL NUMBER</th>
-                <th className="py-3.5 px-4">INSTITUTION / COURSE</th>
-                <th className="py-3.5 px-4">YEAR & SEC</th>
+                <th className="py-3.5 px-4">CONTENDER / PLAYER</th>
+                <th className="py-3.5 px-4">PLAYER ID / CODE</th>
+                <th className="py-3.5 px-4">FEDERATION / CLUB</th>
+                <th className="py-3.5 px-4">DIVISION / TIER</th>
                 <th className="py-3.5 px-4 text-center">RECORD</th>
                 <th className="py-3.5 px-4">STATUS</th>
                 <th className="py-3.5 px-4 text-right">ACTIONS</th>

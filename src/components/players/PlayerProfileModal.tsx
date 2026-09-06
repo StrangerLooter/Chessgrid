@@ -11,7 +11,7 @@ import {
   Swords, 
   Phone, 
   Mail,
-  GraduationCap
+  Shield
 } from 'lucide-react';
 import { formatResultBadge } from '../../utils/formatters';
 
@@ -121,13 +121,13 @@ export const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ player, 
               className="text-xs font-bold"
               style={{ fontFamily: 'var(--font-mono)', color: 'var(--cg-gold)' }}
             >
-              Roll No: {player.rollNumber} • Seed #{player.seed}
+              Player ID: {player.rollNumber} • Seed #{player.seed}
             </div>
 
             <div className="text-xs text-[#c8c0ae]/70 mt-1 flex flex-wrap items-center justify-center sm:justify-start gap-3">
               <span className="flex items-center gap-1 text-[#c8c0ae]/80">
-                <GraduationCap className="w-3.5 h-3.5 text-[#c9a84c]" />
-                {player.course} ({player.year}, {player.semester}, Sec {player.section})
+                <Shield className="w-3.5 h-3.5 text-[#c9a84c]" />
+                {player.course} • {player.year} ({player.semester})
               </span>
               {player.phone && (
                 <span className="flex items-center gap-1 font-mono text-[#c8c0ae]/70">

@@ -100,7 +100,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span
                   className="text-xs truncate max-w-[200px] sm:max-w-xs font-mono text-[rgba(200,192,174,0.6)] text-[11px]"
                 >
-                  {settings.name} • {settings.collegeName || 'Ivy League Masters'}
+                  {settings.name} • {settings.collegeName || 'Global Masters Arena'}
                 </span>
               </div>
             </div>
@@ -235,8 +235,8 @@ export const Navbar: React.FC<NavbarProps> = ({
       <ConfirmDialog
         isOpen={showResetConfirm}
         title="Reset or Reload Tournament?"
-        message="Would you like to reload the IEHE Demo Tournament or wipe all data to start fresh?"
-        confirmLabel="Reload IEHE Demo"
+        message="Would you like to reload the Masters Demo Championship or wipe all data to start fresh?"
+        confirmLabel="Reload Masters Demo"
         cancelLabel="Cancel"
         variant="warning"
         onConfirm={loadDemoTournament}

@@ -1,23 +1,23 @@
 import type { TournamentSettings, Player, Match, Board, Announcement } from '../types/tournament';
 
 export const DEMO_SETTINGS: TournamentSettings = {
-  id: 'iehe-chess-2026',
-  name: 'IEHE Department Chess Championship 2026',
-  collegeName: 'Institute for Excellence in Higher Education (IEHE)',
-  departmentName: 'Department of Physics',
-  academicSession: '2025-2026',
+  id: 'cg-master-open-2026',
+  name: 'ChessGrid Masters Open Championship 2026',
+  collegeName: 'Global Chess Federation & Arena Circuit',
+  departmentName: 'Championship Premier Division',
+  academicSession: 'Season 2026',
   date: '2026-09-02',
-  venue: 'Main Auditorium Hall B & Lab 1, IEHE Campus',
-  organizerName: 'Ram Vishwakarma',
+  venue: 'Grand Arena Stage & Broadcast Hall',
+  organizerName: 'International Arbiter Council',
   totalPlayers: 8,
   status: 'in_progress',
   currentRoundIndex: 1, // Semifinal
-  rulesText: `1. FIDE Rapid Knockout Tournament Rules apply.
+  rulesText: `1. Official FIDE Rapid Knockout Tournament Rules apply.
 2. Default Time Control is 10 minutes + 5 seconds increment per move.
-3. Touch-move rule is strictly enforced.
-4. In the event of a drawn match, an Armageddon playoff match will determine the advancing player (White 5 mins, Black 4 mins with draw odds).
-5. Mobile phones must be switched off during play in the tournament hall.
-6. Chief Arbiter & Coordinator: Ram Vishwakarma. Decisions of the arbiter are final.`,
+3. Touch-move rule is strictly enforced across all active boards.
+4. In the event of a drawn match, an Armageddon playoff match will determine the advancing contender (White 5 mins, Black 4 mins with draw odds).
+5. Mobile phones and electronic devices must be deposited at the arbiter desk.
+6. Chief Arbiter & Tournament Director decisions are final and binding.`,
   defaultTimeControl: {
     type: 'rapid',
     initialMinutes: 10,
@@ -32,14 +32,14 @@ export const DEMO_PLAYERS: Player[] = [
   {
     id: 'p-1',
     seed: 1,
-    name: 'Ram',
-    rollNumber: 'IEHE-PHY-2401',
-    course: 'M.Sc Physics',
-    year: '2nd Year',
-    semester: 'Semester III',
+    name: 'Alexander Chen',
+    rollNumber: 'CG-GM-101',
+    course: 'Grandmaster (FIDE 2640)',
+    year: 'Masters Tier',
+    semester: 'Division I',
     section: 'A',
-    phone: '+91 98765 43210',
-    email: 'ram.vishwakarma@iehe.ac.in',
+    phone: '+1 (555) 019-2831',
+    email: 'alex.chen@chessgrid.org',
     status: 'active',
     matchesPlayed: 1,
     wins: 1,
@@ -51,14 +51,14 @@ export const DEMO_PLAYERS: Player[] = [
   {
     id: 'p-2',
     seed: 2,
-    name: 'Lucky',
-    rollNumber: 'IEHE-PHY-2402',
-    course: 'M.Sc Physics',
-    year: '2nd Year',
-    semester: 'Semester III',
+    name: 'Elena Rostova',
+    rollNumber: 'CG-GM-102',
+    course: 'Grandmaster (FIDE 2595)',
+    year: 'Masters Tier',
+    semester: 'Division I',
     section: 'A',
-    phone: '+91 98765 43211',
-    email: 'lucky@iehe.ac.in',
+    phone: '+1 (555) 019-2832',
+    email: 'elena.rostova@chessgrid.org',
     status: 'active',
     matchesPlayed: 1,
     wins: 1,
@@ -70,14 +70,14 @@ export const DEMO_PLAYERS: Player[] = [
   {
     id: 'p-3',
     seed: 3,
-    name: 'Aman',
-    rollNumber: 'IEHE-CS-2415',
-    course: 'B.Sc Computer Science',
-    year: '3rd Year',
-    semester: 'Semester V',
+    name: 'Marcus Vance',
+    rollNumber: 'CG-IM-103',
+    course: 'International Master (FIDE 2480)',
+    year: 'Pro Tier',
+    semester: 'Division I',
     section: 'B',
-    phone: '+91 98765 43212',
-    email: 'aman.cs@iehe.ac.in',
+    phone: '+1 (555) 019-2833',
+    email: 'marcus.vance@chessgrid.org',
     status: 'active',
     matchesPlayed: 1,
     wins: 1,
@@ -89,14 +89,14 @@ export const DEMO_PLAYERS: Player[] = [
   {
     id: 'p-4',
     seed: 4,
-    name: 'Rahul',
-    rollNumber: 'IEHE-PHY-2510',
-    course: 'B.Sc Physics Hons',
-    year: '1st Year',
-    semester: 'Semester I',
+    name: 'Sofia Lindqvist',
+    rollNumber: 'CG-WGM-104',
+    course: 'Woman Grandmaster (FIDE 2450)',
+    year: 'Pro Tier',
+    semester: 'Division I',
     section: 'A',
-    phone: '+91 98765 43213',
-    email: 'rahul.p@iehe.ac.in',
+    phone: '+1 (555) 019-2834',
+    email: 'sofia.l@chessgrid.org',
     status: 'active',
     matchesPlayed: 1,
     wins: 1,
@@ -108,14 +108,14 @@ export const DEMO_PLAYERS: Player[] = [
   {
     id: 'p-5',
     seed: 5,
-    name: 'Aditya',
-    rollNumber: 'IEHE-MAT-2408',
-    course: 'M.Sc Mathematics',
-    year: '2nd Year',
-    semester: 'Semester III',
+    name: 'Vikram Patel',
+    rollNumber: 'CG-FM-105',
+    course: 'FIDE Master (FIDE 2390)',
+    year: 'Candidate Tier',
+    semester: 'Division I',
     section: 'A',
-    phone: '+91 98765 43214',
-    email: 'aditya.m@iehe.ac.in',
+    phone: '+1 (555) 019-2835',
+    email: 'vikram.p@chessgrid.org',
     status: 'eliminated',
     matchesPlayed: 1,
     wins: 0,
@@ -130,14 +130,14 @@ export const DEMO_PLAYERS: Player[] = [
   {
     id: 'p-6',
     seed: 6,
-    name: 'Rohan',
-    rollNumber: 'IEHE-STA-2412',
-    course: 'B.Sc Statistics',
-    year: '2nd Year',
-    semester: 'Semester III',
+    name: 'Julian Thorne',
+    rollNumber: 'CG-IM-106',
+    course: 'International Master (FIDE 2420)',
+    year: 'Pro Tier',
+    semester: 'Division I',
     section: 'B',
-    phone: '+91 98765 43215',
-    email: 'rohan.s@iehe.ac.in',
+    phone: '+1 (555) 019-2836',
+    email: 'julian.t@chessgrid.org',
     status: 'eliminated',
     matchesPlayed: 1,
     wins: 0,
@@ -152,14 +152,14 @@ export const DEMO_PLAYERS: Player[] = [
   {
     id: 'p-7',
     seed: 7,
-    name: 'Vivek',
-    rollNumber: 'IEHE-PHY-2422',
-    course: 'M.Sc Physics',
-    year: '1st Year',
-    semester: 'Semester I',
+    name: 'Dmitri Volkov',
+    rollNumber: 'CG-FM-107',
+    course: 'FIDE Master (FIDE 2375)',
+    year: 'Candidate Tier',
+    semester: 'Division I',
     section: 'B',
-    phone: '+91 98765 43216',
-    email: 'vivek.phy@iehe.ac.in',
+    phone: '+1 (555) 019-2837',
+    email: 'dmitri.v@chessgrid.org',
     status: 'eliminated',
     matchesPlayed: 1,
     wins: 0,
@@ -174,14 +174,14 @@ export const DEMO_PLAYERS: Player[] = [
   {
     id: 'p-8',
     seed: 8,
-    name: 'Arjun',
-    rollNumber: 'IEHE-CS-2504',
-    course: 'B.Sc Computer Science',
-    year: '1st Year',
-    semester: 'Semester I',
+    name: 'Arthur Pendelton',
+    rollNumber: 'CG-CM-108',
+    course: 'Candidate Master (FIDE 2290)',
+    year: 'Candidate Tier',
+    semester: 'Division I',
     section: 'A',
-    phone: '+91 98765 43217',
-    email: 'arjun.cs@iehe.ac.in',
+    phone: '+1 (555) 019-2838',
+    email: 'arthur.p@chessgrid.org',
     status: 'eliminated',
     matchesPlayed: 1,
     wins: 0,
@@ -203,8 +203,8 @@ export const DEMO_MATCHES: Match[] = [
     roundName: 'Quarterfinal',
     matchNumber: 1,
     boardNumber: 1,
-    whitePlayerId: 'p-1', // Ram
-    blackPlayerId: 'p-8', // Arjun
+    whitePlayerId: 'p-1', // Alexander Chen
+    blackPlayerId: 'p-8', // Arthur Pendelton
     winnerPlayerId: 'p-1',
     loserPlayerId: 'p-8',
     status: 'completed',
@@ -214,8 +214,8 @@ export const DEMO_MATCHES: Match[] = [
     isTimerRunning: false,
     activeClock: null,
     resultType: 'white_win',
-    resultDetails: 'Checkmate (Sicilian Defense - Najdorf)',
-    notes: 'Solid aggressive play by Ram on the queenside.',
+    resultDetails: 'Checkmate (Sicilian Defense - Najdorf Variation)',
+    notes: 'Solid aggressive play by Alexander Chen on the queenside.',
     startTime: '2026-09-02T10:00:00Z',
     endTime: '2026-09-02T10:50:00Z',
     nextMatchId: 'match-r1-m1',
@@ -228,8 +228,8 @@ export const DEMO_MATCHES: Match[] = [
     roundName: 'Quarterfinal',
     matchNumber: 2,
     boardNumber: 2,
-    whitePlayerId: 'p-4', // Rahul
-    blackPlayerId: 'p-5', // Aditya
+    whitePlayerId: 'p-4', // Sofia Lindqvist
+    blackPlayerId: 'p-5', // Vikram Patel
     winnerPlayerId: 'p-4',
     loserPlayerId: 'p-5',
     status: 'completed',
@@ -239,8 +239,8 @@ export const DEMO_MATCHES: Match[] = [
     isTimerRunning: false,
     activeClock: null,
     resultType: 'white_win',
-    resultDetails: 'Resignation after piece blunder on move 28',
-    notes: 'Rahul capitalized on knight fork.',
+    resultDetails: 'Resignation after tactical clearance on move 28',
+    notes: 'Sofia Lindqvist capitalized on knight fork.',
     startTime: '2026-09-02T10:00:00Z',
     endTime: '2026-09-02T10:30:00Z',
     nextMatchId: 'match-r1-m1',
@@ -253,8 +253,8 @@ export const DEMO_MATCHES: Match[] = [
     roundName: 'Quarterfinal',
     matchNumber: 3,
     boardNumber: 3,
-    whitePlayerId: 'p-3', // Aman
-    blackPlayerId: 'p-6', // Rohan
+    whitePlayerId: 'p-3', // Marcus Vance
+    blackPlayerId: 'p-6', // Julian Thorne
     winnerPlayerId: 'p-3',
     loserPlayerId: 'p-6',
     status: 'completed',
@@ -265,7 +265,7 @@ export const DEMO_MATCHES: Match[] = [
     activeClock: null,
     resultType: 'white_win',
     resultDetails: 'Time out on black clock',
-    notes: 'Rohan flagged in rook endgame.',
+    notes: 'Julian Thorne flagged in a sharp rook endgame.',
     startTime: '2026-09-02T10:00:00Z',
     endTime: '2026-09-02T10:35:00Z',
     nextMatchId: 'match-r1-m2',
@@ -278,8 +278,8 @@ export const DEMO_MATCHES: Match[] = [
     roundName: 'Quarterfinal',
     matchNumber: 4,
     boardNumber: 4,
-    whitePlayerId: 'p-2', // Lucky
-    blackPlayerId: 'p-7', // Vivek
+    whitePlayerId: 'p-2', // Elena Rostova
+    blackPlayerId: 'p-7', // Dmitri Volkov
     winnerPlayerId: 'p-2',
     loserPlayerId: 'p-7',
     status: 'completed',
@@ -290,7 +290,7 @@ export const DEMO_MATCHES: Match[] = [
     activeClock: null,
     resultType: 'white_win',
     resultDetails: 'Checkmate (Queen & Rook battery)',
-    notes: 'Clean king hunt by Lucky.',
+    notes: 'Clean tactical king hunt by Elena Rostova.',
     startTime: '2026-09-02T10:00:00Z',
     endTime: '2026-09-02T10:45:00Z',
     nextMatchId: 'match-r1-m2',
@@ -305,8 +305,8 @@ export const DEMO_MATCHES: Match[] = [
     roundName: 'Semifinal',
     matchNumber: 5,
     boardNumber: 1,
-    whitePlayerId: 'p-1', // Ram
-    blackPlayerId: 'p-4', // Rahul
+    whitePlayerId: 'p-1', // Alexander Chen
+    blackPlayerId: 'p-4', // Sofia Lindqvist
     winnerPlayerId: null,
     loserPlayerId: null,
     status: 'live',
@@ -331,8 +331,8 @@ export const DEMO_MATCHES: Match[] = [
     roundName: 'Semifinal',
     matchNumber: 6,
     boardNumber: 2,
-    whitePlayerId: 'p-3', // Aman
-    blackPlayerId: 'p-2', // Lucky
+    whitePlayerId: 'p-3', // Marcus Vance
+    blackPlayerId: 'p-2', // Elena Rostova
     winnerPlayerId: null,
     loserPlayerId: null,
     status: 'ready',
@@ -342,7 +342,7 @@ export const DEMO_MATCHES: Match[] = [
     isTimerRunning: false,
     activeClock: null,
     resultType: null,
-    notes: 'Players warming up on Board 2.',
+    notes: 'Contenders warming up on Board 2.',
     startTime: undefined,
     nextMatchId: 'match-r2-m1',
     nextMatchSlot: 'black',
@@ -370,7 +370,7 @@ export const DEMO_MATCHES: Match[] = [
     isTimerRunning: false,
     activeClock: null,
     resultType: null,
-    notes: 'Grand Championship Final',
+    notes: 'Grand Championship Final Arena',
     previousMatchIds: {
       whiteFromMatchId: 'match-r1-m1',
       blackFromMatchId: 'match-r1-m2',
@@ -389,7 +389,7 @@ export const DEMO_ANNOUNCEMENTS: Announcement[] = [
   {
     id: 'ann-1',
     title: 'Semifinal Matches Underway',
-    content: 'Board 1 (Ram vs Rahul) is now LIVE. Board 2 (Aman vs Lucky) is called to the table.',
+    content: 'Board 1 (Alexander Chen vs Sofia Lindqvist) is now LIVE. Board 2 (Marcus Vance vs Elena Rostova) is called to the table.',
     timestamp: '2026-09-02T11:15:00Z',
     priority: 'high',
     isPinned: true,
@@ -397,15 +397,15 @@ export const DEMO_ANNOUNCEMENTS: Announcement[] = [
   {
     id: 'ann-2',
     title: 'Quarterfinals Concluded',
-    content: 'All 4 Quarterfinal games have finished. Eliminated players are requested to sign the score verification sheet at the Arbiter Desk.',
+    content: 'All Quarterfinal games have finished. Advancing semifinalists are taking their positions on stage boards.',
     timestamp: '2026-09-02T10:55:00Z',
     priority: 'normal',
     isPinned: false,
   },
   {
     id: 'ann-3',
-    title: 'Grand Final & Prize Distribution',
-    content: 'The Final match will be projected live on the main auditorium screen at 12:30 PM followed by Trophy & Merit Certificate distribution by Head of Department & Ram Vishwakarma.',
+    title: 'Grand Final & Live Stream Broadcast',
+    content: 'The Championship Final will be broadcasted live on the stage arena wall and online spectator streams at 12:30 PM.',
     timestamp: '2026-09-02T09:30:00Z',
     priority: 'normal',
     isPinned: false,

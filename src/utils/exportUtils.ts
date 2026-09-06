@@ -30,7 +30,7 @@ export function exportTournamentJSON(
 
 // Export Players to CSV
 export function exportPlayersCSV(players: Player[], tournamentName: string) {
-  const headers = ['Seed', 'Name', 'Roll Number', 'Course', 'Year', 'Semester', 'Section', 'Status', 'Matches Played', 'Wins', 'Losses', 'Current Round', 'Eliminated In', 'Phone', 'Email'];
+  const headers = ['Seed', 'Name', 'Player ID', 'Federation / Club', 'Category', 'Division', 'Group', 'Status', 'Matches Played', 'Wins', 'Losses', 'Current Round', 'Eliminated In', 'Phone', 'Email'];
   const rows = players.map(p => [
     p.seed,
     `"${p.name.replace(/"/g, '""')}"`,

@@ -31,7 +31,7 @@ const TOURNAMENT_SIZES: { size: TournamentSize; label: string; rounds: number; d
 const TIME_PRESETS = [
   { label: '3 + 2 Blitz', type: 'blitz' as TimeControlType, min: 3, inc: 2, tag: 'Fast Pace' },
   { label: '5 + 3 Blitz', type: 'blitz' as TimeControlType, min: 5, inc: 3, tag: 'Standard Blitz' },
-  { label: '10 + 5 Rapid', type: 'rapid' as TimeControlType, min: 10, inc: 5, tag: 'Collegiate Rapid' },
+  { label: '10 + 5 Rapid', type: 'rapid' as TimeControlType, min: 10, inc: 5, tag: 'Rapid Open' },
   { label: '15 + 10 Rapid', type: 'rapid' as TimeControlType, min: 15, inc: 10, tag: 'FIDE Rapid' },
   { label: '30 + 0 Classical', type: 'classical' as TimeControlType, min: 30, inc: 0, tag: 'Classical' },
 ];
@@ -39,13 +39,13 @@ const TIME_PRESETS = [
 export const NewTournamentModal: React.FC<NewTournamentModalProps> = ({ isOpen, onClose }) => {
   const { startNewTournament } = useTournament();
 
-  const [name, setName] = useState('IEHE Department Chess Championship 2026');
-  const [collegeName, setCollegeName] = useState('Institute for Excellence in Higher Education (IEHE)');
-  const [departmentName, setDepartmentName] = useState('Department of Physics');
-  const [academicSession, setAcademicSession] = useState('2025-2026');
+  const [name, setName] = useState('ChessGrid Masters Open Championship 2026');
+  const [collegeName, setCollegeName] = useState('Global Chess Federation & Arena Hub');
+  const [departmentName, setDepartmentName] = useState('Championship Premier Division');
+  const [academicSession, setAcademicSession] = useState('Season 2026');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [venue, setVenue] = useState('Auditorium Hall B, IEHE Campus');
-  const [organizerName, setOrganizerName] = useState('Ram Vishwakarma');
+  const [venue, setVenue] = useState('Grand Arena Stage & Broadcast Hall');
+  const [organizerName, setOrganizerName] = useState('International Arbiter Council');
   
   const [totalPlayers, setTotalPlayers] = useState<TournamentSize>(8);
   const [tcType, setTcType] = useState<TimeControlType>('rapid');
@@ -66,7 +66,6 @@ export const NewTournamentModal: React.FC<NewTournamentModalProps> = ({ isOpen, 
 
     let initialPlayers = undefined;
     if (rosterOption === 'sample') {
-      // slice demo players according to capacity
       initialPlayers = DEMO_PLAYERS.slice(0, totalPlayers).map((p, idx) => ({
         ...p,
         seed: idx + 1,
@@ -83,11 +82,11 @@ export const NewTournamentModal: React.FC<NewTournamentModalProps> = ({ isOpen, 
     startNewTournament(
       {
         name: name.trim() || 'New Chess Championship',
-        collegeName: collegeName.trim() || 'Collegiate Arena',
-        departmentName: departmentName.trim() || 'General Department',
-        academicSession: academicSession.trim() || '2025-2026',
+        collegeName: collegeName.trim() || 'Global Arena Host',
+        departmentName: departmentName.trim() || 'Open Division',
+        academicSession: academicSession.trim() || 'Season 2026',
         date,
-        venue: venue.trim() || 'Main Campus Hall',
+        venue: venue.trim() || 'Grand Arena Hall',
         organizerName: organizerName.trim() || 'Chief Arbiter',
         totalPlayers,
         status: 'setup',
@@ -118,38 +117,29 @@ export const NewTournamentModal: React.FC<NewTournamentModalProps> = ({ isOpen, 
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 text-[#c8c0ae]/60 hover:text-white rounded-xl hover:bg-white/5 transition-colors"
+          className="absolute top-5 right-5 p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+          aria-label="Close modal"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Modal Header */}
-        <div className="flex items-center gap-3.5 mb-6">
+        <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-white/10">
           <div
-            className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg"
+            className="w-11 h-11 rounded-2xl flex items-center justify-center"
             style={{
-              background: 'linear-gradient(135deg, rgba(201, 168, 76, 0.25) 0%, rgba(201, 168, 76, 0.08) 100%)',
-              border: '1px solid rgba(201, 168, 76, 0.45)',
-              color: 'var(--cg-gold-bright)',
+              background: 'linear-gradient(135deg, rgba(201,168,76,0.3) 0%, rgba(201,168,76,0.1) 100%)',
+              border: '1px solid rgba(201,168,76,0.4)',
             }}
           >
-            <Trophy className="w-6 h-6" />
+            <Trophy className="w-5 h-5 text-[var(--cg-gold-bright)]" />
           </div>
           <div>
-            <h2
-              style={{
-                fontFamily: 'var(--font-cinematic)',
-                fontSize: '1.75rem',
-                fontWeight: 400,
-                letterSpacing: '0.04em',
-                color: 'var(--cg-ivory)',
-                lineHeight: 1.1,
-              }}
-            >
-              CREATE NEW TOURNAMENT
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--cg-ivory)]" style={{ fontFamily: 'var(--font-cinematic)' }}>
+              Initialize New Championship
             </h2>
             <p className="text-xs text-[rgba(200,192,174,0.65)] mt-0.5" style={{ fontFamily: 'var(--font-sans)' }}>
-              Configure institutional metadata, knockout tree scale, time clocks, and roster initialization
+              Configure tournament parameters, knockout tree scale, time clocks, and roster initialization
             </p>
           </div>
         </div>
@@ -160,7 +150,7 @@ export const NewTournamentModal: React.FC<NewTournamentModalProps> = ({ isOpen, 
           <div className="space-y-3.5">
             <div className="flex items-center gap-2 pb-2 border-b border-white/10 text-xs font-bold uppercase tracking-wider text-[var(--cg-gold)]">
               <Building2 className="w-4 h-4" />
-              <span>1. Institutional & Event Parameters</span>
+              <span>1. Tournament & Host Parameters</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -173,14 +163,14 @@ export const NewTournamentModal: React.FC<NewTournamentModalProps> = ({ isOpen, 
                   required
                   value={name}
                   onChange={e => setName(e.target.value)}
-                  placeholder="e.g. IEHE Grandmaster Invitational 2026"
+                  placeholder="e.g. ChessGrid Masters Open Championship 2026"
                   className="w-full px-3.5 py-2 rounded-xl text-xs bg-[#0f0f12] border border-[rgba(201,168,76,0.25)] text-white focus:outline-none focus:border-[var(--cg-gold)]"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-[#c8c0ae]/80 mb-1">
-                  College / Institution *
+                  Organization / Club / Federation *
                 </label>
                 <input
                   type="text"
@@ -193,7 +183,7 @@ export const NewTournamentModal: React.FC<NewTournamentModalProps> = ({ isOpen, 
 
               <div>
                 <label className="block text-xs font-semibold text-[#c8c0ae]/80 mb-1">
-                  Department / Branch *
+                  Category / Division / Section *
                 </label>
                 <input
                   type="text"
@@ -206,13 +196,13 @@ export const NewTournamentModal: React.FC<NewTournamentModalProps> = ({ isOpen, 
 
               <div>
                 <label className="block text-xs font-semibold text-[#c8c0ae]/80 mb-1">
-                  Academic Session
+                  Edition / Season
                 </label>
                 <input
                   type="text"
                   value={academicSession}
                   onChange={e => setAcademicSession(e.target.value)}
-                  placeholder="2025-2026"
+                  placeholder="Season 2026"
                   className="w-full px-3.5 py-2 rounded-xl text-xs font-mono bg-[#0f0f12] border border-[rgba(201,168,76,0.25)] text-white focus:outline-none focus:border-[var(--cg-gold)]"
                 />
               </div>
@@ -231,20 +221,20 @@ export const NewTournamentModal: React.FC<NewTournamentModalProps> = ({ isOpen, 
 
               <div>
                 <label className="block text-xs font-semibold text-[#c8c0ae]/80 mb-1">
-                  Venue / Location
+                  Venue & Stage Location
                 </label>
                 <input
                   type="text"
                   value={venue}
                   onChange={e => setVenue(e.target.value)}
-                  placeholder="Campus Sports Hall B"
+                  placeholder="Grand Arena Hall A"
                   className="w-full px-3.5 py-2 rounded-xl text-xs bg-[#0f0f12] border border-[rgba(201,168,76,0.25)] text-white focus:outline-none focus:border-[var(--cg-gold)]"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-[#c8c0ae]/80 mb-1">
-                  Chief Arbiter / Organizer
+                  Chief Arbiter / Tournament Director
                 </label>
                 <input
                   type="text"
@@ -384,7 +374,7 @@ export const NewTournamentModal: React.FC<NewTournamentModalProps> = ({ isOpen, 
                   {rosterOption === 'empty' && <Check className="w-4 h-4 text-emerald-400" />}
                 </div>
                 <p className="text-[11px] text-[rgba(200,192,174,0.6)] mt-1">
-                  0 players registered. Add contenders manually or import via CSV file.
+                  0 contenders registered. Add players manually or import via CSV file.
                 </p>
               </button>
 
@@ -398,11 +388,11 @@ export const NewTournamentModal: React.FC<NewTournamentModalProps> = ({ isOpen, 
                 }}
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-xs text-white">Pre-load Sample Roster</span>
+                  <span className="font-bold text-xs text-white">Pre-load Grandmaster Roster</span>
                   {rosterOption === 'sample' && <Check className="w-4 h-4 text-amber-400" />}
                 </div>
                 <p className="text-[11px] text-[rgba(200,192,174,0.6)] mt-1">
-                  Pre-fills sample collegiate players for instant bracket and timer testing.
+                  Pre-fills sample rated contenders for instant bracket and timer testing.
                 </p>
               </button>
             </div>

@@ -51,7 +51,7 @@ export const TournamentOverview: React.FC<TournamentOverviewProps> = ({
 
       <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         
-        {/* Left: Tournament Details & College Branding */}
+        {/* Left: Tournament Details & Host Branding */}
         <div className="space-y-3.5 max-w-3xl">
           <div className="flex flex-wrap items-center gap-2">
             <div className="cg-eyebrow">

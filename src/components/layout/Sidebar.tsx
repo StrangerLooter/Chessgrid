@@ -244,7 +244,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             }}
           >
             <Sparkles className="w-3 h-3 text-amber-400" />
-            <span>IEHE ARBITRATION</span>
+            <span>GLOBAL ARBITRATION</span>
           </div>
           <div
             className="text-[10px] font-medium mt-0.5"

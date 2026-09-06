@@ -280,13 +280,13 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     const totalPlayers = customSettings.totalPlayers || 16;
     const initialSettings: TournamentSettings = {
       id: `tourn-${Date.now()}`,
-      name: customSettings.name || 'IEHE Department Chess Championship 2026',
-      collegeName: customSettings.collegeName || 'Institute for Excellence in Higher Education (IEHE)',
-      departmentName: customSettings.departmentName || 'Department of Physics',
-      academicSession: customSettings.academicSession || '2025-2026',
+      name: customSettings.name || 'ChessGrid Masters Championship 2026',
+      collegeName: customSettings.collegeName || 'Global Chess Federation & Arena Hub',
+      departmentName: customSettings.departmentName || 'Premier Open Division',
+      academicSession: customSettings.academicSession || 'Season 2026',
       date: customSettings.date || new Date().toISOString().split('T')[0],
-      venue: customSettings.venue || 'Auditorium Hall B, IEHE Campus',
-      organizerName: customSettings.organizerName || 'Ram Vishwakarma',
+      venue: customSettings.venue || 'Grand Arena Stage & Broadcast Hall',
+      organizerName: customSettings.organizerName || 'Tournament Arbiter Council',
       totalPlayers,
       status: 'setup',
       currentRoundIndex: 0,
@@ -347,7 +347,7 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setAnnouncements(DEMO_ANNOUNCEMENTS);
     setHistoryLogs([]);
     setActiveTab('dashboard');
-    addToast('info', 'Demo Loaded', 'IEHE Championship 2026 loaded with live matches and bracket.');
+    addToast('info', 'Demo Loaded', 'ChessGrid Masters Championship loaded with live matches and bracket.');
   }, [addToast]);
 
   const resetTournament = useCallback(() => {

@@ -53,7 +53,7 @@ const FEATURES: FeatureItem[] = [
   {
     id: 'podium',
     icon: <Trophy className="w-6 h-6 text-amber-300" />,
-    tag: 'COLLEGIATE GLORY',
+    tag: 'CHAMPIONSHIP GLORY',
     title: 'Hall of Honor & Golden Podium',
     description: '3-tier cinematic golden podium recognizing Gold, Silver, and Bronze medalists alongside round-by-round departure cards for eliminated contenders.',
     badge: 'VICTORY RECOGNITION',
@@ -65,7 +65,7 @@ const FEATURES: FeatureItem[] = [
     icon: <Shuffle className="w-6 h-6 text-amber-400" />,
     tag: 'FATE ENGINE',
     title: 'Pairing Chamber & Seeding',
-    description: 'Cryptographically weighted seed matching and manual pairing overrides with instant roll number validation to prevent match conflicts.',
+    description: 'Cryptographically weighted seed matching and manual pairing overrides with instant player ID validation to prevent match conflicts.',
     badge: 'SWISS & KNOCKOUT',
     badgeColor: 'rgba(201, 168, 76, 0.12)',
     highlight: 'One-click automatic shuffle with seeded bracket distribution.',
@@ -73,7 +73,7 @@ const FEATURES: FeatureItem[] = [
   {
     id: 'projector',
     icon: <Tv className="w-6 h-6 text-emerald-300" />,
-    tag: 'AUDITORIUM STREAM',
+    tag: 'ARENA BROADCAST',
     title: 'Stage Projector Broadcast HUD',
     description: 'High-contrast, distraction-free stage display mode formatted specifically for large venue screens, auditorium projectors, and live stream overlays.',
     badge: 'FULLSCREEN STREAM',
@@ -83,9 +83,9 @@ const FEATURES: FeatureItem[] = [
   {
     id: 'reports',
     icon: <FileText className="w-6 h-6 text-indigo-400" />,
-    tag: 'INSTITUTIONAL AUDIT',
+    tag: 'OFFICIAL AUDIT',
     title: 'Printable Certificates & CSV',
-    description: 'Instant print-ready collegiate standings, match sheets, department championship certificates, and full CSV roster import / export.',
+    description: 'Instant print-ready tournament standings, match sheets, official championship certificates, and full CSV roster import / export.',
     badge: 'OFFICIAL RECORDS',
     badgeColor: 'rgba(99, 102, 241, 0.15)',
     highlight: 'Comprehensive immutable audit logs for every round result.',
@@ -134,7 +134,7 @@ export const LandingFeaturesGrid: React.FC<LandingFeaturesGridProps> = ({
           className="text-sm sm:text-base text-[rgba(200,192,174,0.7)]"
           style={{ fontFamily: 'var(--font-sans)', lineHeight: 1.6 }}
         >
-          From collegiate auditorium stage screens to real-time DGT clock control, ChessGrid provides the ultimate tournament infrastructure.
+          From global arena stage screens to real-time precision clock control, ChessGrid provides the ultimate tournament infrastructure.
         </p>
       </div>
 
@@ -221,7 +221,7 @@ export const LandingFeaturesGrid: React.FC<LandingFeaturesGridProps> = ({
         <div className="text-left space-y-2 max-w-xl">
           <div className="flex items-center gap-2 text-xs font-mono text-[var(--cg-gold-bright)] uppercase tracking-wider font-bold">
             <Sparkles className="w-4 h-4 text-amber-300" />
-            <span>INSTITUTE FOR EXCELLENCE IN HIGHER EDUCATION</span>
+            <span>GLOBAL CHESS TOURNAMENT PLATFORM</span>
           </div>
           <h3
             className="text-2xl sm:text-3xl font-bold"
@@ -230,7 +230,7 @@ export const LandingFeaturesGrid: React.FC<LandingFeaturesGridProps> = ({
             Ready to Direct Your Tournament?
           </h3>
           <p className="text-xs sm:text-sm text-[rgba(200,192,174,0.7)]" style={{ fontFamily: 'var(--font-sans)' }}>
-            Initialize a fresh collegiate tournament bracket, register contenders, and run live chess timers in seconds.
+            Initialize a fresh tournament bracket, register contenders, and run live chess timers in seconds.
           </p>
         </div>
 

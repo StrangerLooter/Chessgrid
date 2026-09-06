@@ -33,7 +33,7 @@ const TIME_CONTROLS: { label: string; type: TimeControlType; initialMinutes: num
   { label: '3 + 2', type: 'blitz', initialMinutes: 3, incrementSeconds: 2, desc: '3 min base + 2s increment' },
   { label: '5 + 0', type: 'blitz', initialMinutes: 5, incrementSeconds: 0, desc: '5 min sudden death' },
   { label: '10 + 5', type: 'rapid', initialMinutes: 10, incrementSeconds: 5, desc: '10 min base + 5s increment' },
-  { label: '15 + 10', type: 'rapid', initialMinutes: 15, incrementSeconds: 10, desc: '15 min base + 10s increment' },
+  { label: '15 + 10', type: 'classical', initialMinutes: 15, incrementSeconds: 10, desc: '15 min base + 10s increment' },
 ];
 
 const CAPACITIES: TournamentSize[] = [8, 16, 32, 64];
@@ -48,9 +48,9 @@ export const TournamentCreationScene: React.FC<TournamentCreationSceneProps> = (
   const [selectedFormat, setSelectedFormat] = useState('knockout');
   const [selectedTimeControl, setSelectedTimeControl] = useState('10 + 5');
   const [selectedCapacity, setSelectedCapacity] = useState<TournamentSize>(settings.totalPlayers || 16);
-  const [tournamentName, setTournamentName] = useState(settings.name || 'All-India Inter-Collegiate Chess Championship');
-  const [institution, setInstitution] = useState(settings.collegeName || 'IEHE Bhopal & State University Arena');
-  const [venue, setVenue] = useState(settings.venue || 'Grandmaster Hall A, Central Campus');
+  const [tournamentName, setTournamentName] = useState(settings.name || 'ChessGrid Masters Open Championship 2026');
+  const [organization, setOrganization] = useState(settings.collegeName || 'Global Chess Federation & Arena Hub');
+  const [venue, setVenue] = useState(settings.venue || 'Grand Arena Stage & Broadcast Hall');
   const [isSaved, setIsSaved] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -75,7 +75,7 @@ export const TournamentCreationScene: React.FC<TournamentCreationSceneProps> = (
     const tcObj = TIME_CONTROLS.find(t => t.label === selectedTimeControl) || TIME_CONTROLS[2];
     updateSettings({
       name: tournamentName,
-      collegeName: institution,
+      collegeName: organization,
       venue: venue,
       totalPlayers: selectedCapacity,
       defaultTimeControl: {
@@ -142,7 +142,7 @@ export const TournamentCreationScene: React.FC<TournamentCreationSceneProps> = (
                 textTransform: 'uppercase',
               }}
             >
-              CHAPTER 02 — TOURNAMENT GOVERNANCE
+              CHAPTER 02 — TOURNAMENT CREATION & GOVERNANCE
             </span>
           </div>
 
@@ -157,7 +157,7 @@ export const TournamentCreationScene: React.FC<TournamentCreationSceneProps> = (
               margin: '0 0 1rem',
             }}
           >
-            Forge Your Championship Arena
+            Orchestrate Any Tournament Worldwide
           </h2>
 
           <p
@@ -170,7 +170,7 @@ export const TournamentCreationScene: React.FC<TournamentCreationSceneProps> = (
               lineHeight: 1.6,
             }}
           >
-            Configure institutional tournament metadata, knockout trees, time controls, and deterministic seeding logic inside the unified 3D management engine.
+            Designed for clubs, federations, schools, community leagues, and open world championships. Configure brackets, time controls, and seeding logic in seconds.
           </p>
         </div>
 
@@ -183,7 +183,7 @@ export const TournamentCreationScene: React.FC<TournamentCreationSceneProps> = (
             marginBottom: '3rem',
           }}
         >
-          {/* Column 1: Institutional Metadata */}
+          {/* Column 1: Organization & Arena Info */}
           <div
             data-reveal
             style={{
@@ -220,7 +220,7 @@ export const TournamentCreationScene: React.FC<TournamentCreationSceneProps> = (
                     margin: 0,
                   }}
                 >
-                  Arena & Institution
+                  Event & Organization
                 </h3>
                 <span
                   style={{
@@ -283,12 +283,12 @@ export const TournamentCreationScene: React.FC<TournamentCreationSceneProps> = (
                     marginBottom: '0.4rem',
                   }}
                 >
-                  Hosting Institution
+                  Organizer / Federation / Club
                 </label>
                 <input
                   type="text"
-                  value={institution}
-                  onChange={(e) => setInstitution(e.target.value)}
+                  value={organization}
+                  onChange={(e) => setOrganization(e.target.value)}
                   style={{
                     width: '100%',
                     padding: '0.75rem 1rem',
@@ -556,7 +556,7 @@ export const TournamentCreationScene: React.FC<TournamentCreationSceneProps> = (
                     letterSpacing: '0.1em',
                   }}
                 >
-                  FIDE / ARBITER ARBITRATION
+                  ARBITER & CLOCK STANDARDS
                 </span>
               </div>
             </div>
@@ -652,7 +652,7 @@ export const TournamentCreationScene: React.FC<TournamentCreationSceneProps> = (
                     lineHeight: 1.4,
                   }}
                 >
-                  Pairing matrix automatically avoids intra-department collisions and adheres to classical FIDE bracket structures.
+                  Universal pairing engine automatically implements FIDE deterministic seeding brackets and bye distributions.
                 </p>
               </div>
             </div>
@@ -701,7 +701,7 @@ export const TournamentCreationScene: React.FC<TournamentCreationSceneProps> = (
                 }}
               >
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>ARENA PRESET APPLIED</span>
+                <span>ARENA CONFIG APPLIED</span>
               </div>
             )}
           </div>
@@ -747,7 +747,7 @@ export const TournamentCreationScene: React.FC<TournamentCreationSceneProps> = (
                   transition: 'all 0.2s ease',
                 }}
               >
-                <span>LAUNCH NEW CHAMPIONSHIP</span>
+                <span>CREATE TOURNAMENT</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             ) : onCommandCenter ? (

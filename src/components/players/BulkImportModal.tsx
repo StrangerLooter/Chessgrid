@@ -13,27 +13,27 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClos
 
   if (!isOpen) return null;
 
-  const sampleIEHERoster = [
-    { seed: 1, name: 'Ram', rollNumber: 'IEHE-PHY-2401', course: 'M.Sc Physics', year: '2nd Year', semester: 'Semester III', section: 'A' },
-    { seed: 2, name: 'Lucky', rollNumber: 'IEHE-PHY-2402', course: 'M.Sc Physics', year: '2nd Year', semester: 'Semester III', section: 'A' },
-    { seed: 3, name: 'Aman', rollNumber: 'IEHE-CS-2415', course: 'B.Sc Computer Science', year: '3rd Year', semester: 'Semester V', section: 'B' },
-    { seed: 4, name: 'Rahul', rollNumber: 'IEHE-PHY-2510', course: 'B.Sc Physics Hons', year: '1st Year', semester: 'Semester I', section: 'A' },
-    { seed: 5, name: 'Aditya', rollNumber: 'IEHE-MAT-2408', course: 'M.Sc Mathematics', year: '2nd Year', semester: 'Semester III', section: 'A' },
-    { seed: 6, name: 'Rohan', rollNumber: 'IEHE-STA-2412', course: 'B.Sc Statistics', year: '2nd Year', semester: 'Semester III', section: 'B' },
-    { seed: 7, name: 'Vivek', rollNumber: 'IEHE-PHY-2422', course: 'M.Sc Physics', year: '1st Year', semester: 'Semester I', section: 'B' },
-    { seed: 8, name: 'Arjun', rollNumber: 'IEHE-CS-2504', course: 'B.Sc Computer Science', year: '1st Year', semester: 'Semester I', section: 'A' },
-    { seed: 9, name: 'Kunal', rollNumber: 'IEHE-PHY-2512', course: 'B.Sc Physics Hons', year: '1st Year', semester: 'Semester I', section: 'B' },
-    { seed: 10, name: 'Siddharth', rollNumber: 'IEHE-CS-2409', course: 'B.Sc Computer Science', year: '2nd Year', semester: 'Semester III', section: 'A' },
-    { seed: 11, name: 'Priya', rollNumber: 'IEHE-MAT-2403', course: 'M.Sc Mathematics', year: '2nd Year', semester: 'Semester III', section: 'A' },
-    { seed: 12, name: 'Ananya', rollNumber: 'IEHE-PHY-2405', course: 'M.Sc Physics', year: '1st Year', semester: 'Semester I', section: 'A' },
-    { seed: 13, name: 'Vikram', rollNumber: 'IEHE-STA-2418', course: 'B.Sc Statistics', year: '3rd Year', semester: 'Semester V', section: 'A' },
-    { seed: 14, name: 'Dev', rollNumber: 'IEHE-CS-2519', course: 'B.Sc Computer Science', year: '1st Year', semester: 'Semester I', section: 'C' },
-    { seed: 15, name: 'Manish', rollNumber: 'IEHE-PHY-2430', course: 'B.Sc Physics Hons', year: '2nd Year', semester: 'Semester III', section: 'B' },
-    { seed: 16, name: 'Gaurav', rollNumber: 'IEHE-MAT-2501', course: 'B.Sc Mathematics', year: '1st Year', semester: 'Semester I', section: 'A' },
+  const sampleMastersRoster = [
+    { seed: 1, name: 'Alexander Chen', rollNumber: 'CG-GM-101', course: 'Grandmaster (FIDE 2640)', year: 'Masters Tier', semester: 'Division I', section: 'A' },
+    { seed: 2, name: 'Elena Rostova', rollNumber: 'CG-GM-102', course: 'Grandmaster (FIDE 2595)', year: 'Masters Tier', semester: 'Division I', section: 'A' },
+    { seed: 3, name: 'Marcus Vance', rollNumber: 'CG-IM-103', course: 'International Master (FIDE 2480)', year: 'Pro Tier', semester: 'Division I', section: 'B' },
+    { seed: 4, name: 'Sofia Lindqvist', rollNumber: 'CG-WGM-104', course: 'Woman Grandmaster (FIDE 2450)', year: 'Pro Tier', semester: 'Division I', section: 'A' },
+    { seed: 5, name: 'Vikram Patel', rollNumber: 'CG-FM-105', course: 'FIDE Master (FIDE 2390)', year: 'Candidate Tier', semester: 'Division I', section: 'A' },
+    { seed: 6, name: 'Julian Thorne', rollNumber: 'CG-IM-106', course: 'International Master (FIDE 2420)', year: 'Pro Tier', semester: 'Division I', section: 'B' },
+    { seed: 7, name: 'Dmitri Volkov', rollNumber: 'CG-FM-107', course: 'FIDE Master (FIDE 2375)', year: 'Candidate Tier', semester: 'Division I', section: 'B' },
+    { seed: 8, name: 'Arthur Pendelton', rollNumber: 'CG-CM-108', course: 'Candidate Master (FIDE 2290)', year: 'Candidate Tier', semester: 'Division I', section: 'A' },
+    { seed: 9, name: 'Kaelen Voss', rollNumber: 'CG-CM-109', course: 'Candidate Master (FIDE 2260)', year: 'Candidate Tier', semester: 'Division I', section: 'B' },
+    { seed: 10, name: 'Siddharth Rao', rollNumber: 'CG-FM-110', course: 'FIDE Master (FIDE 2340)', year: 'Pro Tier', semester: 'Division I', section: 'A' },
+    { seed: 11, name: 'Priya Nair', rollNumber: 'CG-WIM-111', course: 'Woman International Master (FIDE 2310)', year: 'Pro Tier', semester: 'Division I', section: 'A' },
+    { seed: 12, name: 'Ananya Sharma', rollNumber: 'CG-WFM-112', course: 'Woman FIDE Master (FIDE 2240)', year: 'Candidate Tier', semester: 'Division I', section: 'A' },
+    { seed: 13, name: 'Viktor Hauer', rollNumber: 'CG-OP-113', course: 'Rated Open (FIDE 2180)', year: 'Challenger Tier', semester: 'Division I', section: 'A' },
+    { seed: 14, name: 'Devon Lee', rollNumber: 'CG-OP-114', course: 'Rated Open (FIDE 2150)', year: 'Challenger Tier', semester: 'Division I', section: 'C' },
+    { seed: 15, name: 'Mateo Silva', rollNumber: 'CG-OP-115', course: 'Rated Open (FIDE 2120)', year: 'Challenger Tier', semester: 'Division I', section: 'B' },
+    { seed: 16, name: 'Gabriel Dubois', rollNumber: 'CG-OP-116', course: 'Rated Open (FIDE 2090)', year: 'Challenger Tier', semester: 'Division I', section: 'A' },
   ];
 
   const handleLoadSample = () => {
-    bulkAddPlayers(sampleIEHERoster);
+    bulkAddPlayers(sampleMastersRoster);
     onClose();
   };
 
@@ -41,17 +41,17 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClos
     e.preventDefault();
     if (!textInput.trim()) return;
 
-    // Parse lines in format: Name, RollNumber, Course
+    // Parse lines in format: Name, PlayerID, Title/Rating
     const lines = textInput.split('\n').filter(l => l.trim().length > 0);
     const parsed = lines.map((line, idx) => {
       const parts = line.split(',').map(p => p.trim());
       return {
         seed: idx + 1,
-        name: parts[0] || `Player ${idx + 1}`,
-        rollNumber: parts[1] || `IEHE-GEN-${1000 + idx}`,
-        course: parts[2] || 'B.Sc Physics Hons',
-        year: '1st Year',
-        semester: 'Semester I',
+        name: parts[0] || `Contender ${idx + 1}`,
+        rollNumber: parts[1] || `CG-ID-${1000 + idx}`,
+        course: parts[2] || 'Rated Player (Open)',
+        year: 'Masters Tier',
+        semester: 'Division I',
         section: 'A',
       };
     });
@@ -102,7 +102,7 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClos
           </div>
         </div>
 
-        {/* 1-Click IEHE Pre-Filled Roster Button */}
+        {/* 1-Click Masters Pre-Filled Roster Button */}
         <div 
           className="p-4 rounded-2xl mb-5"
           style={{
@@ -117,10 +117,10 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClos
                 style={{ fontFamily: 'var(--font-cinematic)', color: 'var(--cg-gold-bright)', fontSize: '1.05rem' }}
               >
                 <Sparkles className="w-4 h-4 text-[#c9a84c]" />
-                Populate with Official IEHE Championship Roster
+                Populate with Grandmasters Roster
               </div>
               <p className="text-xs text-[#c8c0ae]/70 mt-0.5">
-                Instantly populate Ram, Lucky, Aman, Rahul, and 12 other IEHE department players.
+                Instantly populate Alexander Chen, Elena Rostova, Marcus Vance, and 13 other rated grandmasters and contenders.
               </p>
             </div>
             <button
@@ -135,22 +135,25 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClos
         {/* Custom Text/CSV Paste */}
         <form onSubmit={handleCustomImport} className="space-y-3">
           <label className="block text-xs font-semibold text-[#c8c0ae]/80" style={{ fontFamily: 'var(--font-sans)' }}>
-            Or Paste Custom CSV List (Name, Roll Number, Course)
+            Or Paste Custom CSV List (Name, Player ID, Rating/Title)
           </label>
           <textarea
             rows={5}
             value={textInput}
             onChange={e => setTextInput(e.target.value)}
-            placeholder={`Ram Vishwakarma, IEHE-PHY-2401, M.Sc Physics\nLucky, IEHE-PHY-2402, M.Sc Physics\nAman, IEHE-CS-2415, B.Sc Computer Science`}
-            className="w-full px-3.5 py-2.5 rounded-xl text-xs focus:outline-none transition-all font-mono"
+            placeholder={`Alexander Chen, CG-GM-101, Grandmaster (2640)\nElena Rostova, CG-GM-102, Grandmaster (2595)\nMarcus Vance, CG-IM-103, International Master (2480)`}
+            className="w-full px-3.5 py-2.5 rounded-xl text-xs font-mono focus:outline-none transition-all"
             style={{
               background: 'rgba(10, 10, 11, 0.7)',
               border: '1px solid rgba(201, 168, 76, 0.2)',
               color: 'var(--cg-ivory)',
             }}
           />
+          <p className="text-[11px] text-[#c8c0ae]/50">
+            Format: One contender per line separated by commas.
+          </p>
 
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#c9a84c]/20">
+          <div className="flex items-center justify-end gap-3 pt-3">
             <button
               type="button"
               onClick={onClose}
@@ -161,14 +164,16 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClos
             <button
               type="submit"
               disabled={!textInput.trim()}
-              className="cg-btn cg-btn-primary px-5 py-2 rounded-xl text-xs font-bold shadow-md disabled:opacity-40 disabled:pointer-events-none"
+              className="cg-btn cg-btn-primary px-5 py-2 text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              Import Players
+              Import Contenders
             </button>
           </div>
         </form>
+
       </div>
     </div>
   );
 };
 
+export default BulkImportModal;

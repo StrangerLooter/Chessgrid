@@ -253,7 +253,7 @@ export const ResultEntryModal: React.FC<ResultEntryModalProps> = ({
                 Knockout Tie-Break Decision
               </div>
               <p className="text-[11px] text-[#c8c0ae]/70">
-                In a collegiate knockout format, one contender must advance. Choose the tie-break method and declare the advancing victor:
+                In a single-elimination knockout format, one contender must advance. Choose the tie-break method and declare the advancing victor:
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

@@ -27,7 +27,7 @@ export const Footer: React.FC = () => {
         <div className="flex items-center gap-1.5 text-center">
           <span>Official Arbitrated System</span>
           <span style={{ color: 'var(--cg-gold)' }}>•</span>
-          <span>Developed with <Heart className="w-3 h-3 text-red-400 fill-red-400 inline" /> for IEHE by <strong style={{ color: 'var(--cg-gold)' }}>Ram Vishwakarma</strong></span>
+          <span>Developed with <Heart className="w-3 h-3 text-red-400 fill-red-400 inline" /> by <strong style={{ color: 'var(--cg-gold)' }}>Ram Vishwakarma</strong></span>
         </div>
       </div>
     </footer>

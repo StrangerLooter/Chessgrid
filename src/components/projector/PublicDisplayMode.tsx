@@ -271,7 +271,7 @@ export const PublicDisplayMode: React.FC = () => {
         )}
       </div>
 
-      {/* Projector Bottom Ticker: College Announcements & Arbiter Info */}
+      {/* Projector Bottom Ticker: Arena Announcements & Arbiter Info */}
       <div className="border-t border-slate-800/80 pt-4 flex items-center gap-4 bg-slate-950">
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 font-bold text-xs shrink-0">
           <Megaphone className="w-4 h-4" />

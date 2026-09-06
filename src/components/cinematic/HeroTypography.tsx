@@ -93,7 +93,7 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter, onOpenN
       <div className="cg-eyebrow" style={{ marginBottom: '1rem' }}>
         <span className="dot dot-ember" aria-hidden="true" />
         <span>
-          {settings.academicSession || '2026'} • {settings.collegeName?.toUpperCase() || 'COLLEGIATE CHESS CHAMPIONSHIP'}
+          GLOBAL TOURNAMENT PLATFORM • {settings.name?.toUpperCase() || 'CHESSGRID ARENA'}
         </span>
       </div>
 
@@ -132,16 +132,16 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter, onOpenN
         ref={taglineRef}
         style={{
           fontFamily: 'var(--font-cinematic)',
-          fontSize: 'clamp(1rem, 2.2vw, 1.45rem)',
+          fontSize: 'clamp(1.1rem, 2.4vw, 1.6rem)',
           fontWeight: 300,
-          fontStyle: 'italic',
-          letterSpacing: '0.12em',
-          color: 'var(--cg-ivory-dim)',
-          margin: '0 0 0.35rem',
+          letterSpacing: '0.15em',
+          color: 'var(--cg-gold-bright)',
+          margin: '0 0 0.4rem',
+          textTransform: 'uppercase',
           opacity: 0,
         }}
       >
-        Where strategy reveals the unseen.
+        The Digital Arena for Chess Tournaments
       </p>
 
       {/* Subtitle */}
@@ -149,18 +149,19 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter, onOpenN
         ref={subtitleRef}
         style={{
           fontFamily: 'var(--font-sans)',
-          fontSize: '0.62rem',
-          letterSpacing: '0.3em',
-          color: 'rgba(200,192,174,0.6)',
-          margin: '0 0 1.5rem',
+          fontSize: '0.72rem',
+          letterSpacing: '0.18em',
+          color: 'rgba(200,192,174,0.7)',
+          maxWidth: '560px',
+          margin: '0 auto 1.5rem',
           textTransform: 'uppercase',
           opacity: 0,
         }}
       >
-        {settings.name} • {settings.departmentName}
+        Enterprise-grade tournament orchestration, real-time 3D brackets, live digital clocks & broadcast presentation for organizers worldwide.
       </p>
 
-      {/* Stitch Live Tournament Ticker HUD */}
+      {/* Live Tournament Ticker HUD */}
       <div
         ref={tickerRef}
         className="mb-6 pointer-events-auto"
@@ -179,7 +180,7 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter, onOpenN
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[var(--cg-emerald-bright)] animate-ping" />
             <span className="text-[var(--cg-emerald-bright)] font-bold">
-              {stats.liveMatchesCount > 0 ? `${stats.liveMatchesCount} BOARDS LIVE` : 'DGT SYNC READY'}
+              {stats.liveMatchesCount > 0 ? `${stats.liveMatchesCount} BOARDS LIVE` : 'ARENA READY'}
             </span>
           </div>
 
@@ -263,7 +264,7 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter, onOpenN
             <span className="num">01</span>
             <div className="tx">
               <b>THE ARENA</b>
-              <p>{players.length || settings.totalPlayers} Combatants, 1 Crown</p>
+              <p>{players.length || settings.totalPlayers} Contenders, 1 Crown</p>
             </div>
           </button>
           <button
@@ -272,8 +273,8 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter, onOpenN
           >
             <span className="num">02</span>
             <div className="tx">
-              <b>COMBATANTS</b>
-              <p>Grandmaster Roster</p>
+              <b>CONTENDERS</b>
+              <p>Player Roster</p>
             </div>
           </button>
           <button
