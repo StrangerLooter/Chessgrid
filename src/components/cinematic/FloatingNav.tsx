@@ -1,21 +1,12 @@
 import React, { useState } from 'react';
-import { useScroll, type CinematicWaypoint } from '../../context/ScrollContext';
-import { WAYPOINT_RANGES } from '../../context/ScrollContext';
+import { type CinematicWaypoint, WAYPOINT_RANGES } from '../../context/ScrollContext';
 import { useTournament } from '../../context/TournamentContext';
-import { ArrowRight, Volume2, VolumeX, Menu, X } from 'lucide-react';
+import { Volume2, VolumeX } from 'lucide-react';
 
 interface FloatingNavProps {
   onCommandCenter: () => void;
   onOpenNewTournament?: () => void;
 }
-
-const NAV_LINKS: { waypoint: CinematicWaypoint; label: string }[] = [
-  { waypoint: 'tournament', label: 'TOURNAMENTS' },
-  { waypoint: 'players',    label: 'PLAYERS' },
-  { waypoint: 'match',      label: 'FEATURES' },
-  { waypoint: 'projector',  label: 'COMMUNITY' },
-  { waypoint: 'analysis',   label: 'ABOUT' },
-];
 
 const scrollToWaypoint = (waypoint: CinematicWaypoint) => {
   const [start] = WAYPOINT_RANGES[waypoint];
@@ -24,157 +15,194 @@ const scrollToWaypoint = (waypoint: CinematicWaypoint) => {
   window.scrollTo({ top: targetY, behavior: 'smooth' });
 };
 
-export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter, onOpenNewTournament }) => {
-  const { waypoint } = useScroll();
+export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter }) => {
   const { isMuted, toggleMute } = useTournament();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
-    <header className="fixed top-3 sm:top-5 left-0 right-0 z-50 flex flex-col items-center px-3 sm:px-6 pointer-events-none">
+    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none p-0 m-0">
       
-      {/* ── Main Centered Framed HUD Navigation Bar ── */}
-      <div className="w-full max-w-[1140px] pointer-events-auto relative flex justify-center">
+      {/* ── Main Actual Navbar Graphic Container (Flush top, sleek horizontal bar) ── */}
+      <div className="relative w-full max-w-[680px] sm:max-w-[780px] md:max-w-[880px] lg:max-w-[960px] pointer-events-auto select-none">
         
-        <nav className="cg-framed-navbar">
-          {/* Wing Tabs */}
-          <div className="cg-framed-navbar-wing-left" />
-          <div className="cg-framed-navbar-wing-right" />
+        {/* 1. The Actual Reference Navbar Graphic Asset (0 top padding) */}
+        <img
+          src="/navbar-graphic.png"
+          alt="ChessGrid Navigation Bar"
+          className="w-full h-auto object-contain block drop-shadow-[0_8px_30px_rgba(0,0,0,0.95)]"
+          loading="eager"
+          decoding="async"
+        />
 
-          {/* Stepped Metallic Gold Clamps / Brackets */}
-          <div className="cg-nav-clamp-top-left hidden sm:block" />
-          <div className="cg-nav-clamp-top-right hidden sm:block" />
-          <div className="cg-nav-clamp-bottom-left hidden md:block" />
-          <div className="cg-nav-clamp-bottom-center hidden sm:block" />
-          <div className="cg-nav-clamp-bottom-right hidden md:block" />
-
-          {/* ── Left: Chess Knight Crest + Brand Logo ── */}
+        {/* 2. Transparent Interactive Click Map (Locked to Graphic Coordinates) */}
+        <nav
+          className="absolute inset-0 w-full h-full"
+          aria-label="ChessGrid Navigation"
+        >
+          {/* ── Hotspot 1: Brand Crest & ChessGrid Logo (Home) ── */}
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="flex items-center gap-2.5 sm:gap-3 group focus:outline-none pr-3 sm:pr-4 border-r border-amber-500/20"
+            style={{
+              position: 'absolute',
+              left: '4.5%',
+              width: '23.5%',
+              top: '10%',
+              height: '80%',
+              borderRadius: '4px',
+            }}
+            className="focus:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/40 hover:bg-white/[0.04] transition-colors cursor-pointer"
             title="ChessGrid Home"
-          >
-            {/* Metallic Knight Chess Icon */}
-            <div className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center relative transition-transform group-hover:scale-110">
-              <svg
-                viewBox="0 0 48 48"
-                className="w-full h-full text-[#f7dc8c] drop-shadow-[0_0_10px_rgba(201,168,76,0.6)]"
-                fill="currentColor"
-              >
-                {/* Knight Head & Mane Profile */}
-                <path d="M22 6C17 6 12 10 11 15C10 20 12 25 10 28C8 31 6 34 6 37C6 39 8 41 11 41H37C39 41 41 39 41 37C41 32 37 28 35 24C33 20 34 16 33 12C32 8 28 6 22 6ZM22 10C24 10 26 11 27 13C28 15 27 17 26 19C25 21 24 23 25 25C26 27 28 29 30 31C32 33 34 35 34 37H14C14 35 15 33 17 31C19 29 20 26 19 23C18 20 17 17 18 14C19 11 20 10 22 10Z" opacity="0.95" />
-                <path d="M19 14C19 12.9 19.9 12 21 12C22.1 12 23 12.9 23 14C23 15.1 22.1 16 21 16C19.9 16 19 15.1 19 14Z" fill="#ffffff" />
-              </svg>
-            </div>
+            aria-label="ChessGrid Home"
+          />
 
-            <div className="flex items-baseline tracking-widest">
-              <span
-                style={{
-                  fontFamily: 'var(--font-cinzel), serif',
-                  fontSize: 'clamp(1rem, 1.4vw, 1.25rem)',
-                  fontWeight: 700,
-                  letterSpacing: '0.16em',
-                  color: '#f5f0e8',
-                  textShadow: '0 2px 8px rgba(0,0,0,0.9), 0 0 16px rgba(201,168,76,0.4)',
-                }}
-              >
-                CHESSGRID
-              </span>
-              <span className="text-[9px] text-[#c9a84c] font-mono ml-0.5 opacity-90">™</span>
-            </div>
-          </button>
+          {/* ── Hotspot 2: TOURNAMENTS ── */}
+          <button
+            onClick={() => scrollToWaypoint('tournament')}
+            style={{
+              position: 'absolute',
+              left: '29.0%',
+              width: '10.5%',
+              top: '10%',
+              height: '80%',
+              borderRadius: '4px',
+            }}
+            className="focus:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/40 hover:bg-white/[0.04] transition-colors cursor-pointer"
+            title="Tournaments"
+            aria-label="Tournaments"
+          />
 
-          {/* ── Center: Framed Navigation Links (Desktop/Tablet) ── */}
-          <div className="hidden lg:flex items-center gap-6 xl:gap-8 px-2">
-            {NAV_LINKS.map(({ waypoint: wp, label }) => {
-              const isActive = waypoint === wp;
-              return (
-                <button
-                  key={wp}
-                  onClick={() => scrollToWaypoint(wp)}
-                  className="relative py-1 text-[11.5px] font-bold tracking-[0.2em] transition-all duration-300 uppercase"
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    color: isActive ? '#fce8a6' : 'rgba(215, 222, 235, 0.72)',
-                    textShadow: isActive ? '0 0 14px rgba(232, 196, 90, 0.8), 0 0 25px rgba(201, 168, 76, 0.4)' : 'none',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#ffffff';
-                    e.currentTarget.style.textShadow = '0 0 12px rgba(255,255,255,0.6)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = isActive ? '#fce8a6' : 'rgba(215, 222, 235, 0.72)';
-                    e.currentTarget.style.textShadow = isActive ? '0 0 14px rgba(232, 196, 90, 0.8)' : 'none';
-                  }}
-                >
-                  {label}
-                  {isActive && <div className="cg-nav-active-flare" />}
-                </button>
-              );
-            })}
-          </div>
+          {/* ── Hotspot 3: PLAYERS ── */}
+          <button
+            onClick={() => scrollToWaypoint('players')}
+            style={{
+              position: 'absolute',
+              left: '40.5%',
+              width: '7.2%',
+              top: '10%',
+              height: '80%',
+              borderRadius: '4px',
+            }}
+            className="focus:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/40 hover:bg-white/[0.04] transition-colors cursor-pointer"
+            title="Players"
+            aria-label="Players"
+          />
 
-          {/* ── Right: Audio Toggle & Framed "→ GET STARTED" Button ── */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
-            
-            {/* Audio Toggle */}
-            <button
-              onClick={toggleMute}
-              className="p-1.5 sm:p-2 rounded bg-black/40 border border-white/10 hover:border-amber-400/40 text-slate-300 hover:text-white transition-all"
-              title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
-            >
-              {isMuted ? <VolumeX className="w-3.5 h-3.5 text-red-400" /> : <Volume2 className="w-3.5 h-3.5 text-emerald-400" />}
-            </button>
+          {/* ── Hotspot 4: FEATURES ── */}
+          <button
+            onClick={() => scrollToWaypoint('match')}
+            style={{
+              position: 'absolute',
+              left: '48.8%',
+              width: '8.0%',
+              top: '10%',
+              height: '80%',
+              borderRadius: '4px',
+            }}
+            className="focus:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/40 hover:bg-white/[0.04] transition-colors cursor-pointer"
+            title="Features"
+            aria-label="Features"
+          />
 
-            {/* Framed GET STARTED Action Button */}
-            <button
-              onClick={onCommandCenter}
-              className="cg-nav-cta-button group"
-            >
-              <ArrowRight className="w-3.5 h-3.5 text-[#e8c45a] group-hover:translate-x-1 transition-transform" />
-              <span>GET STARTED</span>
-            </button>
+          {/* ── Hotspot 5: COMMUNITY ── */}
+          <button
+            onClick={() => scrollToWaypoint('projector')}
+            style={{
+              position: 'absolute',
+              left: '58.0%',
+              width: '9.2%',
+              top: '10%',
+              height: '80%',
+              borderRadius: '4px',
+            }}
+            className="focus:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/40 hover:bg-white/[0.04] transition-colors cursor-pointer"
+            title="Community"
+            aria-label="Community"
+          />
 
-            {/* Mobile Menu Toggle Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-1.5 rounded bg-black/50 border border-white/20 text-white"
-              aria-label="Toggle menu"
-            >
-              {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-            </button>
-          </div>
+          {/* ── Hotspot 6: ABOUT ── */}
+          <button
+            onClick={() => scrollToWaypoint('analysis')}
+            style={{
+              position: 'absolute',
+              left: '68.2%',
+              width: '6.8%',
+              top: '10%',
+              height: '80%',
+              borderRadius: '4px',
+            }}
+            className="focus:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/40 hover:bg-white/[0.04] transition-colors cursor-pointer"
+            title="About"
+            aria-label="About"
+          />
+
+          {/* ── Hotspot 7: GET STARTED → ── */}
+          <button
+            onClick={onCommandCenter}
+            style={{
+              position: 'absolute',
+              left: '76.5%',
+              width: '16.5%',
+              top: '10%',
+              height: '80%',
+              borderRadius: '6px',
+            }}
+            className="focus:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/40 hover:bg-white/[0.06] hover:shadow-[0_0_15px_rgba(201,168,76,0.3)] transition-all cursor-pointer"
+            title="Get Started — Enter Tournament Command Center"
+            aria-label="Get Started"
+          />
         </nav>
-      </div>
 
-      {/* ── Mobile Menu Drawer (Matching Framed Aesthetic) ── */}
-      {isMobileMenuOpen && (
-        <div className="w-full max-w-[1140px] pointer-events-auto mt-2 p-4 rounded-xl bg-[#0e1218]/95 border border-amber-500/30 backdrop-blur-2xl shadow-2xl flex flex-col gap-2.5">
-          {NAV_LINKS.map(({ waypoint: wp, label }) => (
-            <button
-              key={wp}
-              onClick={() => {
-                scrollToWaypoint(wp);
-                setIsMobileMenuOpen(false);
+        {/* ── Optional Floating Search Overlay ── */}
+        {isSearchOpen && (
+          <div
+            className="absolute top-[105%] left-1/2 -translate-x-1/2 z-50 w-80 p-2.5 rounded-xl bg-[#0a0a0c]/95 border border-amber-500/40 backdrop-blur-2xl shadow-2xl flex items-center gap-2"
+          >
+            <input
+              type="text"
+              autoFocus
+              placeholder="Search tournaments, players..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  onCommandCenter();
+                  setIsSearchOpen(false);
+                }
+                if (e.key === 'Escape') {
+                  setIsSearchOpen(false);
+                }
               }}
-              className="py-2 px-3 text-left text-xs font-bold tracking-widest text-slate-200 hover:text-[#e8c45a] hover:bg-white/5 rounded-lg transition-colors flex items-center justify-between"
-            >
-              <span>{label}</span>
-              <span className="text-amber-400/60 font-mono text-[10px]">›</span>
-            </button>
-          ))}
-          {onOpenNewTournament && (
+              className="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-amber-400"
+            />
             <button
               onClick={() => {
-                onOpenNewTournament();
-                setIsMobileMenuOpen(false);
+                onCommandCenter();
+                setIsSearchOpen(false);
               }}
-              className="w-full py-2.5 text-center text-xs font-bold tracking-wider bg-[rgba(201,168,76,0.18)] text-[#e8c45a] border border-[#e8c45a]/50 rounded-lg mt-1"
+              className="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30"
             >
-              + CREATE TOURNAMENT
+              Go
             </button>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+
+        {/* ── Auxiliary Floating Audio Control ── */}
+        <button
+          onClick={toggleMute}
+          style={{
+            position: 'absolute',
+            right: '-38px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+          }}
+          className="hidden xl:flex p-1.5 rounded-full bg-black/70 border border-amber-500/30 hover:border-amber-400 text-slate-300 hover:text-white transition-all shadow-xl backdrop-blur-md"
+          title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
+          aria-label={isMuted ? 'Unmute Audio' : 'Mute Audio'}
+        >
+          {isMuted ? <VolumeX className="w-3.5 h-3.5 text-red-400" /> : <Volume2 className="w-3.5 h-3.5 text-emerald-400" />}
+        </button>
+      </div>
     </header>
   );
 };
