@@ -67,14 +67,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
 
             <div className="flex items-center gap-3">
               <div
-                className="w-10 h-10 rounded flex items-center justify-center font-bold"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(201,168,76,0.25), rgba(10,10,11,0.9))',
-                  border: '1px solid rgba(201, 168, 76, 0.4)',
-                  boxShadow: '0 0 15px -3px rgba(201, 168, 76, 0.3)',
-                }}
+                className="w-10 h-10 rounded flex items-center justify-center font-bold bg-[rgba(201,168,76,0.18)] border border-[rgba(201,168,76,0.4)] shadow-[0_0_15px_rgba(201,168,76,0.25)]"
               >
-                <Trophy className="w-5 h-5" style={{ color: 'var(--cg-gold)' }} />
+                <Trophy className="w-5 h-5 text-[var(--cg-gold)]" />
               </div>
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
@@ -82,8 +77,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
                     style={{
                       fontFamily: 'var(--font-cinematic)',
                       fontSize: '1.25rem',
-                      fontWeight: 500,
-                      letterSpacing: '0.12em',
+                      fontWeight: 600,
+                      letterSpacing: '0.1em',
                       color: 'var(--cg-ivory)',
                       lineHeight: 1,
                     }}
@@ -91,27 +86,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
                     CHESSGRID™
                   </span>
                   <span
-                    className="hidden sm:inline-block px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest"
-                    style={{
-                      fontFamily: 'var(--font-sans)',
-                      background: 'rgba(201, 168, 76, 0.12)',
-                      color: 'var(--cg-gold)',
-                      border: '1px solid rgba(201, 168, 76, 0.3)',
-                    }}
+                    className="hidden sm:inline-block px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest font-mono bg-[rgba(201,168,76,0.12)] text-[var(--cg-gold)] border border-[rgba(201,168,76,0.3)]"
                   >
-                    Command Center
+                    GRANDMASTER CONSOLE
                   </span>
                 </div>
                 <span
-                  className="text-xs truncate max-w-[200px] sm:max-w-xs"
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    color: 'rgba(200, 192, 174, 0.55)',
-                    fontSize: '0.7rem',
-                    letterSpacing: '0.04em',
-                  }}
+                  className="text-xs truncate max-w-[200px] sm:max-w-xs font-mono text-[rgba(200,192,174,0.6)] text-[11px]"
                 >
-                  {settings.name} • {settings.departmentName}
+                  {settings.name} • {settings.collegeName || 'Ivy League Masters'}
                 </span>
               </div>
             </div>
@@ -122,15 +105,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
             {stats.championPlayer ? (
               <button
                 onClick={() => setShowChampionModal(true)}
-                className="flex items-center gap-2 px-3.5 py-1.5 rounded text-xs font-bold transition-all hover:scale-105"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(201,168,76,0.2), rgba(232,196,90,0.1))',
-                  border: '1px solid rgba(201, 168, 76, 0.5)',
-                  color: 'var(--cg-gold-bright)',
-                  boxShadow: '0 0 20px -5px rgba(201, 168, 76, 0.4)',
-                  fontFamily: 'var(--font-sans)',
-                  letterSpacing: '0.08em',
-                }}
+                className="flex items-center gap-2 px-3.5 py-1.5 rounded text-xs font-bold transition-all hover:scale-105 bg-[rgba(201,168,76,0.2)] border border-[rgba(201,168,76,0.5)] text-[var(--cg-gold-bright)] gold-glow font-sans tracking-wider"
               >
                 <Crown className="w-4 h-4 text-amber-300" />
                 <span>CHAMPION: {stats.championPlayer.name.toUpperCase()}</span>
@@ -138,38 +113,26 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
               </button>
             ) : (
               <div
-                className="flex items-center gap-2.5 px-3.5 py-1 rounded text-xs"
-                style={{
-                  background: 'rgba(10, 10, 11, 0.7)',
-                  border: '1px solid rgba(201, 168, 76, 0.15)',
-                  fontFamily: 'var(--font-sans)',
-                }}
+                className="flex items-center gap-2.5 px-3.5 py-1 rounded text-xs glass-panel font-sans"
               >
                 <span className="relative flex h-2 w-2">
                   {stats.liveMatchesCount > 0 && (
                     <span
-                      className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                      style={{ background: 'var(--cg-gold)' }}
+                      className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-[var(--cg-gold)]"
                     />
                   )}
                   <span
-                    className="relative inline-flex rounded-full h-2 w-2"
-                    style={{ background: stats.liveMatchesCount > 0 ? 'var(--cg-gold)' : 'rgba(200,192,174,0.3)' }}
+                    className={`relative inline-flex rounded-full h-2 w-2 ${stats.liveMatchesCount > 0 ? 'bg-[var(--cg-gold)]' : 'bg-white/30'}`}
                   />
                 </span>
-                <span style={{ color: 'var(--cg-ivory)', fontWeight: 600, letterSpacing: '0.06em' }}>
+                <span className="text-[var(--cg-ivory)] font-semibold tracking-wider text-[11px]">
                   {stats.currentRoundName.toUpperCase()}
                 </span>
                 {stats.liveMatchesCount > 0 && (
                   <span
-                    className="px-1.5 py-0.5 rounded font-bold text-[10px]"
-                    style={{
-                      background: 'rgba(34, 166, 122, 0.15)',
-                      color: 'var(--cg-emerald-bright)',
-                      border: '1px solid rgba(34, 166, 122, 0.3)',
-                    }}
+                    className="px-1.5 py-0.5 rounded font-bold text-[10px] font-mono bg-[rgba(34,166,122,0.18)] text-[var(--cg-emerald-bright)] border border-[rgba(34,166,122,0.4)] emerald-glow"
                   >
-                    {stats.liveMatchesCount} LIVE
+                    {stats.liveMatchesCount} BOARDS LIVE
                   </span>
                 )}
               </div>

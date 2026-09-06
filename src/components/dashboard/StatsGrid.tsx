@@ -1,172 +1,150 @@
 import React from 'react';
 import { useTournament } from '../../context/TournamentContext';
-import { Users, Swords, Clock, UserMinus, Crown, CheckCircle2, Shuffle } from 'lucide-react';
-import type { NavTab } from '../../types/tournament';
+import { Crown, CheckCircle2, Shuffle } from 'lucide-react';
 
 interface StatsGridProps {
   onOpenShuffleModal: () => void;
 }
 
 export const StatsGrid: React.FC<StatsGridProps> = ({ onOpenShuffleModal }) => {
-  const { stats, settings, setActiveTab } = useTournament();
+  const { stats, settings, matches, setActiveTab } = useTournament();
 
-  const cards: {
-    id: string;
-    title: string;
-    value: string | number;
-    subtitle: string;
-    icon: React.ReactNode;
-    color: string;
-    accentGlow: string;
-    badge?: string;
-    badgeColor?: string;
-    targetTab?: NavTab;
-    onClick?: () => void;
-  }[] = [
+  const liveMatches = matches.filter(m => m.status === 'live');
+  const initialMin = settings.defaultTimeControl?.initialMinutes ?? 15;
+  const avgPace = initialMin <= 5 ? '8.4s' : initialMin <= 15 ? '14.2s' : '28.5s';
+  const tcLabel = settings.defaultTimeControl?.label ?? '15+10 Rapid';
+
+  const cards = [
     {
       id: 'players',
-      title: 'Contender Pool',
+      label: 'TOTAL CONTENDERS',
       value: `${stats.totalRegistered} / ${stats.totalRequired}`,
-      subtitle: stats.isReadyToStart ? 'Pool Complete & Verified' : `${stats.totalRequired - stats.totalRegistered} slots remaining`,
-      icon: <Users className="w-4 h-4" />,
-      color: 'var(--cg-gold)',
-      accentGlow: 'rgba(201, 168, 76, 0.25)',
-      badge: stats.isReadyToStart ? 'READY' : 'REGISTERING',
-      badgeColor: stats.isReadyToStart 
+      subtitle: stats.isReadyToStart ? 'Pool Complete & Verified' : `${stats.totalRequired - stats.totalRegistered} slots open`,
+      badge: stats.isReadyToStart ? 'READY' : 'ENROLLING',
+      badgeClass: stats.isReadyToStart 
         ? 'bg-[rgba(34,166,122,0.15)] text-[var(--cg-emerald-bright)] border-[rgba(34,166,122,0.4)]' 
         : 'bg-[rgba(201,168,76,0.15)] text-[var(--cg-gold)] border-[rgba(201,168,76,0.35)]',
-      targetTab: 'players',
+      valueColor: 'text-[var(--cg-ivory)]',
+      onClick: () => setActiveTab('players'),
     },
     {
-      id: 'live',
-      title: 'Live Battlefield',
-      value: stats.liveMatchesCount,
-      subtitle: `${stats.upcomingMatchesCount} matches on deck`,
-      icon: <Clock className="w-4 h-4" />,
-      color: 'var(--cg-emerald-bright)',
-      accentGlow: 'rgba(34, 166, 122, 0.25)',
-      badge: stats.liveMatchesCount > 0 ? 'LIVE NOW' : 'STANDBY',
-      badgeColor: stats.liveMatchesCount > 0 
-        ? 'bg-[rgba(34,166,122,0.2)] text-[var(--cg-emerald-bright)] border-[rgba(34,166,122,0.5)] animate-pulse' 
-        : 'bg-[rgba(201,168,76,0.06)] text-[rgba(200,192,174,0.4)] border-[rgba(201,168,76,0.1)]',
-      targetTab: 'live',
+      id: 'clocks',
+      label: 'ACTIVE CLOCKS',
+      value: liveMatches.length > 0 ? `${liveMatches.length * 2}` : '0',
+      subtitle: liveMatches.length > 0 ? `${liveMatches.length} boards synchronized` : `${stats.upcomingMatchesCount} matches on deck`,
+      badge: liveMatches.length > 0 ? 'SYNCHRONIZED' : 'STANDBY',
+      badgeClass: liveMatches.length > 0 
+        ? 'bg-[rgba(34,166,122,0.2)] text-[var(--cg-emerald-bright)] border-[rgba(34,166,122,0.5)]' 
+        : 'bg-[rgba(201,168,76,0.08)] text-[rgba(200,192,174,0.5)] border-[rgba(201,168,76,0.15)]',
+      valueColor: 'text-[var(--cg-gold)]',
+      onClick: () => setActiveTab('live'),
     },
     {
-      id: 'completed',
-      title: 'Concluded Matches',
-      value: stats.completedMatchesCount,
-      subtitle: `Stage: ${stats.currentRoundName}`,
-      icon: <Swords className="w-4 h-4" />,
-      color: 'var(--cg-gold-bright)',
-      accentGlow: 'rgba(232, 196, 90, 0.2)',
-      badge: `${stats.progressPercent}%`,
-      badgeColor: 'bg-[rgba(201,168,76,0.15)] text-[var(--cg-gold-bright)] border-[rgba(201,168,76,0.3)]',
-      targetTab: 'history',
+      id: 'round',
+      label: 'ROUND STATUS',
+      value: stats.currentRoundName || 'Qualifiers',
+      subtitle: `${stats.completedMatchesCount} finished (${stats.progressPercent}%)`,
+      badge: settings.status === 'completed' ? 'CONCLUDED' : settings.status === 'in_progress' ? 'KNOCKOUT' : 'SETUP',
+      badgeClass: 'bg-[rgba(201,168,76,0.12)] text-[var(--cg-gold-bright)] border-[rgba(201,168,76,0.25)]',
+      valueColor: 'text-[var(--cg-ivory)]',
+      onClick: () => setActiveTab('bracket'),
     },
     {
-      id: 'eliminated',
-      title: 'Fallen Warriors',
-      value: stats.eliminatedCount,
-      subtitle: `${stats.totalRegistered - stats.eliminatedCount} contenders active`,
-      icon: <UserMinus className="w-4 h-4" />,
-      color: 'var(--cg-red-bright)',
-      accentGlow: 'rgba(192, 57, 43, 0.2)',
-      badge: `${stats.totalRegistered - stats.eliminatedCount} ACTIVE`,
-      badgeColor: 'bg-[rgba(192,57,43,0.12)] text-[var(--cg-red-bright)] border-[rgba(192,57,43,0.3)]',
-      targetTab: 'eliminated',
+      id: 'uptime',
+      label: 'VENUE & DGT UPTIME',
+      value: '99.9%',
+      subtitle: 'Zero latency clock sync',
+      badge: 'ONLINE',
+      badgeClass: 'bg-[rgba(34,166,122,0.18)] text-[var(--cg-emerald-bright)] border-[rgba(34,166,122,0.4)] emerald-glow',
+      valueColor: 'text-[var(--cg-emerald-bright)]',
+      hasPulseDot: true,
+      onClick: () => setActiveTab('live'),
+    },
+    {
+      id: 'pace',
+      label: 'AVG MOVE PACE',
+      value: avgPace,
+      subtitle: `Format: ${tcLabel}`,
+      badge: 'FIDE STD',
+      badgeClass: 'bg-[rgba(255,255,255,0.06)] text-[rgba(200,192,174,0.7)] border-[rgba(255,255,255,0.12)]',
+      valueColor: 'text-[var(--cg-ivory)]',
+      onClick: () => setActiveTab('history'),
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {cards.map(card => (
-        <div
-          key={card.id}
-          onClick={() => {
-            if (card.onClick) card.onClick();
-            else if (card.targetTab) setActiveTab(card.targetTab);
-          }}
-          className="p-5 rounded transition-all duration-300 cursor-pointer group hover:-translate-y-1 relative overflow-hidden flex flex-col justify-between"
-          style={{
-            background: 'rgba(17, 17, 20, 0.7)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            border: '1px solid rgba(201, 168, 76, 0.18)',
-            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(201, 168, 76, 0.08)',
-          }}
-        >
-          {/* Top highlight bar */}
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5">
+        {cards.map(card => (
           <div
-            className="absolute top-0 left-0 right-0 h-[2px] opacity-60 group-hover:opacity-100 transition-opacity"
-            style={{ background: `linear-gradient(90deg, transparent, ${card.color}, transparent)` }}
-          />
-
-          <div>
-            <div className="flex items-center justify-between mb-2.5">
-              <div
-                className="w-9 h-9 rounded flex items-center justify-center"
-                style={{
-                  background: 'rgba(201, 168, 76, 0.08)',
-                  border: '1px solid rgba(201, 168, 76, 0.25)',
-                  color: card.color,
-                }}
-              >
-                {card.icon}
-              </div>
-
-              {card.badge && (
-                <span
-                  className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase border ${card.badgeColor}`}
-                  style={{ fontFamily: 'var(--font-sans)' }}
-                >
-                  {card.badge}
-                </span>
-              )}
-            </div>
-
-            <div
-              className="text-xs uppercase tracking-widest font-semibold"
-              style={{
-                fontFamily: 'var(--font-sans)',
-                color: 'rgba(200, 192, 174, 0.6)',
-                fontSize: '0.65rem',
-              }}
-            >
-              {card.title}
-            </div>
-
-            <div
-              className="mt-1 leading-none"
-              style={{
-                fontFamily: 'var(--font-stat)',
-                fontSize: 'clamp(2.25rem, 4vw, 3rem)',
-                color: 'var(--cg-ivory)',
-                letterSpacing: '0.04em',
-              }}
-            >
-              {card.value}
-            </div>
-          </div>
-
-          <div
-            className="text-xs mt-3 pt-2.5 flex items-center justify-between"
+            key={card.id}
+            onClick={card.onClick}
+            className="glass-panel p-4 rounded cursor-pointer group hover:-translate-y-0.5 transition-all relative overflow-hidden flex flex-col justify-between"
             style={{
-              borderTop: '1px solid rgba(201, 168, 76, 0.1)',
-              fontFamily: 'var(--font-sans)',
-              color: 'rgba(200, 192, 174, 0.5)',
-              fontSize: '0.7rem',
+              minHeight: '118px',
             }}
           >
-            <span className="truncate">{card.subtitle}</span>
-            <span
-              className="font-bold text-[11px] opacity-0 group-hover:opacity-100 transition-opacity"
-              style={{ color: 'var(--cg-gold)' }}
+            {/* Top accent line on hover */}
+            <div
+              className="absolute top-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100 transition-opacity"
+              style={{ background: 'linear-gradient(90deg, transparent, var(--cg-gold), transparent)' }}
+            />
+
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <span
+                  className="text-[10px] font-bold tracking-widest uppercase truncate"
+                  style={{
+                    fontFamily: 'var(--font-sans)',
+                    color: 'rgba(200, 192, 174, 0.65)',
+                    letterSpacing: '0.12em',
+                  }}
+                >
+                  {card.label}
+                </span>
+
+                {card.badge && (
+                  <span
+                    className={`px-1.5 py-0.5 rounded text-[9px] font-bold tracking-wider uppercase border flex items-center gap-1 ${card.badgeClass}`}
+                    style={{ fontFamily: 'var(--font-mono)' }}
+                  >
+                    {card.hasPulseDot && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--cg-emerald-bright)] animate-pulse" />
+                    )}
+                    {card.badge}
+                  </span>
+                )}
+              </div>
+
+              <div
+                className={`truncate font-semibold ${card.valueColor}`}
+                style={{
+                  fontFamily: 'var(--font-stat)',
+                  fontSize: 'clamp(1.65rem, 2.5vw, 2.2rem)',
+                  letterSpacing: '0.03em',
+                  lineHeight: 1.1,
+                }}
+              >
+                {card.value}
+              </div>
+            </div>
+
+            <div
+              className="mt-2 pt-2 flex items-center justify-between text-[11px]"
+              style={{
+                borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+                fontFamily: 'var(--font-sans)',
+                color: 'rgba(200, 192, 174, 0.5)',
+              }}
             >
-              VIEW →
-            </span>
+              <span className="truncate">{card.subtitle}</span>
+              <span className="text-[10px] font-bold text-[var(--cg-gold)] opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-1">
+                →
+              </span>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
 
       {/* Special Quick Action: Shuffle Banner if Tournament is Ready */}
       {settings.status === 'setup' && stats.isReadyToStart && (

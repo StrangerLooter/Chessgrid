@@ -165,30 +165,17 @@ export const EliminatedView: React.FC<EliminatedViewProps> = ({ onOpenProfileMod
             return (
               <div
                 key={player.id}
-                className="p-5 rounded-2xl transition-all duration-300 flex flex-col justify-between group hover:border-[#c9a84c]/40"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(24, 24, 29, 0.75) 0%, rgba(17, 17, 20, 0.85) 100%)',
-                  border: '1px solid rgba(201, 168, 76, 0.12)',
-                  backdropFilter: 'blur(16px)',
-                  boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)',
-                }}
+                className="glass-panel p-5 rounded-lg flex flex-col justify-between group hover:border-[rgba(201,168,76,0.4)] transition-all"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3.5">
                     <span 
-                      className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
-                      style={{
-                        background: 'rgba(220, 38, 38, 0.12)',
-                        border: '1px solid rgba(220, 38, 38, 0.25)',
-                        color: '#f87171',
-                        fontFamily: 'var(--font-mono)'
-                      }}
+                      className="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[rgba(220,38,38,0.12)] border border-[rgba(220,38,38,0.25)] text-[#f87171] font-mono"
                     >
                       {player.eliminatedInRound || 'Knockout Stage'}
                     </span>
                     <span 
-                      className="text-xs font-bold"
-                      style={{ fontFamily: 'var(--font-mono)', color: 'var(--cg-gold)' }}
+                      className="text-xs font-bold font-mono text-[var(--cg-gold)]"
                     >
                       Seed #{player.seed}
                     </span>

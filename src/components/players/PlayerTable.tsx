@@ -248,24 +248,14 @@ export const PlayerTable: React.FC<PlayerTableProps> = ({
       </div>
 
       {/* Players Data Table */}
-      <div
-        className="overflow-hidden rounded"
-        style={{
-          background: 'rgba(17, 17, 20, 0.7)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid rgba(201, 168, 76, 0.18)',
-          boxShadow: '0 12px 40px rgba(0, 0, 0, 0.5)',
-        }}
-      >
+      <div className="glass-panel overflow-hidden rounded-lg">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr
+                className="bg-[#0a0a0b]/80 border-b border-white/10"
                 style={{
-                  borderBottom: '1px solid rgba(201, 168, 76, 0.2)',
-                  background: 'rgba(10, 10, 11, 0.8)',
-                  fontFamily: 'var(--font-sans)',
+                  fontFamily: 'var(--font-mono)',
                   fontSize: '0.65rem',
                   fontWeight: 700,
                   letterSpacing: '0.15em',
@@ -274,9 +264,9 @@ export const PlayerTable: React.FC<PlayerTableProps> = ({
                 }}
               >
                 <th className="py-3.5 px-4">SEED</th>
-                <th className="py-3.5 px-4">PLAYER NAME</th>
+                <th className="py-3.5 px-4">CONTENDER / GM</th>
                 <th className="py-3.5 px-4">ROLL NUMBER</th>
-                <th className="py-3.5 px-4">DEPARTMENT / COURSE</th>
+                <th className="py-3.5 px-4">INSTITUTION / COURSE</th>
                 <th className="py-3.5 px-4">YEAR & SEC</th>
                 <th className="py-3.5 px-4 text-center">RECORD</th>
                 <th className="py-3.5 px-4">STATUS</th>
@@ -284,29 +274,23 @@ export const PlayerTable: React.FC<PlayerTableProps> = ({
               </tr>
             </thead>
             <tbody
-              className="text-xs"
+              className="text-xs divide-y divide-white/5"
               style={{ fontFamily: 'var(--font-sans)' }}
             >
               {filteredPlayers.length === 0 ? (
                 <tr>
                   <td
                     colSpan={8}
-                    className="py-10 text-center"
-                    style={{ color: 'rgba(200, 192, 174, 0.4)' }}
+                    className="py-12 text-center text-[rgba(200,192,174,0.4)]"
                   >
-                    No registered players found matching your filter criteria.
+                    No grandmaster contenders found matching your filter criteria.
                   </td>
                 </tr>
               ) : (
                 filteredPlayers.map(player => {
                   let statusBadge = (
                     <span
-                      className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold"
-                      style={{
-                        background: 'rgba(34, 166, 122, 0.12)',
-                        color: 'var(--cg-emerald-bright)',
-                        border: '1px solid rgba(34, 166, 122, 0.3)',
-                      }}
+                      className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold bg-[rgba(34,166,122,0.12)] text-[var(--cg-emerald-bright)] border border-[rgba(34,166,122,0.3)] emerald-glow"
                     >
                       Active
                     </span>
@@ -315,25 +299,15 @@ export const PlayerTable: React.FC<PlayerTableProps> = ({
                   if (player.status === 'champion') {
                     statusBadge = (
                       <span
-                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold"
-                        style={{
-                          background: 'rgba(201, 168, 76, 0.2)',
-                          color: 'var(--cg-gold-bright)',
-                          border: '1px solid rgba(201, 168, 76, 0.5)',
-                        }}
+                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold bg-[rgba(201,168,76,0.2)] text-[var(--cg-gold-bright)] border border-[rgba(201,168,76,0.5)] gold-glow"
                       >
-                        <Crown className="w-3 h-3" /> Champion
+                        <Crown className="w-3 h-3 text-amber-300" /> Champion
                       </span>
                     );
                   } else if (player.status === 'eliminated') {
                     statusBadge = (
                       <span
-                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold"
-                        style={{
-                          background: 'rgba(192, 57, 43, 0.12)',
-                          color: 'var(--cg-red-bright)',
-                          border: '1px solid rgba(192, 57, 43, 0.3)',
-                        }}
+                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold bg-[rgba(192,57,43,0.12)] text-[var(--cg-red-bright)] border border-[rgba(192,57,43,0.3)]"
                       >
                         <UserMinus className="w-3 h-3" /> Out ({player.eliminatedInRound || 'R1'})
                       </span>
@@ -341,12 +315,7 @@ export const PlayerTable: React.FC<PlayerTableProps> = ({
                   } else if (player.status === 'registered') {
                     statusBadge = (
                       <span
-                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold"
-                        style={{
-                          background: 'rgba(201, 168, 76, 0.08)',
-                          color: 'rgba(200, 192, 174, 0.6)',
-                          border: '1px solid rgba(201, 168, 76, 0.2)',
-                        }}
+                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold bg-[rgba(201,168,76,0.08)] text-[rgba(200,192,174,0.6)] border border-[rgba(201,168,76,0.2)]"
                       >
                         Registered
                       </span>
@@ -356,36 +325,34 @@ export const PlayerTable: React.FC<PlayerTableProps> = ({
                   return (
                     <tr
                       key={player.id}
-                      className="transition-colors"
-                      style={{
-                        borderBottom: '1px solid rgba(201, 168, 76, 0.08)',
-                      }}
-                      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(201, 168, 76, 0.05)'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                      className="hover:bg-[rgba(201,168,76,0.06)] transition-colors group"
                     >
                       <td
-                        className="py-3.5 px-4 font-bold"
-                        style={{ fontFamily: 'var(--font-mono)', color: 'var(--cg-gold)' }}
+                        className="py-3.5 px-4 font-bold font-mono text-[var(--cg-gold)]"
                       >
                         #{player.seed}
                       </td>
 
-                      <td className="py-3.5 px-4 font-bold" style={{ color: 'var(--cg-ivory)' }}>
+                      <td className="py-3.5 px-4 font-bold text-[var(--cg-ivory)]">
                         <button
                           onClick={() => onOpenProfileModal(player)}
                           className="hover:underline text-left flex items-center gap-2.5"
                         >
                           <div
-                            className="w-7 h-7 rounded flex items-center justify-center font-bold text-xs"
-                            style={{
-                              background: 'rgba(201, 168, 76, 0.15)',
-                              border: '1px solid rgba(201, 168, 76, 0.35)',
-                              color: 'var(--cg-gold-bright)',
-                            }}
+                            className="w-7 h-7 rounded flex items-center justify-center font-bold text-xs bg-[rgba(201,168,76,0.15)] border border-[rgba(201,168,76,0.3)] text-[var(--cg-gold)] group-hover:border-[var(--cg-gold)] transition-colors"
                           >
                             {player.name.charAt(0)}
                           </div>
-                          <span>{player.name}</span>
+                          <div>
+                            <div className="flex items-center gap-1.5">
+                              <span>{player.name}</span>
+                              {player.seed <= 4 && (
+                                <span className="px-1 py-0.2 rounded text-[8px] font-mono font-bold bg-[rgba(201,168,76,0.2)] text-[var(--cg-gold-bright)] border border-[rgba(201,168,76,0.4)]">
+                                  GM
+                                </span>
+                              )}
+                            </div>
+                          </div>
                         </button>
                       </td>
 

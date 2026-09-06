@@ -145,11 +145,11 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
       {/* Interactive Bracket Canvas Container */}
       <div 
         ref={containerRef}
-        className="w-full overflow-x-auto overflow-y-hidden p-6 sm:p-8 rounded min-h-[580px] flex items-center justify-start relative"
+        className="w-full overflow-x-auto overflow-y-hidden p-6 sm:p-8 rounded min-h-[580px] flex items-center justify-start relative bracket-scroll"
         style={{
-          background: 'rgba(10, 10, 11, 0.92)',
-          border: '1px solid rgba(201, 168, 76, 0.18)',
-          boxShadow: 'inset 0 0 60px rgba(0,0,0,0.8)',
+          background: 'rgba(10, 10, 11, 0.94)',
+          border: '1px solid rgba(201, 168, 76, 0.22)',
+          boxShadow: 'inset 0 0 60px rgba(0,0,0,0.85), 0 8px 32px rgba(0,0,0,0.6)',
         }}
       >
         <div
@@ -158,22 +158,23 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
         >
           {roundNames.map((roundName, rIndex) => {
             const roundMatches = matchesByRound[rIndex] || [];
+            const isLastRound = rIndex === roundNames.length - 1;
 
             return (
               <div key={roundName} className="flex flex-col justify-around min-w-[260px] space-y-6 relative">
                 
                 {/* Round Header Label */}
                 <div
-                  className="text-center pb-2 sticky top-0 backdrop-blur-md z-10"
+                  className="text-center pb-2 sticky top-0 backdrop-blur-md z-10 rounded-t"
                   style={{
-                    borderBottom: '1px solid rgba(201, 168, 76, 0.25)',
-                    background: 'rgba(10, 10, 11, 0.85)',
+                    borderBottom: '1px solid rgba(201, 168, 76, 0.3)',
+                    background: 'rgba(19, 19, 20, 0.75)',
                   }}
                 >
                   <span
                     style={{
                       fontFamily: 'var(--font-cinematic)',
-                      fontSize: '1.1rem',
+                      fontSize: '1.15rem',
                       fontWeight: 600,
                       letterSpacing: '0.1em',
                       color: 'var(--cg-gold)',
@@ -183,18 +184,17 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
                     {roundName}
                   </span>
                   <div
-                    className="text-[11px] font-medium mt-0.5"
+                    className="text-[11px] font-mono mt-0.5"
                     style={{
-                      fontFamily: 'var(--font-sans)',
-                      color: 'rgba(200, 192, 174, 0.5)',
+                      color: 'rgba(200, 192, 174, 0.55)',
                     }}
                   >
-                    {roundMatches.length} {roundMatches.length === 1 ? 'Match' : 'Matches'}
+                    {roundMatches.length} {roundMatches.length === 1 ? 'Championship Match' : 'Matches'}
                   </div>
                 </div>
 
                 {/* Matches Column */}
-                <div className="flex flex-col justify-around h-full space-y-6">
+                <div className="flex flex-col justify-around h-full space-y-6 relative">
                   {roundMatches.map(match => (
                     <div key={match.id} className="relative flex items-center">
                       <BracketMatchNode
@@ -202,6 +202,9 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
                         players={players}
                         onClick={onOpenMatchModal}
                       />
+                      {!isLastRound && (
+                        <div className="hidden lg:block absolute -right-10 w-10 bracket-line pointer-events-none" />
+                      )}
                     </div>
                   ))}
                 </div>

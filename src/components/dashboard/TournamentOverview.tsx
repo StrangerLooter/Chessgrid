@@ -128,23 +128,23 @@ export const TournamentOverview: React.FC<TournamentOverviewProps> = ({
           </div>
         </div>
 
-        {/* Right: Action Controls */}
-        <div className="flex flex-wrap lg:flex-col items-stretch gap-2.5 shrink-0">
+        {/* Right: Action Controls & Arbiter Console */}
+        <div className="flex flex-col gap-3 shrink-0 lg:w-72">
           {settings.status === 'setup' ? (
-            <>
+            <div className="flex flex-col gap-2">
               <button
                 onClick={onOpenRegisterModal}
-                className="cg-btn cg-btn-primary"
+                className="cg-btn cg-btn-primary w-full"
                 style={{ justifyContent: 'center' }}
               >
                 <PlusCircle className="w-4 h-4" />
-                Register Player ({stats.totalRegistered}/{stats.totalRequired})
+                Register Contender ({stats.totalRegistered}/{stats.totalRequired})
               </button>
 
               <button
                 onClick={onOpenShuffleModal}
                 disabled={!stats.isReadyToStart}
-                className={`cg-btn ${stats.isReadyToStart ? 'cg-btn-emerald' : ''}`}
+                className={`cg-btn w-full ${stats.isReadyToStart ? 'cg-btn-emerald' : ''}`}
                 style={{
                   justifyContent: 'center',
                   background: stats.isReadyToStart ? undefined : 'rgba(20, 20, 24, 0.6)',
@@ -156,16 +156,16 @@ export const TournamentOverview: React.FC<TournamentOverviewProps> = ({
                 <Shuffle className="w-4 h-4" />
                 Shuffle & Start Round 1
               </button>
-            </>
+            </div>
           ) : (
-            <>
+            <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => setActiveTab('bracket')}
                 className="cg-btn cg-btn-primary"
                 style={{ justifyContent: 'center' }}
               >
                 <Trophy className="w-4 h-4" />
-                Knockout Bracket
+                Bracket
               </button>
 
               <button
@@ -174,9 +174,9 @@ export const TournamentOverview: React.FC<TournamentOverviewProps> = ({
                 style={{ justifyContent: 'center' }}
               >
                 <Clock className="w-4 h-4 text-emerald-400" />
-                Live Clocks & Boards
+                Clocks
               </button>
-            </>
+            </div>
           )}
 
           <div className="flex items-center gap-2">
@@ -209,6 +209,18 @@ export const TournamentOverview: React.FC<TournamentOverviewProps> = ({
               <Printer className="w-3.5 h-3.5" />
               PRINT
             </button>
+          </div>
+
+          {/* Stitch System Status Strip */}
+          <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-[rgba(200,192,174,0.6)]">
+            <div className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--cg-emerald-bright)] animate-pulse" />
+              <span>DGT SYNC: <strong className="text-[var(--cg-emerald-bright)]">ONLINE</strong></span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--cg-gold)]" />
+              <span>EVAL: <strong className="text-[var(--cg-gold)]">FIDE GM</strong></span>
+            </div>
           </div>
         </div>
       </div>

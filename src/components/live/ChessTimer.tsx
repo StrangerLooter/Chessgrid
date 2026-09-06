@@ -43,34 +43,20 @@ export const ChessTimer: React.FC<ChessTimerProps> = ({ match, onOpenResultModal
   }, [match.id, match.status, switchActiveClock]);
 
   return (
-    <div
-      className="p-5 sm:p-6 rounded space-y-5"
-      style={{
-        background: 'rgba(17, 17, 20, 0.8)',
-        backdropFilter: 'blur(24px)',
-        WebkitBackdropFilter: 'blur(24px)',
-        border: '1px solid rgba(201, 168, 76, 0.25)',
-        boxShadow: '0 16px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(201, 168, 76, 0.1)',
-      }}
-    >
+    <div className="glass-panel-active p-5 sm:p-6 rounded-lg space-y-5 relative overflow-hidden">
       {/* Timer Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2.5">
           <span
-            className="px-3 py-1 rounded text-xs font-bold uppercase tracking-wider"
-            style={{
-              background: 'rgba(201, 168, 76, 0.15)',
-              color: 'var(--cg-gold-bright)',
-              border: '1px solid rgba(201, 168, 76, 0.35)',
-              fontFamily: 'var(--font-sans)',
-            }}
+            className="px-3 py-1 rounded text-xs font-bold uppercase tracking-wider bg-[rgba(201,168,76,0.15)] text-[var(--cg-gold-bright)] border border-[rgba(201,168,76,0.35)]"
+            style={{ fontFamily: 'var(--font-mono)' }}
           >
             BOARD {match.boardNumber || 1}
           </span>
           <span
             style={{
               fontFamily: 'var(--font-cinematic)',
-              fontSize: '1.25rem',
+              fontSize: '1.35rem',
               fontWeight: 400,
               color: 'var(--cg-ivory)',
             }}
@@ -80,15 +66,9 @@ export const ChessTimer: React.FC<ChessTimerProps> = ({ match, onOpenResultModal
         </div>
 
         <div
-          className="text-xs px-2.5 py-1 rounded font-semibold"
-          style={{
-            background: 'rgba(10, 10, 11, 0.8)',
-            color: 'rgba(200, 192, 174, 0.7)',
-            border: '1px solid rgba(201, 168, 76, 0.15)',
-            fontFamily: 'var(--font-mono)',
-          }}
+          className="text-xs px-3 py-1 rounded font-mono font-semibold bg-[#0a0a0b]/80 text-[rgba(200,192,174,0.8)] border border-[rgba(201,168,76,0.2)]"
         >
-          {match.timeControl.label} (+{match.timeControl.incrementSeconds}s/move)
+          {match.timeControl.label} (+{match.timeControl.incrementSeconds}s FISCHER)
         </div>
       </div>
 
@@ -100,32 +80,29 @@ export const ChessTimer: React.FC<ChessTimerProps> = ({ match, onOpenResultModal
           onClick={() => {
             if (match.status === 'live') switchActiveClock(match.id);
           }}
-          className="p-5 rounded text-center transition-all cursor-pointer relative overflow-hidden select-none"
-          style={{
-            background: isWhiteActive ? 'rgba(201, 168, 76, 0.15)' : 'rgba(10, 10, 11, 0.7)',
-            border: isWhiteActive ? '1px solid var(--cg-gold)' : '1px solid rgba(201, 168, 76, 0.15)',
-            boxShadow: isWhiteActive ? '0 0 30px -6px rgba(201, 168, 76, 0.5)' : 'none',
-          }}
+          className={`p-5 rounded-lg text-center transition-all cursor-pointer relative overflow-hidden select-none ${
+            isWhiteActive 
+              ? 'bg-[rgba(201,168,76,0.16)] border-2 border-[var(--cg-gold)] gold-glow' 
+              : 'glass-panel hover:border-[rgba(201,168,76,0.3)]'
+          }`}
         >
           {isWhiteFlag && (
             <div className="absolute inset-0 bg-red-600/90 flex flex-col items-center justify-center text-white font-bold z-10 animate-bounce">
               <AlertCircle className="w-8 h-8 mb-1" />
-              <span className="text-sm">FLAG FALL (TIME OUT)</span>
+              <span className="text-sm">FLAG FALL (TIME EXPIRED)</span>
             </div>
           )}
 
           <div className="flex items-center justify-between text-xs mb-2">
             <span
-              className="font-bold flex items-center gap-1.5"
-              style={{ color: 'var(--cg-ivory)', fontFamily: 'var(--font-sans)', letterSpacing: '0.08em' }}
+              className="font-bold flex items-center gap-1.5 text-[var(--cg-ivory)] font-sans tracking-wider"
             >
-              <span className="w-3 h-3 rounded-full bg-white border border-amber-300 inline-block" />
+              <span className="w-3 h-3 rounded-full bg-white border border-amber-300 inline-block shadow-sm" />
               WHITE
             </span>
             {isWhiteActive && (
               <span
-                className="px-2 py-0.5 rounded text-[10px] font-bold animate-pulse"
-                style={{ background: 'var(--cg-gold)', color: '#0a0a0b', fontFamily: 'var(--font-sans)' }}
+                className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-[var(--cg-gold)] text-[#0a0a0b] animate-pulse"
               >
                 ACTIVE TURN
               </span>
@@ -133,37 +110,37 @@ export const ChessTimer: React.FC<ChessTimerProps> = ({ match, onOpenResultModal
           </div>
 
           <div
-            className="text-base font-bold truncate"
-            style={{ color: 'var(--cg-ivory)', fontFamily: 'var(--font-sans)' }}
+            className="text-lg font-bold truncate text-[var(--cg-ivory)] font-sans"
           >
-            {whitePlayer?.name || 'White Player'}
+            {whitePlayer?.name || 'Grandmaster White'}
           </div>
           <div
-            className="text-xs mt-0.5 truncate"
-            style={{ color: 'rgba(200, 192, 174, 0.5)', fontFamily: 'var(--font-sans)' }}
+            className="text-xs mt-0.5 truncate text-[rgba(200,192,174,0.6)] font-sans"
           >
-            {whitePlayer?.course || '-'}
+            {whitePlayer?.course || 'MIT'} • Seed #{whitePlayer?.seed || 1}
           </div>
 
-          {/* Large Clock Digit in Bebas Neue / JetBrains Mono */}
+          {/* Large Clock Digit */}
           <div
-            className="my-3 tracking-tight"
+            className={`my-3 tracking-tight font-stat text-5xl sm:text-6xl ${
+              match.whiteTimeRemainingMs < 30000 
+                ? 'low-time-pulse font-bold' 
+                : isWhiteActive 
+                ? 'text-[var(--cg-gold-bright)]' 
+                : 'text-[var(--cg-ivory)]'
+            }`}
             style={{
-              fontFamily: 'var(--font-stat)',
-              fontSize: 'clamp(3.5rem, 8vw, 5rem)',
               lineHeight: 1,
-              color: match.whiteTimeRemainingMs < 30000 ? 'var(--cg-red-bright)' : 'var(--cg-ivory)',
-              textShadow: isWhiteActive ? '0 0 30px rgba(201,168,76,0.3)' : 'none',
+              textShadow: isWhiteActive ? '0 0 25px rgba(201,168,76,0.35)' : 'none',
             }}
           >
             {formatTime(match.whiteTimeRemainingMs)}
           </div>
 
           <div
-            className="text-[11px] font-medium"
-            style={{ color: 'rgba(200, 192, 174, 0.4)', fontFamily: 'var(--font-sans)' }}
+            className="text-[11px] font-medium text-[rgba(200,192,174,0.45)] font-sans"
           >
-            Click card or press <kbd style={{ color: 'var(--cg-gold)' }}>Spacebar</kbd> to toggle clock
+            Click card or press <kbd className="text-[var(--cg-gold)] font-mono font-bold">Spacebar</kbd> to toggle turn
           </div>
         </div>
 
@@ -172,32 +149,29 @@ export const ChessTimer: React.FC<ChessTimerProps> = ({ match, onOpenResultModal
           onClick={() => {
             if (match.status === 'live') switchActiveClock(match.id);
           }}
-          className="p-5 rounded text-center transition-all cursor-pointer relative overflow-hidden select-none"
-          style={{
-            background: isBlackActive ? 'rgba(201, 168, 76, 0.15)' : 'rgba(10, 10, 11, 0.7)',
-            border: isBlackActive ? '1px solid var(--cg-gold)' : '1px solid rgba(201, 168, 76, 0.15)',
-            boxShadow: isBlackActive ? '0 0 30px -6px rgba(201, 168, 76, 0.5)' : 'none',
-          }}
+          className={`p-5 rounded-lg text-center transition-all cursor-pointer relative overflow-hidden select-none ${
+            isBlackActive 
+              ? 'bg-[rgba(201,168,76,0.16)] border-2 border-[var(--cg-gold)] gold-glow' 
+              : 'glass-panel hover:border-[rgba(201,168,76,0.3)]'
+          }`}
         >
           {isBlackFlag && (
             <div className="absolute inset-0 bg-red-600/90 flex flex-col items-center justify-center text-white font-bold z-10 animate-bounce">
               <AlertCircle className="w-8 h-8 mb-1" />
-              <span className="text-sm">FLAG FALL (TIME OUT)</span>
+              <span className="text-sm">FLAG FALL (TIME EXPIRED)</span>
             </div>
           )}
 
           <div className="flex items-center justify-between text-xs mb-2">
             <span
-              className="font-bold flex items-center gap-1.5"
-              style={{ color: 'var(--cg-gold)', fontFamily: 'var(--font-sans)', letterSpacing: '0.08em' }}
+              className="font-bold flex items-center gap-1.5 text-[var(--cg-gold)] font-sans tracking-wider"
             >
-              <span className="w-3 h-3 rounded-full bg-slate-950 border border-amber-400 inline-block" />
+              <span className="w-3 h-3 rounded-full bg-black border border-amber-400 inline-block shadow-sm" />
               BLACK
             </span>
             {isBlackActive && (
               <span
-                className="px-2 py-0.5 rounded text-[10px] font-bold animate-pulse"
-                style={{ background: 'var(--cg-gold)', color: '#0a0a0b', fontFamily: 'var(--font-sans)' }}
+                className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-[var(--cg-gold)] text-[#0a0a0b] animate-pulse"
               >
                 ACTIVE TURN
               </span>
@@ -205,81 +179,78 @@ export const ChessTimer: React.FC<ChessTimerProps> = ({ match, onOpenResultModal
           </div>
 
           <div
-            className="text-base font-bold truncate"
-            style={{ color: 'var(--cg-ivory)', fontFamily: 'var(--font-sans)' }}
+            className="text-lg font-bold truncate text-[var(--cg-ivory)] font-sans"
           >
-            {blackPlayer?.name || 'Black Player'}
+            {blackPlayer?.name || 'Grandmaster Black'}
           </div>
           <div
-            className="text-xs mt-0.5 truncate"
-            style={{ color: 'rgba(200, 192, 174, 0.5)', fontFamily: 'var(--font-sans)' }}
+            className="text-xs mt-0.5 truncate text-[rgba(200,192,174,0.6)] font-sans"
           >
-            {blackPlayer?.course || '-'}
+            {blackPlayer?.course || 'Stanford'} • Seed #{blackPlayer?.seed || 2}
           </div>
 
           {/* Large Clock Digit */}
           <div
-            className="my-3 tracking-tight"
+            className={`my-3 tracking-tight font-stat text-5xl sm:text-6xl ${
+              match.blackTimeRemainingMs < 30000 
+                ? 'low-time-pulse font-bold' 
+                : isBlackActive 
+                ? 'text-[var(--cg-gold-bright)]' 
+                : 'text-[var(--cg-gold)]'
+            }`}
             style={{
-              fontFamily: 'var(--font-stat)',
-              fontSize: 'clamp(3.5rem, 8vw, 5rem)',
               lineHeight: 1,
-              color: match.blackTimeRemainingMs < 30000 ? 'var(--cg-red-bright)' : 'var(--cg-gold)',
-              textShadow: isBlackActive ? '0 0 30px rgba(201,168,76,0.3)' : 'none',
+              textShadow: isBlackActive ? '0 0 25px rgba(201,168,76,0.35)' : 'none',
             }}
           >
             {formatTime(match.blackTimeRemainingMs)}
           </div>
 
           <div
-            className="text-[11px] font-medium"
-            style={{ color: 'rgba(200, 192, 174, 0.4)', fontFamily: 'var(--font-sans)' }}
+            className="text-[11px] font-medium text-[rgba(200,192,174,0.45)] font-sans"
           >
-            Click card or press <kbd style={{ color: 'var(--cg-gold)' }}>Spacebar</kbd> to toggle clock
+            Click card or press <kbd className="text-[var(--cg-gold)] font-mono font-bold">Spacebar</kbd> to toggle turn
           </div>
         </div>
       </div>
 
       {/* Timer Controls Bar */}
       <div
-        className="flex flex-wrap items-center justify-between gap-3 pt-3"
-        style={{ borderTop: '1px solid rgba(201, 168, 76, 0.15)' }}
+        className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-white/10"
       >
         {/* Left: Time adjust penalties/bonuses */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => adjustPlayerClock(match.id, 'white', 60)}
-            className="px-2.5 py-1 rounded text-[11px] font-semibold transition-colors"
-            style={{
-              background: 'rgba(201, 168, 76, 0.08)',
-              border: '1px solid rgba(201, 168, 76, 0.2)',
-              color: 'var(--cg-ivory)',
-              fontFamily: 'var(--font-sans)',
-            }}
+            className="arb-desk-btn px-2.5 py-1 rounded text-[11px] font-mono font-semibold"
             title="Add 1 min to White"
           >
-            +1m White
+            +1m W
+          </button>
+          <button
+            onClick={() => adjustPlayerClock(match.id, 'white', -30)}
+            className="arb-desk-btn px-2.5 py-1 rounded text-[11px] font-mono font-semibold"
+            title="Deduct 30s from White"
+          >
+            -30s W
           </button>
           <button
             onClick={() => adjustPlayerClock(match.id, 'black', 60)}
-            className="px-2.5 py-1 rounded text-[11px] font-semibold transition-colors"
-            style={{
-              background: 'rgba(201, 168, 76, 0.08)',
-              border: '1px solid rgba(201, 168, 76, 0.2)',
-              color: 'var(--cg-gold)',
-              fontFamily: 'var(--font-sans)',
-            }}
+            className="arb-desk-btn px-2.5 py-1 rounded text-[11px] font-mono font-semibold text-[var(--cg-gold)]"
             title="Add 1 min to Black"
           >
-            +1m Black
+            +1m B
+          </button>
+          <button
+            onClick={() => adjustPlayerClock(match.id, 'black', -30)}
+            className="arb-desk-btn px-2.5 py-1 rounded text-[11px] font-mono font-semibold text-[var(--cg-gold)]"
+            title="Deduct 30s from Black"
+          >
+            -30s B
           </button>
           <button
             onClick={() => resetMatchClock(match.id)}
-            className="p-1.5 rounded transition-colors text-slate-400 hover:text-white"
-            style={{
-              background: 'rgba(10, 10, 11, 0.6)',
-              border: '1px solid rgba(201, 168, 76, 0.15)',
-            }}
+            className="arb-desk-btn p-1.5 rounded text-slate-400 hover:text-white"
             title="Reset timer to start time"
           >
             <RotateCcw className="w-4 h-4" />

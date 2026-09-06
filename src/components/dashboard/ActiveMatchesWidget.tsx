@@ -22,62 +22,46 @@ export const ActiveMatchesWidget: React.FC<ActiveMatchesWidgetProps> = ({
   }
 
   return (
-    <div
-      className="p-5 rounded"
-      style={{
-        background: 'rgba(17, 17, 20, 0.75)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        border: '1px solid rgba(201, 168, 76, 0.25)',
-        boxShadow: '0 12px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(201, 168, 76, 0.08)',
-      }}
-    >
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2.5">
+    <div className="glass-panel-active p-5 md:p-6 rounded-lg relative overflow-hidden">
+      <div className="flex items-center justify-between mb-5 flex-wrap gap-2">
+        <div className="flex items-center gap-3">
           <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: 'var(--cg-gold)' }} />
-            <span className="relative inline-flex rounded-full h-3 w-3" style={{ background: 'var(--cg-gold)' }} />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-[var(--cg-gold)]" />
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-[var(--cg-gold)]" />
           </span>
           <h2
+            className="tracking-wider uppercase font-semibold"
             style={{
               fontFamily: 'var(--font-cinematic)',
-              fontSize: '1.35rem',
-              fontWeight: 400,
-              letterSpacing: '0.04em',
+              fontSize: '1.4rem',
               color: 'var(--cg-ivory)',
               margin: 0,
             }}
           >
-            ACTIVE MATCHES ON BOARD
+            GRANDMASTER LIVE ARENA
           </h2>
           <span
-            className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"
-            style={{
-              background: 'rgba(201, 168, 76, 0.15)',
-              color: 'var(--cg-gold-bright)',
-              border: '1px solid rgba(201, 168, 76, 0.35)',
-              fontFamily: 'var(--font-sans)',
-            }}
+            className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[rgba(34,166,122,0.18)] text-[var(--cg-emerald-bright)] border border-[rgba(34,166,122,0.4)] emerald-glow"
+            style={{ fontFamily: 'var(--font-mono)' }}
           >
-            {liveMatches.length} LIVE
+            {liveMatches.length} BOARDS ACTIVE
           </span>
         </div>
 
         <button
           onClick={() => setActiveTab('live')}
-          className="text-xs font-semibold flex items-center gap-1.5 transition-all"
+          className="text-xs font-bold flex items-center gap-1.5 transition-all text-[var(--cg-gold)] hover:text-[var(--cg-gold-bright)]"
           style={{
-            fontFamily: 'var(--font-sans)',
-            color: 'var(--cg-gold)',
-            letterSpacing: '0.05em',
+            fontFamily: 'var(--font-mono)',
+            letterSpacing: '0.06em',
           }}
         >
-          <span>OPEN DIGITAL CLOCKS</span>
+          <span>ARBITER DESK & DIGITAL CLOCKS</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {liveMatches.map(match => {
           const whitePlayer = match.whitePlayerId ? playerMap.get(match.whitePlayerId) : null;
           const blackPlayer = match.blackPlayerId ? playerMap.get(match.blackPlayerId) : null;
@@ -85,167 +69,148 @@ export const ActiveMatchesWidget: React.FC<ActiveMatchesWidgetProps> = ({
           const isWhiteActive = match.activeClock === 'white' && match.isTimerRunning;
           const isBlackActive = match.activeClock === 'black' && match.isTimerRunning;
 
+          const whiteUnderPressure = match.whiteTimeRemainingMs < 30000;
+          const blackUnderPressure = match.blackTimeRemainingMs < 30000;
+
           return (
             <div
               key={match.id}
-              className="p-4 rounded transition-all flex flex-col justify-between"
-              style={{
-                background: 'rgba(10, 10, 11, 0.7)',
-                border: '1px solid rgba(201, 168, 76, 0.18)',
-                boxShadow: '0 6px 20px rgba(0,0,0,0.4)',
-              }}
+              className="glass-panel rounded-lg p-4 md:p-5 flex flex-col justify-between relative group hover:border-[rgba(201,168,76,0.4)] transition-all"
             >
-              <div className="flex items-center justify-between text-xs mb-3">
+              {/* Header Match Bar */}
+              <div className="flex items-center justify-between text-xs mb-3 pb-2.5 border-b border-white/5">
                 <div className="flex items-center gap-2">
                   <span
-                    className="px-2 py-0.5 rounded text-[10px] font-bold"
-                    style={{
-                      background: 'rgba(201, 168, 76, 0.15)',
-                      color: 'var(--cg-gold)',
-                      border: '1px solid rgba(201, 168, 76, 0.3)',
-                      fontFamily: 'var(--font-sans)',
-                    }}
+                    className="px-2 py-0.5 rounded text-[10px] font-bold bg-[rgba(201,168,76,0.15)] text-[var(--cg-gold)] border border-[rgba(201,168,76,0.3)]"
+                    style={{ fontFamily: 'var(--font-mono)' }}
                   >
                     BOARD {match.boardNumber || 1}
                   </span>
                   <span
-                    style={{
-                      fontFamily: 'var(--font-sans)',
-                      color: 'var(--cg-ivory)',
-                      fontWeight: 600,
-                      fontSize: '0.75rem',
-                    }}
+                    className="font-semibold text-xs text-[var(--cg-ivory)]"
+                    style={{ fontFamily: 'var(--font-sans)' }}
                   >
                     {match.roundName}
                   </span>
                 </div>
                 <div
-                  className="flex items-center gap-1 text-[11px]"
-                  style={{ fontFamily: 'var(--font-mono)', color: 'rgba(200, 192, 174, 0.5)' }}
+                  className="flex items-center gap-1.5 text-[11px] font-mono text-[rgba(200,192,174,0.6)]"
                 >
                   <Clock className="w-3 h-3 text-amber-400" />
                   <span>{match.timeControl.label}</span>
                 </div>
               </div>
 
-              {/* Clocks Pod */}
-              <div className="grid grid-cols-2 gap-2.5 mb-3">
-                
-                {/* White Clock */}
+              {/* Center Match Display with Clocks and Eval Bar */}
+              <div className="flex gap-3.5 mb-3.5 items-stretch">
+                {/* Chess Evaluation Indicator Bar */}
+                <div className="w-2.5 rounded eval-bar-container overflow-hidden flex flex-col-reverse shrink-0 relative" title="Engine Evaluation: +1.2 GM advantage">
+                  <div 
+                    className="w-full eval-bar-fill"
+                    style={{ height: '58%' }}
+                  />
+                </div>
+
+                {/* Player 1 (White) */}
                 <div
                   onClick={() => switchActiveClock(match.id)}
-                  className="p-2.5 rounded text-center transition-all cursor-pointer select-none"
-                  style={{
-                    background: isWhiteActive ? 'rgba(201, 168, 76, 0.12)' : 'rgba(17, 17, 20, 0.6)',
-                    border: isWhiteActive ? '1px solid var(--cg-gold)' : '1px solid rgba(201, 168, 76, 0.12)',
-                    boxShadow: isWhiteActive ? '0 0 20px -4px rgba(201, 168, 76, 0.4)' : 'none',
-                  }}
+                  className={`flex-1 p-3 rounded cursor-pointer transition-all flex flex-col justify-between ${
+                    isWhiteActive 
+                      ? 'bg-[rgba(201,168,76,0.14)] border border-[var(--cg-gold)] shadow-[0_0_15px_rgba(201,168,76,0.3)]' 
+                      : 'bg-[rgba(17,17,20,0.7)] border border-white/5 hover:border-white/10'
+                  }`}
                 >
                   <div className="flex items-center justify-between text-[11px] mb-1">
-                    <span className="font-bold flex items-center gap-1" style={{ color: 'var(--cg-ivory)', fontFamily: 'var(--font-sans)' }}>
-                      <span className="w-2 h-2 rounded-full bg-white border border-amber-300 inline-block" />
-                      White
+                    <span className="font-bold flex items-center gap-1.5 text-[var(--cg-ivory)] font-sans">
+                      <span className="w-2.5 h-2.5 rounded-full bg-white border border-amber-300 inline-block shadow-sm" />
+                      WHITE
                     </span>
                     {isWhiteActive && (
-                      <span
-                        className="font-bold text-[9px] px-1 py-0.2 rounded"
-                        style={{ background: 'var(--cg-gold)', color: '#0a0a0b' }}
-                      >
+                      <span className="font-mono font-bold text-[9px] px-1.5 py-0.2 rounded bg-[var(--cg-gold)] text-[#0a0a0b] tracking-wider animate-pulse">
                         TURN
                       </span>
                     )}
                   </div>
-                  <div
-                    className="truncate font-medium text-xs"
-                    style={{ color: 'var(--cg-ivory)', fontFamily: 'var(--font-sans)' }}
-                  >
-                    {whitePlayer?.name || 'White'}
+
+                  <div className="my-1">
+                    <div className="truncate font-semibold text-xs text-[var(--cg-ivory)]">
+                      {whitePlayer?.name || 'Grandmaster White'}
+                    </div>
+                    <div className="text-[10px] text-[rgba(200,192,174,0.6)] truncate">
+                      {whitePlayer?.course || 'MIT'} • Seed #{whitePlayer?.seed || 1}
+                    </div>
                   </div>
+
                   <div
-                    className="mt-1"
-                    style={{
-                      fontFamily: 'var(--font-stat)',
-                      fontSize: '1.75rem',
-                      color: match.whiteTimeRemainingMs < 30000 ? 'var(--cg-red-bright)' : 'var(--cg-ivory)',
-                      letterSpacing: '0.04em',
-                      lineHeight: 1,
-                    }}
+                    className={`mt-1 font-stat leading-none tracking-wider text-xl md:text-2xl ${
+                      whiteUnderPressure ? 'low-time-pulse font-bold' : isWhiteActive ? 'text-[var(--cg-gold-bright)]' : 'text-[var(--cg-ivory)]'
+                    }`}
                   >
                     {formatTime(match.whiteTimeRemainingMs)}
                   </div>
                 </div>
 
-                {/* Black Clock */}
+                {/* VS Divider with move badge */}
+                <div className="flex flex-col items-center justify-center shrink-0 px-1 text-[10px] font-mono text-[rgba(200,192,174,0.4)]">
+                  <span className="font-bold text-[var(--cg-gold)]">VS</span>
+                  <span className="text-[8px] mt-1">#M{match.matchNumber}</span>
+                </div>
+
+                {/* Player 2 (Black) */}
                 <div
                   onClick={() => switchActiveClock(match.id)}
-                  className="p-2.5 rounded text-center transition-all cursor-pointer select-none"
-                  style={{
-                    background: isBlackActive ? 'rgba(201, 168, 76, 0.12)' : 'rgba(17, 17, 20, 0.6)',
-                    border: isBlackActive ? '1px solid var(--cg-gold)' : '1px solid rgba(201, 168, 76, 0.12)',
-                    boxShadow: isBlackActive ? '0 0 20px -4px rgba(201, 168, 76, 0.4)' : 'none',
-                  }}
+                  className={`flex-1 p-3 rounded cursor-pointer transition-all flex flex-col justify-between ${
+                    isBlackActive 
+                      ? 'bg-[rgba(201,168,76,0.14)] border border-[var(--cg-gold)] shadow-[0_0_15px_rgba(201,168,76,0.3)]' 
+                      : 'bg-[rgba(17,17,20,0.7)] border border-white/5 hover:border-white/10'
+                  }`}
                 >
                   <div className="flex items-center justify-between text-[11px] mb-1">
-                    <span className="font-bold flex items-center gap-1" style={{ color: 'var(--cg-gold)', fontFamily: 'var(--font-sans)' }}>
-                      <span className="w-2 h-2 rounded-full bg-slate-950 border border-amber-400 inline-block" />
-                      Black
+                    <span className="font-bold flex items-center gap-1.5 text-[var(--cg-gold)] font-sans">
+                      <span className="w-2.5 h-2.5 rounded-full bg-black border border-amber-400 inline-block shadow-sm" />
+                      BLACK
                     </span>
                     {isBlackActive && (
-                      <span
-                        className="font-bold text-[9px] px-1 py-0.2 rounded"
-                        style={{ background: 'var(--cg-gold)', color: '#0a0a0b' }}
-                      >
+                      <span className="font-mono font-bold text-[9px] px-1.5 py-0.2 rounded bg-[var(--cg-gold)] text-[#0a0a0b] tracking-wider animate-pulse">
                         TURN
                       </span>
                     )}
                   </div>
-                  <div
-                    className="truncate font-medium text-xs"
-                    style={{ color: 'var(--cg-ivory)', fontFamily: 'var(--font-sans)' }}
-                  >
-                    {blackPlayer?.name || 'Black'}
+
+                  <div className="my-1">
+                    <div className="truncate font-semibold text-xs text-[var(--cg-ivory)]">
+                      {blackPlayer?.name || 'Grandmaster Black'}
+                    </div>
+                    <div className="text-[10px] text-[rgba(200,192,174,0.6)] truncate">
+                      {blackPlayer?.course || 'Stanford'} • Seed #{blackPlayer?.seed || 2}
+                    </div>
                   </div>
+
                   <div
-                    className="mt-1"
-                    style={{
-                      fontFamily: 'var(--font-stat)',
-                      fontSize: '1.75rem',
-                      color: match.blackTimeRemainingMs < 30000 ? 'var(--cg-red-bright)' : 'var(--cg-gold)',
-                      letterSpacing: '0.04em',
-                      lineHeight: 1,
-                    }}
+                    className={`mt-1 font-stat leading-none tracking-wider text-xl md:text-2xl ${
+                      blackUnderPressure ? 'low-time-pulse font-bold' : isBlackActive ? 'text-[var(--cg-gold-bright)]' : 'text-[var(--cg-gold)]'
+                    }`}
                   >
                     {formatTime(match.blackTimeRemainingMs)}
                   </div>
                 </div>
               </div>
 
-              {/* Actions */}
-              <div className="flex items-center gap-2 pt-1">
+              {/* Bottom Quick Controls */}
+              <div className="flex items-center gap-2 pt-2 border-t border-white/5">
                 <button
                   onClick={() => switchActiveClock(match.id)}
-                  className="flex-1 py-1.5 rounded text-xs font-semibold transition-all"
-                  style={{
-                    background: 'rgba(201, 168, 76, 0.08)',
-                    border: '1px solid rgba(201, 168, 76, 0.25)',
-                    color: 'var(--cg-ivory)',
-                    fontFamily: 'var(--font-sans)',
-                  }}
+                  className="arb-desk-btn flex-1 py-1.5 px-3 rounded text-[11px] font-mono font-semibold flex items-center justify-center gap-1"
                 >
-                  SWITCH CLOCK (SPACE)
+                  <span>SWITCH CLOCK</span>
+                  <span className="text-[9px] opacity-60">(SPACE)</span>
                 </button>
                 <button
                   onClick={() => onOpenResultModal(match)}
-                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded font-bold text-xs transition-all"
-                  style={{
-                    background: 'linear-gradient(135deg, var(--cg-gold-dim), var(--cg-gold))',
-                    color: 'var(--cg-obsidian)',
-                    boxShadow: '0 0 15px -3px rgba(201, 168, 76, 0.5)',
-                    fontFamily: 'var(--font-sans)',
-                  }}
+                  className="flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded font-bold text-xs bg-gradient-to-r from-[var(--cg-gold-dim)] to-[var(--cg-gold)] text-[#0a0a0b] shadow-[0_0_12px_rgba(201,168,76,0.4)] hover:brightness-110 active:scale-95 transition-all font-sans"
                 >
                   <CheckCircle2 className="w-3.5 h-3.5" />
-                  RESULT
+                  LOG RESULT
                 </button>
               </div>
             </div>

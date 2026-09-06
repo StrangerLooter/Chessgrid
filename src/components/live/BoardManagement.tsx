@@ -131,20 +131,13 @@ export const BoardManagement: React.FC<BoardManagementProps> = ({
           return (
             <div
               key={board.number}
-              className="p-5 rounded transition-all duration-200 flex flex-col justify-between"
-              style={{
-                background: isLive
-                  ? 'rgba(201, 168, 76, 0.1)'
+              className={`p-5 rounded-lg transition-all duration-200 flex flex-col justify-between ${
+                isLive
+                  ? 'glass-panel-active border-[var(--cg-gold)] gold-glow'
                   : match
-                  ? 'rgba(17, 17, 20, 0.75)'
-                  : 'rgba(10, 10, 11, 0.55)',
-                border: isLive
-                  ? '1px solid var(--cg-gold)'
-                  : match
-                  ? '1px solid rgba(201, 168, 76, 0.22)'
-                  : '1px dashed rgba(201, 168, 76, 0.15)',
-                boxShadow: isLive ? '0 0 25px -5px rgba(201, 168, 76, 0.4)' : 'none',
-              }}
+                  ? 'glass-panel border-[rgba(201,168,76,0.25)] hover:border-[rgba(201,168,76,0.45)]'
+                  : 'glass-panel opacity-60 border-dashed border-white/10 hover:opacity-100'
+              }`}
             >
               {/* Board Header */}
               <div className="flex items-center justify-between mb-4">

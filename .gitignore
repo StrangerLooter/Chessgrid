@@ -23,6 +23,7 @@ out/
 .env.production.local
 .env.*
 !.env.example
+**/mcp_config.json
 
 # Logs and Debug outputs
 logs/
