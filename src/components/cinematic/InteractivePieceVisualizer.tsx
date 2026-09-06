@@ -9,10 +9,11 @@ import {
   Knight3D, 
   Pawn3D 
 } from './three/ChessPieceGeometries';
+import { GLBChessSet } from './three/GLBChessSet';
 import { soundEffects } from '../../utils/soundEffects';
 import { Sparkles as SparklesIcon, Swords, RotateCw } from 'lucide-react';
 
-type PieceType = 'king' | 'queen' | 'rook' | 'bishop' | 'knight' | 'pawn';
+type PieceType = 'board_set' | 'king' | 'queen' | 'rook' | 'bishop' | 'knight' | 'pawn';
 type MaterialType = 'gold' | 'ivory' | 'obsidian' | 'emerald';
 
 interface PieceInfo {
@@ -26,6 +27,15 @@ interface PieceInfo {
 }
 
 const PIECE_DATA: Record<PieceType, PieceInfo> = {
+  board_set: {
+    type: 'board_set',
+    name: 'Handmade Wooden Chess Set',
+    points: 'Full Set',
+    role: 'Physical 3D Model & Tournament Arena',
+    description: 'Mastercrafted detailed wooden chessboard with hand-carved pieces, realistic grain texture mapping, and physical PBR rendering.',
+    tacticalQuote: '“The arena where minds collide, calculations sharpen, and champions are crowned.”',
+    moves: '64 Squares • 32 Contenders • Full Tournament Set',
+  },
   king: {
     type: 'king',
     name: 'The Sovereign King',
@@ -184,8 +194,9 @@ export const InteractivePieceVisualizer: React.FC = () => {
               <Sparkles count={40} scale={4} size={2} speed={0.4} color="#e8c45a" opacity={0.6} />
 
               <Suspense fallback={null}>
-                <Float speed={1.5} rotationIntensity={0.6} floatIntensity={0.8}>
-                  <group position={[0, -0.6, 0]}>
+                <Float speed={selectedPiece === 'board_set' ? 0.8 : 1.5} rotationIntensity={selectedPiece === 'board_set' ? 0.2 : 0.6} floatIntensity={selectedPiece === 'board_set' ? 0.3 : 0.8}>
+                  <group position={[0, selectedPiece === 'board_set' ? -0.2 : -0.6, 0]} rotation={selectedPiece === 'board_set' ? [0.3, -0.2, 0] : [0, 0, 0]}>
+                    {selectedPiece === 'board_set' && <GLBChessSet scale={0.42} />}
                     {selectedPiece === 'king' && <King3D scale={1.25} materialType={selectedMaterial} />}
                     {selectedPiece === 'queen' && <Queen3D scale={1.25} materialType={selectedMaterial} />}
                     {selectedPiece === 'rook' && <Rook3D scale={1.25} materialType={selectedMaterial} />}
@@ -217,10 +228,11 @@ export const InteractivePieceVisualizer: React.FC = () => {
           <div className="lg:col-span-5 space-y-6">
             
             {/* Piece Buttons */}
-            <div className="grid grid-cols-3 sm:grid-cols-6 lg:grid-cols-3 gap-2">
-              {(['king', 'queen', 'rook', 'bishop', 'knight', 'pawn'] as PieceType[]).map(type => {
+            <div className="grid grid-cols-4 sm:grid-cols-7 lg:grid-cols-4 gap-2">
+              {(['board_set', 'king', 'queen', 'rook', 'bishop', 'knight', 'pawn'] as PieceType[]).map(type => {
                 const isSelected = selectedPiece === type;
                 const icons: Record<PieceType, string> = {
+                  board_set: '⊞',
                   king: '♚',
                   queen: '♛',
                   rook: '♜',
@@ -228,20 +240,29 @@ export const InteractivePieceVisualizer: React.FC = () => {
                   knight: '♞',
                   pawn: '♟',
                 };
+                const labels: Record<PieceType, string> = {
+                  board_set: '3D Set',
+                  king: 'King',
+                  queen: 'Queen',
+                  rook: 'Rook',
+                  bishop: 'Bishop',
+                  knight: 'Knight',
+                  pawn: 'Pawn',
+                };
                 return (
                   <button
                     key={type}
                     onClick={() => handleSelectPiece(type)}
-                    className="p-3 rounded-xl flex flex-col items-center gap-1 transition-all"
+                    className="p-2.5 sm:p-3 rounded-xl flex flex-col items-center gap-1 transition-all"
                     style={{
-                      background: isSelected ? 'rgba(201, 168, 76, 0.2)' : 'rgba(18, 18, 22, 0.6)',
+                      background: isSelected ? 'rgba(201, 168, 76, 0.25)' : 'rgba(18, 18, 22, 0.6)',
                       border: `1px solid ${isSelected ? 'var(--cg-gold)' : 'rgba(201, 168, 76, 0.15)'}`,
                       boxShadow: isSelected ? '0 0 15px rgba(201, 168, 76, 0.3)' : 'none',
                     }}
                   >
-                    <span className="text-2xl">{icons[type]}</span>
-                    <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-200">
-                      {type}
+                    <span className={`text-xl sm:text-2xl ${type === 'board_set' ? 'text-amber-300 font-bold' : ''}`}>{icons[type]}</span>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-200">
+                      {labels[type]}
                     </span>
                   </button>
                 );

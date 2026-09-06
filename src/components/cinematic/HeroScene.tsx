@@ -1,8 +1,9 @@
-import React, { useRef, useMemo, useState, useEffect } from 'react';
+import React, { useRef, useMemo, useState, useEffect, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float, Stars, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { useScroll } from '../../context/ScrollContext';
+import { GLBChessSet } from './three/GLBChessSet';
 
 /* ────────────────────────────────────────────────────────
    Accessibility & Performance Hooks
@@ -424,20 +425,22 @@ const FloatingBoardGroup: React.FC<{ reducedMotion?: boolean }> = ({ reducedMoti
 
   const content = (
     <group ref={groupRef} rotation={[0.12, 0.3, 0]}>
-      <ChessBoard />
-
-      {/* Hero King — center in lustrous gold */}
-      <KingPiece position={[0, 0.08, 0]} scale={1.2} material={GOLD_MATERIAL} reducedMotion={reducedMotion} />
-
-      {/* Pawns */}
-      <PawnPiece position={[-3, 0.08, -3]} material={IVORY_MATERIAL} scale={0.85} />
-      <PawnPiece position={[3, 0.08, -3]} material={IVORY_MATERIAL} scale={0.85} />
-      <PawnPiece position={[-2, 0.08, 2.5]} material={DARK_MATERIAL} scale={0.85} />
-      <PawnPiece position={[2.5, 0.08, 2]} material={DARK_MATERIAL} scale={0.85} />
-
-      {/* Rooks */}
-      <RookPiece position={[-3.5, 0.08, 3.5]} material={DARK_MATERIAL} scale={0.9} />
-      <RookPiece position={[3.5, 0.08, -3.5]} material={IVORY_MATERIAL} scale={0.9} />
+      <Suspense
+        fallback={
+          <>
+            <ChessBoard />
+            <KingPiece position={[0, 0.08, 0]} scale={1.2} material={GOLD_MATERIAL} reducedMotion={reducedMotion} />
+            <PawnPiece position={[-3, 0.08, -3]} material={IVORY_MATERIAL} scale={0.85} />
+            <PawnPiece position={[3, 0.08, -3]} material={IVORY_MATERIAL} scale={0.85} />
+            <PawnPiece position={[-2, 0.08, 2.5]} material={DARK_MATERIAL} scale={0.85} />
+            <PawnPiece position={[2.5, 0.08, 2]} material={DARK_MATERIAL} scale={0.85} />
+            <RookPiece position={[-3.5, 0.08, 3.5]} material={DARK_MATERIAL} scale={0.9} />
+            <RookPiece position={[3.5, 0.08, -3.5]} material={IVORY_MATERIAL} scale={0.9} />
+          </>
+        }
+      >
+        <GLBChessSet scale={1.05} />
+      </Suspense>
     </group>
   );
 
