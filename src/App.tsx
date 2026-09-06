@@ -1,15 +1,16 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, Suspense, lazy } from 'react';
 import { TournamentProvider, useTournament } from './context/TournamentContext';
 import { LoadingScreen } from './components/cinematic/LoadingScreen';
-import { CinematicShell } from './components/cinematic/CinematicShell';
 import { Navbar } from './components/layout/Navbar';
 import { Sidebar } from './components/layout/Sidebar';
-
 import { Footer } from './components/layout/Footer';
 import { ToastContainer } from './components/common/ToastContainer';
-import { PublicDisplayMode } from './components/projector/PublicDisplayMode';
 
-// Dashboard
+// Lazy-load Cinematic Shell
+const CinematicShell = lazy(() => import('./components/cinematic/CinematicShell').then(m => ({ default: m.CinematicShell })));
+const PublicDisplayMode = lazy(() => import('./components/projector/PublicDisplayMode').then(m => ({ default: m.PublicDisplayMode })));
+
+// Dashboard Widgets
 import { TournamentOverview } from './components/dashboard/TournamentOverview';
 import { StatsGrid } from './components/dashboard/StatsGrid';
 import { RoundProgress } from './components/dashboard/RoundProgress';
@@ -17,38 +18,41 @@ import { ActiveMatchesWidget } from './components/dashboard/ActiveMatchesWidget'
 import { UpcomingMatchesWidget } from './components/dashboard/UpcomingMatchesWidget';
 import { AnnouncementsWidget } from './components/dashboard/AnnouncementsWidget';
 
-// Players
-import { PlayerTable } from './components/players/PlayerTable';
-import { PlayerRegistrationModal } from './components/players/PlayerRegistrationModal';
-import { PlayerProfileModal } from './components/players/PlayerProfileModal';
-import { BulkImportModal } from './components/players/BulkImportModal';
+// Lazy-load Heavy Views & Tabs
+const PlayerTable = lazy(() => import('./components/players/PlayerTable').then(m => ({ default: m.PlayerTable })));
+const KnockoutBracket = lazy(() => import('./components/bracket/KnockoutBracket').then(m => ({ default: m.KnockoutBracket })));
+const MatchList = lazy(() => import('./components/matches/MatchList').then(m => ({ default: m.MatchList })));
+const LiveMatchesView = lazy(() => import('./components/live/LiveMatchesView').then(m => ({ default: m.LiveMatchesView })));
+const BoardManagement = lazy(() => import('./components/live/BoardManagement').then(m => ({ default: m.BoardManagement })));
+const EliminatedView = lazy(() => import('./components/eliminated/EliminatedView').then(m => ({ default: m.EliminatedView })));
+const HistoryView = lazy(() => import('./components/history/HistoryView').then(m => ({ default: m.HistoryView })));
 
-// Bracket & Pairing
-import { KnockoutBracket } from './components/bracket/KnockoutBracket';
-import { ManualPairingModal } from './components/bracket/ManualPairingModal';
+// Lazy-load Settings Views
+const TournamentSettingsView = lazy(() => import('./components/settings/TournamentSettings').then(m => ({ default: m.TournamentSettingsView })));
+const RulesEditor = lazy(() => import('./components/settings/RulesEditor').then(m => ({ default: m.RulesEditor })));
+const BackupRestore = lazy(() => import('./components/settings/BackupRestore').then(m => ({ default: m.BackupRestore })));
 
-// Matches
-import { MatchList } from './components/matches/MatchList';
-import { MatchDetailsModal } from './components/matches/MatchDetailsModal';
-import { ResultEntryModal } from './components/matches/ResultEntryModal';
-import { UndoResultModal } from './components/matches/UndoResultModal';
-
-// Live & Boards
-import { LiveMatchesView } from './components/live/LiveMatchesView';
-import { BoardManagement } from './components/live/BoardManagement';
-
-// History & Reports
-import { EliminatedView } from './components/eliminated/EliminatedView';
-import { HistoryView } from './components/history/HistoryView';
-import { ExportReportModal } from './components/history/ExportReportModal';
-import { NewTournamentModal } from './components/common/NewTournamentModal';
-
-// Settings
-import { TournamentSettingsView } from './components/settings/TournamentSettings';
-import { RulesEditor } from './components/settings/RulesEditor';
-import { BackupRestore } from './components/settings/BackupRestore';
+// Lazy-load Modals
+const NewTournamentModal = lazy(() => import('./components/common/NewTournamentModal').then(m => ({ default: m.NewTournamentModal })));
+const PlayerRegistrationModal = lazy(() => import('./components/players/PlayerRegistrationModal').then(m => ({ default: m.PlayerRegistrationModal })));
+const PlayerProfileModal = lazy(() => import('./components/players/PlayerProfileModal').then(m => ({ default: m.PlayerProfileModal })));
+const BulkImportModal = lazy(() => import('./components/players/BulkImportModal').then(m => ({ default: m.BulkImportModal })));
+const ManualPairingModal = lazy(() => import('./components/bracket/ManualPairingModal').then(m => ({ default: m.ManualPairingModal })));
+const MatchDetailsModal = lazy(() => import('./components/matches/MatchDetailsModal').then(m => ({ default: m.MatchDetailsModal })));
+const ResultEntryModal = lazy(() => import('./components/matches/ResultEntryModal').then(m => ({ default: m.ResultEntryModal })));
+const UndoResultModal = lazy(() => import('./components/matches/UndoResultModal').then(m => ({ default: m.UndoResultModal })));
+const ExportReportModal = lazy(() => import('./components/history/ExportReportModal').then(m => ({ default: m.ExportReportModal })));
 
 import type { Player, Match } from './types/tournament';
+
+const TabFallback = () => (
+  <div className="py-24 text-center space-y-3">
+    <div className="w-8 h-8 mx-auto border-2 border-[var(--cg-gold)] border-t-transparent rounded-full animate-spin" />
+    <p className="text-xs font-mono text-[var(--cg-gold)] tracking-widest uppercase">
+      Loading Command Module...
+    </p>
+  </div>
+);
 
 
 const MainApp: React.FC = () => {
@@ -87,7 +91,11 @@ const MainApp: React.FC = () => {
 
   // If Public Display Mode is active, render Fullscreen display only
   if (isProjectorMode) {
-    return <PublicDisplayMode />;
+    return (
+      <Suspense fallback={<TabFallback />}>
+        <PublicDisplayMode />
+      </Suspense>
+    );
   }
 
   return (
@@ -117,129 +125,130 @@ const MainApp: React.FC = () => {
 
         {/* Dynamic Main Viewport */}
         <main className="flex-1 lg:pl-68 w-full transition-all duration-200">
-          
-          {/* Dashboard Tab */}
-          {activeTab === 'dashboard' && (
-            <div className="space-y-6 animate-in fade-in duration-150">
-              <TournamentOverview
-                onOpenShuffleModal={() => setIsShuffleModalOpen(true)}
-                onOpenRegisterModal={() => {
-                  setPlayerToEdit(null);
-                  setIsRegisterOpen(true);
-                }}
-                onOpenNewTournament={() => setIsNewTournamentOpen(true)}
-              />
+          <Suspense fallback={<TabFallback />}>
+            {/* Dashboard Tab */}
+            {activeTab === 'dashboard' && (
+              <div className="space-y-6 animate-in fade-in duration-150">
+                <TournamentOverview
+                  onOpenShuffleModal={() => setIsShuffleModalOpen(true)}
+                  onOpenRegisterModal={() => {
+                    setPlayerToEdit(null);
+                    setIsRegisterOpen(true);
+                  }}
+                  onOpenNewTournament={() => setIsNewTournamentOpen(true)}
+                />
 
-              <StatsGrid onOpenShuffleModal={() => setIsShuffleModalOpen(true)} />
+                <StatsGrid onOpenShuffleModal={() => setIsShuffleModalOpen(true)} />
 
-              <RoundProgress />
+                <RoundProgress />
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2 space-y-6">
-                  <ActiveMatchesWidget
-                    onOpenMatchModal={handleOpenMatchDetails}
-                    onOpenResultModal={handleOpenResultEntry}
-                  />
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="lg:col-span-2 space-y-6">
+                    <ActiveMatchesWidget
+                      onOpenMatchModal={handleOpenMatchDetails}
+                      onOpenResultModal={handleOpenResultEntry}
+                    />
 
-                  <UpcomingMatchesWidget
-                    onOpenMatchModal={handleOpenMatchDetails}
-                  />
-                </div>
+                    <UpcomingMatchesWidget
+                      onOpenMatchModal={handleOpenMatchDetails}
+                    />
+                  </div>
 
-                <div>
-                  <AnnouncementsWidget />
+                  <div>
+                    <AnnouncementsWidget />
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Players Tab */}
-          {activeTab === 'players' && (
-            <div className="animate-in fade-in duration-150">
-              <PlayerTable
-                onOpenRegisterModal={() => {
-                  setPlayerToEdit(null);
-                  setIsRegisterOpen(true);
-                }}
-                onOpenEditModal={player => {
-                  setPlayerToEdit(player);
-                  setIsRegisterOpen(true);
-                }}
-                onOpenProfileModal={player => setSelectedProfilePlayer(player)}
-                onOpenBulkImport={() => setIsBulkImportOpen(true)}
-                onOpenShuffleModal={() => setIsShuffleModalOpen(true)}
-                onOpenNewTournament={() => setIsNewTournamentOpen(true)}
-              />
-            </div>
-          )}
+            {/* Players Tab */}
+            {activeTab === 'players' && (
+              <div className="animate-in fade-in duration-150">
+                <PlayerTable
+                  onOpenRegisterModal={() => {
+                    setPlayerToEdit(null);
+                    setIsRegisterOpen(true);
+                  }}
+                  onOpenEditModal={player => {
+                    setPlayerToEdit(player);
+                    setIsRegisterOpen(true);
+                  }}
+                  onOpenProfileModal={player => setSelectedProfilePlayer(player)}
+                  onOpenBulkImport={() => setIsBulkImportOpen(true)}
+                  onOpenShuffleModal={() => setIsShuffleModalOpen(true)}
+                  onOpenNewTournament={() => setIsNewTournamentOpen(true)}
+                />
+              </div>
+            )}
 
-          {/* Knockout Bracket Tab */}
-          {activeTab === 'bracket' && (
-            <div className="animate-in fade-in duration-150">
-              <KnockoutBracket
-                onOpenMatchModal={handleOpenMatchDetails}
-                onOpenShuffleModal={() => setIsShuffleModalOpen(true)}
-              />
-            </div>
-          )}
+            {/* Knockout Bracket Tab */}
+            {activeTab === 'bracket' && (
+              <div className="animate-in fade-in duration-150">
+                <KnockoutBracket
+                  onOpenMatchModal={handleOpenMatchDetails}
+                  onOpenShuffleModal={() => setIsShuffleModalOpen(true)}
+                />
+              </div>
+            )}
 
-          {/* Matches Tab */}
-          {activeTab === 'matches' && (
-            <div className="animate-in fade-in duration-150">
-              <MatchList
-                onOpenMatchModal={handleOpenMatchDetails}
-                onOpenResultModal={handleOpenResultEntry}
-              />
-            </div>
-          )}
+            {/* Matches Tab */}
+            {activeTab === 'matches' && (
+              <div className="animate-in fade-in duration-150">
+                <MatchList
+                  onOpenMatchModal={handleOpenMatchDetails}
+                  onOpenResultModal={handleOpenResultEntry}
+                />
+              </div>
+            )}
 
-          {/* Live Matches Tab */}
-          {activeTab === 'live' && (
-            <div className="animate-in fade-in duration-150">
-              <LiveMatchesView
-                onOpenMatchModal={handleOpenMatchDetails}
-                onOpenResultModal={handleOpenResultEntry}
-              />
-            </div>
-          )}
+            {/* Live Matches Tab */}
+            {activeTab === 'live' && (
+              <div className="animate-in fade-in duration-150">
+                <LiveMatchesView
+                  onOpenMatchModal={handleOpenMatchDetails}
+                  onOpenResultModal={handleOpenResultEntry}
+                />
+              </div>
+            )}
 
-          {/* Boards / Table Tab */}
-          {activeTab === 'boards' && (
-            <div className="animate-in fade-in duration-150">
-              <BoardManagement
-                onOpenMatchModal={handleOpenMatchDetails}
-                onOpenResultModal={handleOpenResultEntry}
-              />
-            </div>
-          )}
+            {/* Boards / Table Tab */}
+            {activeTab === 'boards' && (
+              <div className="animate-in fade-in duration-150">
+                <BoardManagement
+                  onOpenMatchModal={handleOpenMatchDetails}
+                  onOpenResultModal={handleOpenResultEntry}
+                />
+              </div>
+            )}
 
-          {/* Eliminated Players Tab */}
-          {activeTab === 'eliminated' && (
-            <div className="animate-in fade-in duration-150">
-              <EliminatedView
-                onOpenProfileModal={player => setSelectedProfilePlayer(player)}
-              />
-            </div>
-          )}
+            {/* Eliminated Players Tab */}
+            {activeTab === 'eliminated' && (
+              <div className="animate-in fade-in duration-150">
+                <EliminatedView
+                  onOpenProfileModal={player => setSelectedProfilePlayer(player)}
+                />
+              </div>
+            )}
 
-          {/* Match History Tab */}
-          {activeTab === 'history' && (
-            <div className="animate-in fade-in duration-150">
-              <HistoryView
-                onOpenMatchModal={handleOpenMatchDetails}
-                onOpenUndoModal={handleOpenUndo}
-              />
-            </div>
-          )}
+            {/* Match History Tab */}
+            {activeTab === 'history' && (
+              <div className="animate-in fade-in duration-150">
+                <HistoryView
+                  onOpenMatchModal={handleOpenMatchDetails}
+                  onOpenUndoModal={handleOpenUndo}
+                />
+              </div>
+            )}
 
-          {/* Tournament Settings Tab */}
-          {activeTab === 'settings' && (
-            <div className="space-y-6 animate-in fade-in duration-150">
-              <TournamentSettingsView />
-              <RulesEditor />
-              <BackupRestore />
-            </div>
-          )}
+            {/* Tournament Settings Tab */}
+            {activeTab === 'settings' && (
+              <div className="space-y-6 animate-in fade-in duration-150">
+                <TournamentSettingsView />
+                <RulesEditor />
+                <BackupRestore />
+              </div>
+            )}
+          </Suspense>
         </main>
       </div>
 
@@ -249,58 +258,60 @@ const MainApp: React.FC = () => {
       {/* Global Toast Container */}
       <ToastContainer />
 
-      {/* Modals */}
-      <NewTournamentModal
-        isOpen={isNewTournamentOpen}
-        onClose={() => setIsNewTournamentOpen(false)}
-      />
+      {/* Modals with Lazy Suspense */}
+      <Suspense fallback={null}>
+        <NewTournamentModal
+          isOpen={isNewTournamentOpen}
+          onClose={() => setIsNewTournamentOpen(false)}
+        />
 
-      <PlayerRegistrationModal
-        isOpen={isRegisterOpen}
-        onClose={() => setIsRegisterOpen(false)}
-        playerToEdit={playerToEdit}
-      />
+        <PlayerRegistrationModal
+          isOpen={isRegisterOpen}
+          onClose={() => setIsRegisterOpen(false)}
+          playerToEdit={playerToEdit}
+        />
 
-      <PlayerProfileModal
-        player={selectedProfilePlayer}
-        isOpen={selectedProfilePlayer !== null}
-        onClose={() => setSelectedProfilePlayer(null)}
-      />
+        <PlayerProfileModal
+          player={selectedProfilePlayer}
+          isOpen={selectedProfilePlayer !== null}
+          onClose={() => setSelectedProfilePlayer(null)}
+        />
 
-      <BulkImportModal
-        isOpen={isBulkImportOpen}
-        onClose={() => setIsBulkImportOpen(false)}
-      />
+        <BulkImportModal
+          isOpen={isBulkImportOpen}
+          onClose={() => setIsBulkImportOpen(false)}
+        />
 
-      <ManualPairingModal
-        isOpen={isShuffleModalOpen}
-        onClose={() => setIsShuffleModalOpen(false)}
-      />
+        <ManualPairingModal
+          isOpen={isShuffleModalOpen}
+          onClose={() => setIsShuffleModalOpen(false)}
+        />
 
-      <MatchDetailsModal
-        match={selectedMatch}
-        isOpen={isMatchDetailsOpen}
-        onClose={() => setIsMatchDetailsOpen(false)}
-        onOpenResultModal={handleOpenResultEntry}
-        onOpenUndoModal={handleOpenUndo}
-      />
+        <MatchDetailsModal
+          match={selectedMatch}
+          isOpen={isMatchDetailsOpen}
+          onClose={() => setIsMatchDetailsOpen(false)}
+          onOpenResultModal={handleOpenResultEntry}
+          onOpenUndoModal={handleOpenUndo}
+        />
 
-      <ResultEntryModal
-        match={selectedMatch}
-        isOpen={isResultEntryOpen}
-        onClose={() => setIsResultEntryOpen(false)}
-      />
+        <ResultEntryModal
+          match={selectedMatch}
+          isOpen={isResultEntryOpen}
+          onClose={() => setIsResultEntryOpen(false)}
+        />
 
-      <UndoResultModal
-        match={selectedMatch}
-        isOpen={isUndoModalOpen}
-        onClose={() => setIsUndoModalOpen(false)}
-      />
+        <UndoResultModal
+          match={selectedMatch}
+          isOpen={isUndoModalOpen}
+          onClose={() => setIsUndoModalOpen(false)}
+        />
 
-      <ExportReportModal
-        isOpen={isReportModalOpen}
-        onClose={() => setIsReportModalOpen(false)}
-      />
+        <ExportReportModal
+          isOpen={isReportModalOpen}
+          onClose={() => setIsReportModalOpen(false)}
+        />
+      </Suspense>
     </div>
   );
 };
@@ -329,14 +340,15 @@ export function App() {
   if (viewMode === 'cinematic') {
     return (
       <TournamentProvider>
-        <CinematicShell onCommandCenter={handleEnterCommand} />
+        <Suspense fallback={<LoadingScreen onComplete={() => {}} />}>
+          <CinematicShell onCommandCenter={handleEnterCommand} />
+        </Suspense>
       </TournamentProvider>
     );
   }
 
   // 'command' mode — full admin dashboard
   return (
-
     <TournamentProvider>
       <div style={{ position: 'relative' }}>
         {/* Back to Arena button */}

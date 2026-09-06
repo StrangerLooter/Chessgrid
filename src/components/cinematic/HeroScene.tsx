@@ -461,15 +461,29 @@ const FloatingBoardGroup: React.FC<{ reducedMotion?: boolean }> = ({ reducedMoti
 export const HeroScene: React.FC<{ isDev?: boolean }> = ({ isDev = false }) => {
   const prefersReducedMotion = usePrefersReducedMotion();
   const isMobile = useIsMobile();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(true);
+
+  useEffect(() => {
+    if (!containerRef.current || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsInView(entry.isIntersecting);
+    }, { threshold: 0.05 });
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div
+      ref={containerRef}
       role="region"
       aria-label="3D Interactive Chessboard Scene"
       style={{ width: '100%', height: '100%', background: '#0a0a0b' }}
     >
       <Canvas
         id="cg-hero-canvas"
+        frameloop={isInView ? 'always' : 'never'}
         shadows={!isMobile}
         camera={{ position: [0, 4, 14], fov: 45, near: 0.1, far: 200 }}
         style={{ background: '#0a0a0b' }}

@@ -1,4 +1,4 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useRef, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Float, Stars, Sparkles } from '@react-three/drei';
 import { 
@@ -95,6 +95,18 @@ const PIECE_DATA: Record<PieceType, PieceInfo> = {
 export const InteractivePieceVisualizer: React.FC = () => {
   const [selectedPiece, setSelectedPiece] = useState<PieceType>('king');
   const [selectedMaterial, setSelectedMaterial] = useState<MaterialType>('gold');
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    if (!viewportRef.current || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsInView(entry.isIntersecting);
+    }, { threshold: 0.05 });
+
+    observer.observe(viewportRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   const info = PIECE_DATA[selectedPiece];
 
@@ -178,9 +190,10 @@ export const InteractivePieceVisualizer: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8 items-center">
           
           {/* Left: 3D Viewport */}
-          <div className="lg:col-span-7 h-[380px] sm:h-[440px] rounded-2xl relative overflow-hidden bg-[#0a0a0c] border border-[rgba(201,168,76,0.2)] shadow-2xl">
+          <div ref={viewportRef} className="lg:col-span-7 h-[380px] sm:h-[440px] rounded-2xl relative overflow-hidden bg-[#0a0a0c] border border-[rgba(201,168,76,0.2)] shadow-2xl">
             {/* 3D Canvas */}
             <Canvas
+              frameloop={isInView ? 'always' : 'never'}
               shadows
               camera={{ position: [0, 1.2, 3.8], fov: 42 }}
               style={{ width: '100%', height: '100%' }}

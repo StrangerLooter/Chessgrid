@@ -903,5 +903,14 @@ button:focus-visible,
   transform: translateY(1px);
 }
 
+/* Performance & Rendering Optimization Utilities */
+.cg-content-visibility {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 700px;
+}
 
-
+.cg-gpu-accelerate {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}

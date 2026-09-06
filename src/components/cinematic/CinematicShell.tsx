@@ -136,17 +136,21 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
         {/* ════════════════════════════════════════════
             CHAPTER 02 — 3D PIECE INSPECTOR LAB
             ════════════════════════════════════════════ */}
-        <InteractivePieceVisualizer />
+        <div className="cg-content-visibility">
+          <InteractivePieceVisualizer />
+        </div>
 
         {/* ════════════════════════════════════════════
             CHAPTER 03 — TOURNAMENT CREATION & GOVERNANCE
             ════════════════════════════════════════════ */}
-        <Suspense fallback={<SceneFallback icon="♔" />}>
-          <TournamentCreationScene 
-            onOpenNewTournament={handleOpenTournament} 
-            onCommandCenter={onCommandCenter} 
-          />
-        </Suspense>
+        <div className="cg-content-visibility">
+          <Suspense fallback={<SceneFallback icon="♔" />}>
+            <TournamentCreationScene 
+              onOpenNewTournament={handleOpenTournament} 
+              onCommandCenter={onCommandCenter} 
+            />
+          </Suspense>
+        </div>
 
         {/* ════════════════════════════════════════════
             CHAPTER 04 — PLAYERS & ROSTER
@@ -154,6 +158,7 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
         <section
           id="cg-section-players"
           aria-label="Tournament Players Gallery"
+          className="cg-content-visibility"
           style={{ position: 'relative', overflow: 'hidden' }}
         >
           <div
@@ -176,6 +181,7 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
         <section
           id="cg-section-pairing"
           aria-label="Tournament Pairing Chamber"
+          className="cg-content-visibility"
           style={{ position: 'relative' }}
         >
           <Suspense fallback={<SceneFallback icon="⇌" />}>
@@ -189,6 +195,7 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
         <section
           id="cg-section-bracket"
           aria-label="Knockout Bracket Structure"
+          className="cg-content-visibility"
           style={{ position: 'relative' }}
         >
           <Suspense fallback={<SceneFallback icon="♜" />}>
@@ -202,6 +209,7 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
         <section
           id="cg-section-match"
           aria-label="Live Match Arena"
+          className="cg-content-visibility"
           style={{ position: 'relative' }}
         >
           <Suspense fallback={<SceneFallback icon="♞" />}>
@@ -212,16 +220,20 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
         {/* ════════════════════════════════════════════
             CHAPTER 08 — BROADCAST & PROJECTOR WALL
             ════════════════════════════════════════════ */}
-        <Suspense fallback={<SceneFallback icon="📺" />}>
-          <ProjectorBroadcastScene />
-        </Suspense>
+        <div className="cg-content-visibility">
+          <Suspense fallback={<SceneFallback icon="📺" />}>
+            <ProjectorBroadcastScene />
+          </Suspense>
+        </div>
 
         {/* ════════════════════════════════════════════
             CHAPTER 09 — TACTICAL ANALYSIS & TELEMETRY
             ════════════════════════════════════════════ */}
-        <Suspense fallback={<SceneFallback icon="⚡" />}>
-          <AnalysisStatsScene />
-        </Suspense>
+        <div className="cg-content-visibility">
+          <Suspense fallback={<SceneFallback icon="⚡" />}>
+            <AnalysisStatsScene />
+          </Suspense>
+        </div>
 
         {/* ════════════════════════════════════════════
             CHAPTER 10 — THE DECISIVE FINAL
@@ -229,6 +241,7 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
         <section
           id="cg-section-final"
           aria-label="The Decisive Final Arena"
+          className="cg-content-visibility"
           style={{ position: 'relative' }}
         >
           <Suspense fallback={<SceneFallback icon="♛" />}>
@@ -242,6 +255,7 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
         <section
           id="cg-section-champion"
           aria-label="Champion Podium"
+          className="cg-content-visibility"
           style={{ position: 'relative' }}
         >
           <Suspense fallback={<SceneFallback icon="★" />}>

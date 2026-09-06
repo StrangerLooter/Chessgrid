@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import type { 
   TournamentSettings, 
   Player, 
@@ -224,6 +224,10 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   // Timer Tick Engine: Runs countdown every 100ms for active live matches
   const lastTickRef = useRef<number>(Date.now());
+  const playersRef = useRef(players);
+  useEffect(() => {
+    playersRef.current = players;
+  }, [players]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -232,7 +236,12 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       lastTickRef.current = now;
 
       setMatches(prevMatches => {
+        // Quick check if any active timer is running
+        const hasLiveTimer = prevMatches.some(m => m.status === 'live' && m.isTimerRunning && m.activeClock);
+        if (!hasLiveTimer) return prevMatches;
+
         let hasChanges = false;
+        const currentPlayers = playersRef.current;
         const updated = prevMatches.map(m => {
           if (m.status === 'live' && m.isTimerRunning && m.activeClock) {
             hasChanges = true;
@@ -243,13 +252,13 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
               whiteTime = Math.max(0, whiteTime - delta);
               if (whiteTime === 0 && m.whiteTimeRemainingMs > 0) {
                 soundEffects.playTimeoutBuzzer();
-                addToast('warning', 'Flag Fall!', `White (${players.find(p => p.id === m.whitePlayerId)?.name || 'White'}) has run out of time!`);
+                addToast('warning', 'Flag Fall!', `White (${currentPlayers.find(p => p.id === m.whitePlayerId)?.name || 'White'}) has run out of time!`);
               }
             } else {
               blackTime = Math.max(0, blackTime - delta);
               if (blackTime === 0 && m.blackTimeRemainingMs > 0) {
                 soundEffects.playTimeoutBuzzer();
-                addToast('warning', 'Flag Fall!', `Black (${players.find(p => p.id === m.blackPlayerId)?.name || 'Black'}) has run out of time!`);
+                addToast('warning', 'Flag Fall!', `Black (${currentPlayers.find(p => p.id === m.blackPlayerId)?.name || 'Black'}) has run out of time!`);
               }
             }
 
@@ -268,7 +277,7 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }, 100);
 
     return () => clearInterval(interval);
-  }, [addToast, players]);
+  }, [addToast]);
 
   // Tournament Setup actions
   const updateSettings = useCallback((newSettings: Partial<TournamentSettings>) => {
@@ -686,45 +695,47 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setAnnouncements(prev => prev.filter(a => a.id !== id));
   }, []);
 
-  // Statistics calculation
-  const totalRegistered = players.length;
-  const totalRequired = settings.totalPlayers;
-  const isReadyToStart = totalRegistered >= totalRequired;
-  const liveMatchesCount = matches.filter(m => m.status === 'live').length;
-  const upcomingMatchesCount = matches.filter(m => m.status === 'upcoming' || m.status === 'ready').length;
-  const completedMatchesCount = matches.filter(m => m.status === 'completed').length;
-  const eliminatedCount = players.filter(p => p.status === 'eliminated').length;
-  const totalExpectedMatches = totalRequired - 1;
-  const progressPercent = totalExpectedMatches > 0 ? Math.round((completedMatchesCount / totalExpectedMatches) * 100) : 0;
-  
-  const championPlayer = players.find(p => p.status === 'champion') || null;
-  const finalMatch = matches.find(m => m.roundName === 'Final');
-  const runnerUpPlayer = (championPlayer && finalMatch && finalMatch.loserPlayerId)
-    ? (players.find(p => p.id === finalMatch.loserPlayerId) || null)
-    : null;
+  // Statistics calculation — memoized to prevent re-render cascades
+  const stats = useMemo(() => {
+    const totalRegistered = players.length;
+    const totalRequired = settings.totalPlayers;
+    const isReadyToStart = totalRegistered >= totalRequired;
+    const liveMatchesCount = matches.filter(m => m.status === 'live').length;
+    const upcomingMatchesCount = matches.filter(m => m.status === 'upcoming' || m.status === 'ready').length;
+    const completedMatchesCount = matches.filter(m => m.status === 'completed').length;
+    const eliminatedCount = players.filter(p => p.status === 'eliminated').length;
+    const totalExpectedMatches = totalRequired - 1;
+    const progressPercent = totalExpectedMatches > 0 ? Math.round((completedMatchesCount / totalExpectedMatches) * 100) : 0;
+    
+    const championPlayer = players.find(p => p.status === 'champion') || null;
+    const finalMatch = matches.find(m => m.roundName === 'Final');
+    const runnerUpPlayer = (championPlayer && finalMatch && finalMatch.loserPlayerId)
+      ? (players.find(p => p.id === finalMatch.loserPlayerId) || null)
+      : null;
 
-  // Active round name calculation
-  let currentRoundName = 'Setup';
-  if (championPlayer) {
-    currentRoundName = 'Completed';
-  } else if (matches.some(m => m.status === 'live' || m.status === 'ready')) {
-    const activeMatch = matches.find(m => m.status === 'live') || matches.find(m => m.status === 'ready');
-    if (activeMatch) currentRoundName = activeMatch.roundName;
-  }
+    // Active round name calculation
+    let currentRoundName = 'Setup';
+    if (championPlayer) {
+      currentRoundName = 'Completed';
+    } else if (matches.some(m => m.status === 'live' || m.status === 'ready')) {
+      const activeMatch = matches.find(m => m.status === 'live') || matches.find(m => m.status === 'ready');
+      if (activeMatch) currentRoundName = activeMatch.roundName;
+    }
 
-  const stats = {
-    totalRegistered,
-    totalRequired,
-    isReadyToStart,
-    liveMatchesCount,
-    upcomingMatchesCount,
-    completedMatchesCount,
-    eliminatedCount,
-    progressPercent: Math.min(100, progressPercent),
-    currentRoundName,
-    championPlayer,
-    runnerUpPlayer,
-  };
+    return {
+      totalRegistered,
+      totalRequired,
+      isReadyToStart,
+      liveMatchesCount,
+      upcomingMatchesCount,
+      completedMatchesCount,
+      eliminatedCount,
+      progressPercent: Math.min(100, progressPercent),
+      currentRoundName,
+      championPlayer,
+      runnerUpPlayer,
+    };
+  }, [players, settings.totalPlayers, matches]);
 
   return (
     <TournamentContext.Provider

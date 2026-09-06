@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
@@ -50,6 +50,24 @@ export const GLBChessSet: React.FC<GLBChessSetProps> = ({
 
     return { clone, size };
   }, [scene]);
+
+  // Clean up GPU geometries and materials when unmounted
+  useEffect(() => {
+    const root = clonedScene.clone;
+    return () => {
+      root.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          const mesh = child as THREE.Mesh;
+          mesh.geometry?.dispose();
+          if (Array.isArray(mesh.material)) {
+            mesh.material.forEach((m) => m.dispose());
+          } else if (mesh.material) {
+            mesh.material.dispose();
+          }
+        }
+      });
+    };
+  }, [clonedScene]);
 
   // Determine scale factor so it fits nicely in the scene (around ~8 units width)
   const targetScale = useMemo(() => {
