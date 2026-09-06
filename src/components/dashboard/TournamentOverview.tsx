@@ -10,18 +10,21 @@ import {
   Tv, 
   PlusCircle, 
   Printer,
-  Clock
+  Clock,
+  Crown
 } from 'lucide-react';
 import { formatFullDate } from '../../utils/formatters';
 
 interface TournamentOverviewProps {
   onOpenShuffleModal: () => void;
   onOpenRegisterModal: () => void;
+  onOpenNewTournament?: () => void;
 }
 
 export const TournamentOverview: React.FC<TournamentOverviewProps> = ({
   onOpenShuffleModal,
   onOpenRegisterModal,
+  onOpenNewTournament,
 }) => {
   const { settings, stats, setActiveTab, setIsProjectorMode } = useTournament();
 
@@ -210,6 +213,16 @@ export const TournamentOverview: React.FC<TournamentOverviewProps> = ({
               PRINT
             </button>
           </div>
+
+          {onOpenNewTournament && (
+            <button
+              onClick={onOpenNewTournament}
+              className="flex items-center justify-center gap-2 px-3 py-2 rounded text-xs font-semibold transition-all bg-[rgba(201,168,76,0.12)] border border-[rgba(201,168,76,0.3)] text-[var(--cg-gold-bright)] hover:bg-[rgba(201,168,76,0.22)]"
+            >
+              <Crown className="w-3.5 h-3.5 text-amber-300" />
+              <span>CREATE NEW TOURNAMENT</span>
+            </button>
+          )}
 
           {/* Stitch System Status Strip */}
           <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-[rgba(200,192,174,0.6)]">

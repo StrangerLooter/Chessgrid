@@ -37,10 +37,11 @@ import { UndoResultModal } from './components/matches/UndoResultModal';
 import { LiveMatchesView } from './components/live/LiveMatchesView';
 import { BoardManagement } from './components/live/BoardManagement';
 
-// Eliminated & History
+// History & Reports
 import { EliminatedView } from './components/eliminated/EliminatedView';
 import { HistoryView } from './components/history/HistoryView';
 import { ExportReportModal } from './components/history/ExportReportModal';
+import { NewTournamentModal } from './components/common/NewTournamentModal';
 
 // Settings
 import { TournamentSettingsView } from './components/settings/TournamentSettings';
@@ -56,6 +57,7 @@ const MainApp: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Modal states
+  const [isNewTournamentOpen, setIsNewTournamentOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [playerToEdit, setPlayerToEdit] = useState<Player | null>(null);
   const [selectedProfilePlayer, setSelectedProfilePlayer] = useState<Player | null>(null);
@@ -101,6 +103,7 @@ const MainApp: React.FC = () => {
       <Navbar
         onToggleSidebar={() => setIsSidebarOpen(prev => !prev)}
         isSidebarOpen={isSidebarOpen}
+        onOpenNewTournament={() => setIsNewTournamentOpen(true)}
       />
 
       {/* Main Container */}
@@ -124,6 +127,7 @@ const MainApp: React.FC = () => {
                   setPlayerToEdit(null);
                   setIsRegisterOpen(true);
                 }}
+                onOpenNewTournament={() => setIsNewTournamentOpen(true)}
               />
 
               <StatsGrid onOpenShuffleModal={() => setIsShuffleModalOpen(true)} />
@@ -164,6 +168,7 @@ const MainApp: React.FC = () => {
                 onOpenProfileModal={player => setSelectedProfilePlayer(player)}
                 onOpenBulkImport={() => setIsBulkImportOpen(true)}
                 onOpenShuffleModal={() => setIsShuffleModalOpen(true)}
+                onOpenNewTournament={() => setIsNewTournamentOpen(true)}
               />
             </div>
           )}
@@ -245,6 +250,11 @@ const MainApp: React.FC = () => {
       <ToastContainer />
 
       {/* Modals */}
+      <NewTournamentModal
+        isOpen={isNewTournamentOpen}
+        onClose={() => setIsNewTournamentOpen(false)}
+      />
+
       <PlayerRegistrationModal
         isOpen={isRegisterOpen}
         onClose={() => setIsRegisterOpen(false)}

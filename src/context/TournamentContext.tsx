@@ -52,7 +52,8 @@ interface TournamentContextType {
 
   // Tournament Management Actions
   updateSettings: (newSettings: Partial<TournamentSettings>) => void;
-  startNewTournament: (settings: Partial<TournamentSettings>) => void;
+  startNewTournament: (settings: Partial<TournamentSettings>, initialPlayers?: Player[]) => void;
+  clearAllPlayers: () => void;
   loadDemoTournament: () => void;
   resetTournament: () => void;
 
@@ -275,7 +276,7 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     addToast('info', 'Settings Updated', 'Tournament parameters have been saved.');
   }, [addToast]);
 
-  const startNewTournament = useCallback((customSettings: Partial<TournamentSettings>) => {
+  const startNewTournament = useCallback((customSettings: Partial<TournamentSettings>, initialPlayers?: Player[]) => {
     const totalPlayers = customSettings.totalPlayers || 16;
     const initialSettings: TournamentSettings = {
       id: `tourn-${Date.now()}`,
@@ -301,6 +302,7 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       ...customSettings,
     };
 
+    const roster = initialPlayers || [];
     const initialMatches = generateInitialMatches(totalPlayers, initialSettings.defaultTimeControl);
     const initialBoards: Board[] = Array.from({ length: initialSettings.maxBoards }, (_, i) => ({
       number: i + 1,
@@ -309,23 +311,33 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }));
 
     setSettings(initialSettings);
-    setPlayers([]);
+    setPlayers(roster);
     setMatches(initialMatches);
     setBoards(initialBoards);
     setAnnouncements([
       {
         id: `ann-${Date.now()}`,
         title: 'Player Registration Open',
-        content: `Welcome to the ${initialSettings.name}. Please submit player entries at the registration desk.`,
+        content: `Welcome to ${initialSettings.name}. Contenders may now register with the arbiter.`,
         timestamp: new Date().toISOString(),
         priority: 'high',
         isPinned: true,
       },
     ]);
     setHistoryLogs([]);
-    setActiveTab('players');
-    addToast('success', 'New Tournament Initialized', `Ready for ${totalPlayers} players.`);
+    setActiveTab(roster.length > 0 ? 'dashboard' : 'players');
+    addToast('success', 'New Tournament Initialized', `Created "${initialSettings.name}" with capacity for ${totalPlayers} players.`);
   }, [addToast]);
+
+  const clearAllPlayers = useCallback(() => {
+    setPlayers([]);
+    const initialMatches = generateInitialMatches(settings.totalPlayers, settings.defaultTimeControl);
+    setMatches(initialMatches);
+    setBoards(prev => prev.map(b => ({ ...b, currentMatchId: null, status: 'empty' })));
+    setSettings(prev => ({ ...prev, status: 'setup', currentRoundIndex: 0 }));
+    setHistoryLogs([]);
+    addToast('warning', 'Roster Cleared', 'All contenders removed. You can now register new players or import via CSV.');
+  }, [settings.totalPlayers, settings.defaultTimeControl, addToast]);
 
   const loadDemoTournament = useCallback(() => {
     setSettings(DEMO_SETTINGS);
@@ -385,16 +397,21 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   }, [addToast]);
 
   const deletePlayer = useCallback((id: string) => {
-    if (settings.status !== 'setup') {
-      addToast('error', 'Action Blocked', 'Cannot delete players after tournament has started.');
-      return;
-    }
     setPlayers(prev => {
       const filtered = prev.filter(p => p.id !== id);
       return filtered.map((p, idx) => ({ ...p, seed: idx + 1 }));
     });
-    addToast('warning', 'Player Removed', 'Player deleted from tournament registry.');
-  }, [settings.status, addToast]);
+    setMatches(prevMatches => {
+      const isAssigned = prevMatches.some(m => m.whitePlayerId === id || m.blackPlayerId === id);
+      if (isAssigned) {
+        return generateInitialMatches(settings.totalPlayers, settings.defaultTimeControl);
+      }
+      return prevMatches;
+    });
+    setBoards(prev => prev.map(b => ({ ...b, currentMatchId: null, status: 'empty' })));
+    setSettings(prev => ({ ...prev, status: 'setup' }));
+    addToast('warning', 'Player Removed', 'Contender removed from tournament registry.');
+  }, [settings.totalPlayers, settings.defaultTimeControl, addToast]);
 
   const bulkAddPlayers = useCallback((newPlayersList: Array<Omit<Player, 'id' | 'matchesPlayed' | 'wins' | 'losses' | 'draws' | 'currentRound' | 'score' | 'status'>>) => {
     const availableSlots = settings.totalPlayers - players.length;
@@ -731,6 +748,7 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         removeToast,
         updateSettings,
         startNewTournament,
+        clearAllPlayers,
         loadDemoTournament,
         resetTournament,
         addPlayer,

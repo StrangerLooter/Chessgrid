@@ -23,6 +23,7 @@ interface PlayerTableProps {
   onOpenProfileModal: (player: Player) => void;
   onOpenBulkImport: () => void;
   onOpenShuffleModal: () => void;
+  onOpenNewTournament?: () => void;
 }
 
 export const PlayerTable: React.FC<PlayerTableProps> = ({
@@ -31,13 +32,15 @@ export const PlayerTable: React.FC<PlayerTableProps> = ({
   onOpenProfileModal,
   onOpenBulkImport,
   onOpenShuffleModal,
+  onOpenNewTournament,
 }) => {
-  const { players, settings, stats, deletePlayer } = useTournament();
+  const { players, settings, stats, deletePlayer, clearAllPlayers } = useTournament();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [courseFilter, setCourseFilter] = useState<string>('all');
   const [playerToDelete, setPlayerToDelete] = useState<Player | null>(null);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   // Filter players
   const filteredPlayers = players.filter(p => {
@@ -142,39 +145,57 @@ export const PlayerTable: React.FC<PlayerTableProps> = ({
 
           {/* Action buttons */}
           <div className="flex flex-wrap items-center gap-2.5">
-            {settings.status === 'setup' && (
-              <>
-                <button
-                  onClick={onOpenRegisterModal}
-                  disabled={stats.totalRegistered >= stats.totalRequired}
-                  className="cg-btn cg-btn-primary"
-                  style={{
-                    opacity: stats.totalRegistered >= stats.totalRequired ? 0.4 : 1,
-                    cursor: stats.totalRegistered >= stats.totalRequired ? 'not-allowed' : 'pointer',
-                  }}
-                >
-                  <Plus className="w-4 h-4" />
-                  Add Contender
-                </button>
+            <button
+              onClick={onOpenRegisterModal}
+              disabled={stats.totalRegistered >= stats.totalRequired}
+              className="cg-btn cg-btn-primary"
+              style={{
+                opacity: stats.totalRegistered >= stats.totalRequired ? 0.4 : 1,
+                cursor: stats.totalRegistered >= stats.totalRequired ? 'not-allowed' : 'pointer',
+              }}
+            >
+              <Plus className="w-4 h-4" />
+              Add Contender
+            </button>
 
-                <button
-                  onClick={onOpenBulkImport}
-                  className="cg-btn cg-btn-ghost"
-                >
-                  <Upload className="w-4 h-4 text-amber-400" />
-                  Bulk / IEHE Roster
-                </button>
+            <button
+              onClick={onOpenBulkImport}
+              className="cg-btn cg-btn-ghost"
+            >
+              <Upload className="w-4 h-4 text-amber-400" />
+              Bulk / IEHE Roster
+            </button>
 
-                {stats.isReadyToStart && (
-                  <button
-                    onClick={onOpenShuffleModal}
-                    className="cg-btn cg-btn-emerald"
-                  >
-                    <Shuffle className="w-4 h-4" />
-                    Shuffle & Pairings
-                  </button>
-                )}
-              </>
+            {stats.isReadyToStart && settings.status === 'setup' && (
+              <button
+                onClick={onOpenShuffleModal}
+                className="cg-btn cg-btn-emerald"
+              >
+                <Shuffle className="w-4 h-4" />
+                Shuffle & Pairings
+              </button>
+            )}
+
+            {players.length > 0 && (
+              <button
+                onClick={() => setShowClearConfirm(true)}
+                className="cg-btn text-red-400/80 hover:text-red-300 hover:bg-red-500/10 border border-red-500/20"
+                title="Wipe and clear all contender entries"
+              >
+                <Trash2 className="w-4 h-4" />
+                Clear Roster
+              </button>
+            )}
+
+            {onOpenNewTournament && (
+              <button
+                onClick={onOpenNewTournament}
+                className="cg-btn bg-[rgba(201,168,76,0.15)] text-[var(--cg-gold-bright)] border border-[rgba(201,168,76,0.35)] hover:bg-[rgba(201,168,76,0.25)]"
+                title="Create a brand new tournament"
+              >
+                <Crown className="w-4 h-4 text-amber-300" />
+                New Tournament
+              </button>
             )}
 
             <button
@@ -394,20 +415,18 @@ export const PlayerTable: React.FC<PlayerTableProps> = ({
                           <button
                             onClick={() => onOpenEditModal(player)}
                             className="p-1.5 rounded transition-colors text-slate-400 hover:text-amber-300 hover:bg-[rgba(201,168,76,0.15)]"
-                            title="Edit Player"
+                            title="Edit Contender"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
 
-                          {settings.status === 'setup' && (
-                            <button
-                              onClick={() => setPlayerToDelete(player)}
-                              className="p-1.5 rounded transition-colors text-slate-400 hover:text-red-400 hover:bg-[rgba(192,57,43,0.15)]"
-                              title="Delete Player"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          )}
+                          <button
+                            onClick={() => setPlayerToDelete(player)}
+                            className="p-1.5 rounded transition-colors text-slate-400 hover:text-red-400 hover:bg-[rgba(192,57,43,0.15)]"
+                            title="Delete Contender"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -419,18 +438,32 @@ export const PlayerTable: React.FC<PlayerTableProps> = ({
         </div>
       </div>
 
-      {/* Delete Player Confirmation */}
+      {/* Delete Single Player Confirmation */}
       <ConfirmDialog
         isOpen={playerToDelete !== null}
-        title="Remove Player?"
+        title="Remove Contender?"
         message={`Are you sure you want to remove ${playerToDelete?.name} (${playerToDelete?.rollNumber}) from the tournament registry?`}
-        confirmLabel="Delete Player"
+        confirmLabel="Delete Contender"
         variant="danger"
         onConfirm={() => {
           if (playerToDelete) deletePlayer(playerToDelete.id);
           setPlayerToDelete(null);
         }}
         onCancel={() => setPlayerToDelete(null)}
+      />
+
+      {/* Clear Entire Roster Confirmation */}
+      <ConfirmDialog
+        isOpen={showClearConfirm}
+        title="Clear Entire Contender Pool?"
+        message="Are you sure you want to remove all registered players? This will reset match brackets and allow you to enter a fresh roster or import a new player list."
+        confirmLabel="Wipe All Players"
+        variant="danger"
+        onConfirm={() => {
+          clearAllPlayers();
+          setShowClearConfirm(false);
+        }}
+        onCancel={() => setShowClearConfirm(false)}
       />
     </div>
   );

@@ -12,7 +12,8 @@ import {
   Crown,
   Sparkles,
   Menu,
-  X
+  X,
+  Plus
 } from 'lucide-react';
 import { ConfirmDialog } from '../common/ConfirmDialog';
 import { ChampionModal } from '../common/ChampionModal';
@@ -20,9 +21,14 @@ import { ChampionModal } from '../common/ChampionModal';
 interface NavbarProps {
   onToggleSidebar?: () => void;
   isSidebarOpen?: boolean;
+  onOpenNewTournament?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }) => {
+export const Navbar: React.FC<NavbarProps> = ({ 
+  onToggleSidebar, 
+  isSidebarOpen,
+  onOpenNewTournament,
+}) => {
   const { 
     settings, 
     stats, 
@@ -141,6 +147,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
 
           {/* Right: Action Buttons */}
           <div className="flex items-center gap-2">
+            {onOpenNewTournament && (
+              <button
+                onClick={onOpenNewTournament}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold transition-all bg-[rgba(201,168,76,0.18)] border border-[rgba(201,168,76,0.45)] text-[var(--cg-gold-bright)] hover:bg-[rgba(201,168,76,0.28)]"
+                title="Create a New Custom Tournament"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">NEW TOURNAMENT</span>
+              </button>
+            )}
+
             {/* Projector / Public Display Mode */}
             <button
               onClick={() => setIsProjectorMode(true)}
