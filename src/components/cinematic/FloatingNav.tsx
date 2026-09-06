@@ -13,13 +13,15 @@ interface FloatingNavProps {
 
 const NAV_ITEMS: { waypoint: CinematicWaypoint; label: string; icon: string }[] = [
   { waypoint: 'hero',       label: 'HOME',        icon: '⌂' },
-  { waypoint: 'tournament', label: 'TOURNAMENT',   icon: '♔' },
-  { waypoint: 'players',    label: 'PLAYERS',      icon: '♟' },
-  { waypoint: 'pairing',    label: 'PAIRINGS',     icon: '⇌' },
-  { waypoint: 'bracket',    label: 'BRACKET',      icon: '♜' },
-  { waypoint: 'match',      label: 'MATCHES',      icon: '♞' },
-  { waypoint: 'final',      label: 'FINAL',        icon: '♛' },
-  { waypoint: 'champion',   label: 'CHAMPION',     icon: '★' },
+  { waypoint: 'tournament', label: 'CREATION',    icon: '♔' },
+  { waypoint: 'players',    label: 'PLAYERS',     icon: '♟' },
+  { waypoint: 'pairing',    label: 'PAIRINGS',    icon: '⇌' },
+  { waypoint: 'bracket',    label: 'BRACKET',     icon: '♜' },
+  { waypoint: 'match',      label: 'ARENA',       icon: '♞' },
+  { waypoint: 'projector',  label: 'BROADCAST',   icon: '📺' },
+  { waypoint: 'analysis',   label: 'ANALYSIS',    icon: '⚡' },
+  { waypoint: 'final',      label: 'FINAL',       icon: '♛' },
+  { waypoint: 'champion',   label: 'CHAMPION',    icon: '★' },
 ];
 
 const scrollToWaypoint = (waypoint: CinematicWaypoint) => {
@@ -79,7 +81,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter, onOpe
         </span>
 
         {/* Nav items */}
-        {NAV_ITEMS.slice(1, 7).map(({ waypoint: wp, label }) => (
+        {NAV_ITEMS.slice(1).map(({ waypoint: wp, label }) => (
           <button
             key={wp}
             onClick={() => scrollToWaypoint(wp)}

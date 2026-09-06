@@ -8,16 +8,19 @@ import { InteractivePieceVisualizer } from './InteractivePieceVisualizer';
 import { LandingFeaturesGrid } from './LandingFeaturesGrid';
 import { NewTournamentModal } from '../common/NewTournamentModal';
 
-// Lazy-load heavy scenes
+// Lazy-load heavy cinematic scenes
 const HeroScene = React.lazy(() => import('./HeroScene'));
+const TournamentCreationScene = React.lazy(() => import('./TournamentCreationScene'));
 const PlayerGalleryScene = React.lazy(() => import('./PlayerGalleryScene'));
 const PairingChamberScene = React.lazy(() => import('./PairingChamberScene'));
 const BracketStructureScene = React.lazy(() => import('./BracketStructureScene'));
 const MatchArenaScene = React.lazy(() => import('./MatchArenaScene'));
+const ProjectorBroadcastScene = React.lazy(() => import('./ProjectorBroadcastScene'));
+const AnalysisStatsScene = React.lazy(() => import('./AnalysisStatsScene'));
 const FinalArenaScene = React.lazy(() => import('./FinalArenaScene'));
 const ChampionPodiumScene = React.lazy(() => import('./ChampionPodiumScene'));
 
-/** Suspense fallback with chess piece */
+/** Suspense fallback with luxury chess piece */
 const SceneFallback: React.FC<{ icon: string }> = ({ icon }) => (
   <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(201,168,76,0.3)', fontSize: '2rem' }}>
     {icon}
@@ -46,7 +49,7 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
         onOpenNewTournament={handleOpenTournament}
       />
 
-      {/* Scroll container — this is what GSAP measures */}
+      {/* Scroll container — measured by GSAP */}
       <main
         ref={scrollContainerRef}
         id="cg-cinematic-container"
@@ -60,7 +63,7 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
       >
 
         {/* ════════════════════════════════════════════
-            SECTION 01 — HERO (sticky 3D canvas)
+            CHAPTER 01 — HERO (sticky 3D canvas)
             ════════════════════════════════════════════ */}
         <section
           id="cg-section-hero"
@@ -73,7 +76,6 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
             background: '#0a0a0b',
           }}
         >
-
           {/* 3D Canvas — full bleed */}
           <div style={{ position: 'absolute', inset: 0 }}>
             <Suspense
@@ -128,25 +130,32 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
           />
         </section>
 
-        {/* ════════════════════════════════════════════
-            Scroll spacer — hero section (100vh = hero scroll range)
-            ════════════════════════════════════════════ */}
-        <div style={{ height: '200vh' }} aria-hidden="true" />
+        {/* Scroll spacer — hero section (150vh = hero scroll range) */}
+        <div style={{ height: '150vh' }} aria-hidden="true" />
 
         {/* ════════════════════════════════════════════
-            SECTION 02 — 3D PIECE INSPECTOR LAB
+            CHAPTER 02 — 3D PIECE INSPECTOR LAB
             ════════════════════════════════════════════ */}
         <InteractivePieceVisualizer />
 
         {/* ════════════════════════════════════════════
-            SECTION 03 — PLAYERS
+            CHAPTER 03 — TOURNAMENT CREATION & GOVERNANCE
+            ════════════════════════════════════════════ */}
+        <Suspense fallback={<SceneFallback icon="♔" />}>
+          <TournamentCreationScene 
+            onOpenNewTournament={handleOpenTournament} 
+            onCommandCenter={onCommandCenter} 
+          />
+        </Suspense>
+
+        {/* ════════════════════════════════════════════
+            CHAPTER 04 — PLAYERS & ROSTER
             ════════════════════════════════════════════ */}
         <section
           id="cg-section-players"
           aria-label="Tournament Players Gallery"
           style={{ position: 'relative', overflow: 'hidden' }}
         >
-          {/* Subtle ambient background */}
           <div
             style={{
               position: 'absolute',
@@ -156,26 +165,26 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
               pointerEvents: 'none',
             }}
           />
-          <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(201,168,76,0.3)', fontSize: '2rem' }}>♟</div>}>
+          <Suspense fallback={<SceneFallback icon="♟" />}>
             <PlayerGalleryScene />
           </Suspense>
         </section>
 
         {/* ════════════════════════════════════════════
-            SECTION 04 — PAIRING
+            CHAPTER 05 — PAIRING CHAMBER
             ════════════════════════════════════════════ */}
         <section
           id="cg-section-pairing"
           aria-label="Tournament Pairing Chamber"
           style={{ position: 'relative' }}
         >
-          <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(201,168,76,0.3)', fontSize: '2rem' }}>⇌</div>}>
+          <Suspense fallback={<SceneFallback icon="⇌" />}>
             <PairingChamberScene />
           </Suspense>
         </section>
 
         {/* ════════════════════════════════════════════
-            SECTION 05 — BRACKET
+            CHAPTER 06 — GIANT 3D KNOCKOUT BRACKET
             ════════════════════════════════════════════ */}
         <section
           id="cg-section-bracket"
@@ -188,7 +197,7 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
         </section>
 
         {/* ════════════════════════════════════════════
-            SECTION 06 — MATCH
+            CHAPTER 07 — LIVE MATCH ARENA & CLOCKS
             ════════════════════════════════════════════ */}
         <section
           id="cg-section-match"
@@ -201,7 +210,21 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
         </section>
 
         {/* ════════════════════════════════════════════
-            SECTION 07 — FINAL
+            CHAPTER 08 — BROADCAST & PROJECTOR WALL
+            ════════════════════════════════════════════ */}
+        <Suspense fallback={<SceneFallback icon="📺" />}>
+          <ProjectorBroadcastScene />
+        </Suspense>
+
+        {/* ════════════════════════════════════════════
+            CHAPTER 09 — TACTICAL ANALYSIS & TELEMETRY
+            ════════════════════════════════════════════ */}
+        <Suspense fallback={<SceneFallback icon="⚡" />}>
+          <AnalysisStatsScene />
+        </Suspense>
+
+        {/* ════════════════════════════════════════════
+            CHAPTER 10 — THE DECISIVE FINAL
             ════════════════════════════════════════════ */}
         <section
           id="cg-section-final"
@@ -214,7 +237,7 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
         </section>
 
         {/* ════════════════════════════════════════════
-            SECTION 08 — CHAMPION
+            CHAPTER 11 — CHAMPION CORONATION
             ════════════════════════════════════════════ */}
         <section
           id="cg-section-champion"
@@ -227,7 +250,7 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter,
         </section>
 
         {/* ════════════════════════════════════════════
-            SECTION 09 — ENTERPRISE FEATURES GRID
+            CHAPTER 12 — ENTERPRISE FEATURES SUITE
             ════════════════════════════════════════════ */}
         <LandingFeaturesGrid 
           onCommandCenter={onCommandCenter} 

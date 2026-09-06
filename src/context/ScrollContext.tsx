@@ -16,19 +16,23 @@ export type CinematicWaypoint =
   | 'pairing'
   | 'bracket'
   | 'match'
+  | 'projector'
+  | 'analysis'
   | 'final'
   | 'champion';
 
 /** Scroll % ranges for each waypoint (0–100) */
 export const WAYPOINT_RANGES: Record<CinematicWaypoint, [number, number]> = {
-  hero:       [0,   15],
-  tournament: [15,  30],
-  players:    [30,  45],
-  pairing:    [45,  60],
-  bracket:    [60,  72],
-  match:      [72,  83],
-  final:      [83,  93],
-  champion:   [93, 100],
+  hero:       [0,   10],
+  tournament: [10,  20],
+  players:    [20,  32],
+  pairing:    [32,  44],
+  bracket:    [44,  56],
+  match:      [56,  66],
+  projector:  [66,  76],
+  analysis:   [76,  86],
+  final:      [86,  94],
+  champion:   [94, 100],
 };
 
 function getWaypoint(pct: number): CinematicWaypoint {
