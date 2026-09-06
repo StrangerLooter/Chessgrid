@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useScroll, type CinematicWaypoint } from '../../context/ScrollContext';
 import { WAYPOINT_RANGES } from '../../context/ScrollContext';
+import { useTournament } from '../../context/TournamentContext';
+import { Volume2, VolumeX, Plus } from 'lucide-react';
 
 interface FloatingNavProps {
   onCommandCenter: () => void;
+  onOpenNewTournament?: () => void;
 }
 
 
@@ -26,8 +29,9 @@ const scrollToWaypoint = (waypoint: CinematicWaypoint) => {
   window.scrollTo({ top: targetY, behavior: 'smooth' });
 };
 
-export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter }) => {
+export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter, onOpenNewTournament }) => {
   const { waypoint } = useScroll();
+  const { isMuted, toggleMute } = useTournament();
   const [hoveredItem, setHoveredItem] = useState<CinematicWaypoint | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -44,14 +48,14 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter }) => 
           zIndex: 100,
           display: 'flex',
           alignItems: 'center',
-          gap: '0',
-          padding: '0.5rem 1rem',
-          background: 'rgba(10, 10, 11, 0.82)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid rgba(201,168,76,0.18)',
-          borderRadius: '2px',
-          boxShadow: '0 8px 40px rgba(0,0,0,0.6)',
+          gap: '0.35rem',
+          padding: '0.45rem 0.85rem',
+          background: 'rgba(10, 10, 11, 0.85)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          border: '1px solid rgba(201,168,76,0.25)',
+          borderRadius: '9999px',
+          boxShadow: '0 12px 40px rgba(0,0,0,0.7), 0 0 20px rgba(201,168,76,0.08)',
           whiteSpace: 'nowrap',
         }}
         className="cg-nav-desktop"
@@ -64,8 +68,8 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter }) => 
             fontWeight: 400,
             letterSpacing: '0.18em',
             color: 'var(--cg-ivory)',
-            marginRight: '1.5rem',
-            paddingRight: '1.5rem',
+            marginRight: '1rem',
+            paddingRight: '1rem',
             borderRight: '1px solid rgba(201,168,76,0.2)',
             cursor: 'pointer',
           }}
@@ -83,16 +87,17 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter }) => 
             style={{
               background: 'none',
               border: 'none',
-              padding: '0.4rem 0.75rem',
+              padding: '0.35rem 0.65rem',
               fontFamily: 'var(--font-sans)',
-              fontSize: '0.6rem',
+              fontSize: '0.58rem',
               fontWeight: 600,
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
               color: waypoint === wp ? 'var(--cg-gold)' : 'rgba(200,192,174,0.55)',
               cursor: 'pointer',
-              transition: 'color 0.3s ease',
-              borderBottom: waypoint === wp ? '1px solid var(--cg-gold)' : '1px solid transparent',
+              transition: 'all 0.2s ease',
+              borderRadius: '9999px',
+              backgroundColor: waypoint === wp ? 'rgba(201,168,76,0.1)' : 'transparent',
             }}
             onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = 'var(--cg-ivory)'; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = waypoint === wp ? 'var(--cg-gold)' : 'rgba(200,192,174,0.55)'; }}
@@ -101,6 +106,54 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter }) => 
           </button>
         ))}
 
+        {/* Audio FX Toggle */}
+        <button
+          onClick={toggleMute}
+          style={{
+            background: 'rgba(201,168,76,0.08)',
+            border: '1px solid rgba(201,168,76,0.2)',
+            borderRadius: '9999px',
+            padding: '0.35rem 0.6rem',
+            cursor: 'pointer',
+            color: isMuted ? '#ef4444' : '#22c55e',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.35rem',
+            fontSize: '0.58rem',
+            fontFamily: 'var(--font-mono)',
+          }}
+          title={isMuted ? 'Unmute Arena Sound Effects' : 'Mute Arena Sound Effects'}
+        >
+          {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+          <span className="hidden lg:inline">{isMuted ? 'MUTED' : 'AUDIO ON'}</span>
+        </button>
+
+        {/* New Tournament Launcher */}
+        {onOpenNewTournament && (
+          <button
+            onClick={onOpenNewTournament}
+            style={{
+              background: 'rgba(201,168,76,0.15)',
+              border: '1px solid rgba(201,168,76,0.35)',
+              borderRadius: '9999px',
+              padding: '0.35rem 0.75rem',
+              color: 'var(--cg-gold-bright)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              fontSize: '0.58rem',
+              fontWeight: 700,
+              letterSpacing: '0.1em',
+              fontFamily: 'var(--font-sans)',
+            }}
+            title="Create a New Tournament"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span className="hidden xl:inline">NEW TOURNAMENT</span>
+          </button>
+        )}
+
         {/* Command Center CTA */}
         <button
           className="cg-btn cg-btn-primary"
@@ -108,9 +161,9 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter }) => 
           id="cg-command-center-btn"
           aria-label="Open Tournament Command Center"
           style={{
-            marginLeft: '1rem',
-            padding: '0.4rem 1.2rem',
-            fontSize: '0.6rem',
+            padding: '0.35rem 1rem',
+            fontSize: '0.58rem',
+            borderRadius: '9999px',
           }}
         >
           ⚙ COMMAND CENTER

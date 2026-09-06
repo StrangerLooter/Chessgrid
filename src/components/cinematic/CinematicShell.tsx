@@ -1,10 +1,12 @@
-import React, { Suspense, useRef } from 'react';
+import React, { Suspense, useRef, useState } from 'react';
 import { ScrollProvider } from '../../context/ScrollContext';
 import { ScrollOrchestrator } from './ScrollOrchestrator';
 import { FloatingNav } from './FloatingNav';
 import { HeroTypography } from './HeroTypography';
 import { TournamentIntroScene } from './TournamentIntroScene';
-
+import { InteractivePieceVisualizer } from './InteractivePieceVisualizer';
+import { LandingFeaturesGrid } from './LandingFeaturesGrid';
+import { NewTournamentModal } from '../common/NewTournamentModal';
 
 // Lazy-load heavy scenes
 const HeroScene = React.lazy(() => import('./HeroScene'));
@@ -24,10 +26,14 @@ const SceneFallback: React.FC<{ icon: string }> = ({ icon }) => (
 
 interface CinematicShellProps {
   onCommandCenter: () => void;
+  onOpenNewTournament?: () => void;
 }
 
-export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter }) => {
+export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter, onOpenNewTournament }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [isLocalNewTournamentOpen, setIsLocalNewTournamentOpen] = useState(false);
+
+  const handleOpenTournament = onOpenNewTournament || (() => setIsLocalNewTournamentOpen(true));
 
   return (
     <ScrollProvider>
@@ -35,11 +41,12 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter 
       <ScrollOrchestrator />
 
       {/* Floating navigation */}
-      <FloatingNav onCommandCenter={onCommandCenter} />
+      <FloatingNav 
+        onCommandCenter={onCommandCenter} 
+        onOpenNewTournament={handleOpenTournament}
+      />
 
       {/* Scroll container — this is what GSAP measures */}
-
-
       <main
         ref={scrollContainerRef}
         id="cg-cinematic-container"
@@ -100,7 +107,10 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter 
 
           {/* Typography layer — transitions between hero text and tournament intro */}
           <div style={{ position: 'relative', zIndex: 10, height: '100%' }}>
-            <HeroTypography onEnter={onCommandCenter} />
+            <HeroTypography 
+              onEnter={onCommandCenter} 
+              onOpenNewTournament={handleOpenTournament}
+            />
             <TournamentIntroScene />
           </div>
 
@@ -122,6 +132,11 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter 
             Scroll spacer — hero section (100vh = hero scroll range)
             ════════════════════════════════════════════ */}
         <div style={{ height: '200vh' }} aria-hidden="true" />
+
+        {/* ════════════════════════════════════════════
+            SECTION 02 — 3D PIECE INSPECTOR LAB
+            ════════════════════════════════════════════ */}
+        <InteractivePieceVisualizer />
 
         {/* ════════════════════════════════════════════
             SECTION 03 — PLAYERS
@@ -211,7 +226,21 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({ onCommandCenter 
           </Suspense>
         </section>
 
+        {/* ════════════════════════════════════════════
+            SECTION 09 — ENTERPRISE FEATURES GRID
+            ════════════════════════════════════════════ */}
+        <LandingFeaturesGrid 
+          onCommandCenter={onCommandCenter} 
+          onOpenNewTournament={handleOpenTournament} 
+        />
+
       </main>
+
+      {/* New Tournament Creation Modal */}
+      <NewTournamentModal
+        isOpen={isLocalNewTournamentOpen}
+        onClose={() => setIsLocalNewTournamentOpen(false)}
+      />
     </ScrollProvider>
   );
 };

@@ -4,16 +4,17 @@ import { useTournament } from '../../context/TournamentContext';
 
 interface HeroTypographyProps {
   onEnter: () => void;
+  onOpenNewTournament?: () => void;
 }
 
-export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter }) => {
-  const { settings, players } = useTournament();
+export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter, onOpenNewTournament }) => {
+  const { settings, players, stats, setIsProjectorMode } = useTournament();
   const containerRef = useRef<HTMLDivElement>(null);
   const chessGridRef = useRef<HTMLHeadingElement>(null);
   const taglineRef = useRef<HTMLParagraphElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const tickerRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -22,40 +23,40 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter }) => {
       if (chessGridRef.current) gsap.set(chessGridRef.current, { opacity: 1, y: 0, letterSpacing: '0.2em' });
       if (taglineRef.current) gsap.set(taglineRef.current, { opacity: 1, y: 0 });
       if (subtitleRef.current) gsap.set(subtitleRef.current, { opacity: 1 });
+      if (tickerRef.current) gsap.set(tickerRef.current, { opacity: 1, y: 0 });
       if (ctaRef.current) gsap.set(ctaRef.current, { opacity: 1, y: 0 });
-      if (scrollRef.current) gsap.set(scrollRef.current, { opacity: 1 });
       return;
     }
 
-    const tl = gsap.timeline({ delay: 0.5 });
+    const tl = gsap.timeline({ delay: 0.4 });
     tl.fromTo(
       chessGridRef.current,
-      { opacity: 0, y: 60, letterSpacing: '0.5em' },
-      { opacity: 1, y: 0, letterSpacing: '0.2em', duration: 1.4, ease: 'power3.out' }
+      { opacity: 0, y: 60, letterSpacing: '0.45em' },
+      { opacity: 1, y: 0, letterSpacing: '0.2em', duration: 1.3, ease: 'power3.out' }
     )
     .fromTo(
       taglineRef.current,
       { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
+      { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' },
       '-=0.4'
     )
     .fromTo(
       subtitleRef.current,
       { opacity: 0 },
-      { opacity: 1, duration: 0.8, ease: 'power2.out' },
+      { opacity: 1, duration: 0.7, ease: 'power2.out' },
       '-=0.3'
+    )
+    .fromTo(
+      tickerRef.current,
+      { opacity: 0, scale: 0.95, y: 15 },
+      { opacity: 1, scale: 1, y: 0, duration: 0.7, ease: 'power2.out' },
+      '-=0.2'
     )
     .fromTo(
       ctaRef.current,
       { opacity: 0, y: 20 },
       { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' },
       '-=0.2'
-    )
-    .fromTo(
-      scrollRef.current,
-      { opacity: 0 },
-      { opacity: 1, duration: 0.5 },
-      '-=0.1'
     );
 
     return () => { tl.kill(); };
@@ -82,34 +83,34 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter }) => {
       <div
         style={{
           width: '1px',
-          height: '50px',
+          height: '40px',
           background: 'linear-gradient(to bottom, transparent, rgba(201,168,76,0.5))',
-          marginBottom: '1.25rem',
+          marginBottom: '1rem',
         }}
       />
 
-      {/* Kage-style Eyebrow with Ember Dot */}
-      <div className="cg-eyebrow" style={{ marginBottom: '1.25rem' }}>
+      {/* Eyebrow */}
+      <div className="cg-eyebrow" style={{ marginBottom: '1rem' }}>
         <span className="dot dot-ember" aria-hidden="true" />
         <span>
-          {settings.academicSession || '2026'} • {settings.name?.toUpperCase() || 'COLLEGIATE CHESS KNOCKOUT'} • {settings.venue || 'CAMPUS ARENA'}
+          {settings.academicSession || '2026'} • {settings.collegeName?.toUpperCase() || 'COLLEGIATE CHESS CHAMPIONSHIP'}
         </span>
       </div>
 
-      {/* CHESSGRID wordmark with mask line reveal */}
+      {/* CHESSGRID wordmark */}
       <div className="cg-mask-line rv-in" style={{ margin: 0 }}>
         <h1
           ref={chessGridRef}
           style={{
             fontFamily: 'var(--font-cinematic)',
-            fontSize: 'clamp(3.5rem, 11vw, 8.5rem)',
+            fontSize: 'clamp(3.5rem, 10vw, 8rem)',
             fontWeight: 300,
             letterSpacing: '0.22em',
             color: 'var(--cg-ivory)',
             margin: 0,
             lineHeight: 0.95,
             opacity: 0,
-            textShadow: '0 0 80px rgba(201,168,76,0.25)',
+            textShadow: '0 0 80px rgba(201,168,76,0.3)',
           }}
         >
           CHESSGRID
@@ -122,7 +123,7 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter }) => {
           width: '120px',
           height: '1px',
           background: 'linear-gradient(90deg, transparent, var(--cg-gold), transparent)',
-          margin: '1.25rem auto',
+          margin: '1rem auto',
         }}
       />
 
@@ -131,12 +132,12 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter }) => {
         ref={taglineRef}
         style={{
           fontFamily: 'var(--font-cinematic)',
-          fontSize: 'clamp(1rem, 2.5vw, 1.5rem)',
+          fontSize: 'clamp(1rem, 2.2vw, 1.45rem)',
           fontWeight: 300,
           fontStyle: 'italic',
           letterSpacing: '0.12em',
           color: 'var(--cg-ivory-dim)',
-          margin: '0 0 0.5rem',
+          margin: '0 0 0.35rem',
           opacity: 0,
         }}
       >
@@ -151,26 +152,69 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter }) => {
           fontSize: '0.62rem',
           letterSpacing: '0.3em',
           color: 'rgba(200,192,174,0.6)',
-          margin: '0 0 2rem',
+          margin: '0 0 1.5rem',
           textTransform: 'uppercase',
           opacity: 0,
         }}
       >
-        Live 3D Knockout Arena & Arbitrated Tournament Platform
+        {settings.name} • {settings.departmentName}
       </p>
 
-      {/* CTA Buttons & ArrowLink */}
+      {/* Stitch Live Tournament Ticker HUD */}
+      <div
+        ref={tickerRef}
+        className="mb-6 pointer-events-auto"
+        style={{
+          opacity: 0,
+          background: 'rgba(17, 17, 20, 0.75)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(201, 168, 76, 0.25)',
+          borderRadius: '9999px',
+          padding: '0.4rem 1.25rem',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(201, 168, 76, 0.1)',
+        }}
+      >
+        <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-mono">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-[var(--cg-emerald-bright)] animate-ping" />
+            <span className="text-[var(--cg-emerald-bright)] font-bold">
+              {stats.liveMatchesCount > 0 ? `${stats.liveMatchesCount} BOARDS LIVE` : 'DGT SYNC READY'}
+            </span>
+          </div>
+
+          <span className="text-white/20 hidden sm:inline">•</span>
+
+          <div className="text-[var(--cg-ivory)]">
+            <strong style={{ color: 'var(--cg-gold)' }}>{players.length}</strong> / {settings.totalPlayers} SEEDS
+          </div>
+
+          <span className="text-white/20 hidden sm:inline">•</span>
+
+          <div className="text-[rgba(200,192,174,0.8)]">
+            {settings.defaultTimeControl.label}
+          </div>
+
+          <span className="text-white/20 hidden sm:inline">•</span>
+
+          <div className="text-[var(--cg-gold-bright)]">
+            {Math.log2(settings.totalPlayers)} ROUND KNOCKOUT
+          </div>
+        </div>
+      </div>
+
+      {/* CTA Buttons */}
       <div
         ref={ctaRef}
         style={{
           display: 'flex',
-          gap: '1.5rem',
+          gap: '1rem',
           flexWrap: 'wrap',
           alignItems: 'center',
           justifyContent: 'center',
           pointerEvents: 'all',
           opacity: 0,
-          marginBottom: '2.5rem',
+          marginBottom: '2rem',
         }}
       >
         <button
@@ -178,28 +222,31 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter }) => {
           onClick={onEnter}
           id="cg-enter-tournament-btn"
           aria-label="Enter tournament management command center"
-          style={{ minWidth: '190px' }}
+          style={{ minWidth: '180px' }}
         >
           ♟ &nbsp; Command Center
         </button>
 
-        {/* Kage-style Circular Arrow Link */}
+        {onOpenNewTournament && (
+          <button
+            className="cg-btn cg-btn-ghost"
+            onClick={onOpenNewTournament}
+            aria-label="Create a new tournament"
+          >
+            ✨ &nbsp; Create Tournament
+          </button>
+        )}
+
         <button
-          className="cg-arrowlink"
-          onClick={() => window.scrollBy({ top: window.innerHeight, behavior: 'smooth' })}
-          id="cg-scroll-discover-btn"
-          aria-label="Explore the live 3D arena"
+          className="cg-btn cg-btn-ghost text-[var(--cg-gold)] border-[rgba(201,168,76,0.3)]"
+          onClick={() => setIsProjectorMode(true)}
+          aria-label="Launch projector stage mode"
         >
-          <span>Explore Arena</span>
-          <div className="ar" aria-hidden="true">
-            <svg viewBox="0 0 14 14" fill="none">
-              <path d="M3 11L11 3M11 3H5M11 3V9" stroke="#c9a84c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
+          📺 &nbsp; Projector Mode
         </button>
       </div>
 
-      {/* Kage-inspired Bottom Chapter Waypoint Chips */}
+      {/* Bottom Chapter Waypoint Chips */}
       <div
         style={{
           width: '100%',
