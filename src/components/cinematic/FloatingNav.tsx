@@ -2,26 +2,19 @@ import React, { useState } from 'react';
 import { useScroll, type CinematicWaypoint } from '../../context/ScrollContext';
 import { WAYPOINT_RANGES } from '../../context/ScrollContext';
 import { useTournament } from '../../context/TournamentContext';
-import { Volume2, VolumeX, Plus } from 'lucide-react';
+import { ArrowRight, Volume2, VolumeX } from 'lucide-react';
 
 interface FloatingNavProps {
   onCommandCenter: () => void;
   onOpenNewTournament?: () => void;
 }
 
-
-
-const NAV_ITEMS: { waypoint: CinematicWaypoint; label: string; icon: string }[] = [
-  { waypoint: 'hero',       label: 'HOME',        icon: '⌂' },
-  { waypoint: 'tournament', label: 'CREATION',    icon: '♔' },
-  { waypoint: 'players',    label: 'PLAYERS',     icon: '♟' },
-  { waypoint: 'pairing',    label: 'PAIRINGS',    icon: '⇌' },
-  { waypoint: 'bracket',    label: 'BRACKET',     icon: '♜' },
-  { waypoint: 'match',      label: 'ARENA',       icon: '♞' },
-  { waypoint: 'projector',  label: 'BROADCAST',   icon: '📺' },
-  { waypoint: 'analysis',   label: 'ANALYSIS',    icon: '⚡' },
-  { waypoint: 'final',      label: 'FINAL',       icon: '♛' },
-  { waypoint: 'champion',   label: 'CHAMPION',    icon: '★' },
+const NAV_LINKS: { waypoint: CinematicWaypoint; label: string }[] = [
+  { waypoint: 'tournament', label: 'TOURNAMENTS' },
+  { waypoint: 'players',    label: 'PLAYERS' },
+  { waypoint: 'match',      label: 'FEATURES' },
+  { waypoint: 'projector',  label: 'COMMUNITY' },
+  { waypoint: 'analysis',   label: 'ABOUT' },
 ];
 
 const scrollToWaypoint = (waypoint: CinematicWaypoint) => {
@@ -34,335 +27,167 @@ const scrollToWaypoint = (waypoint: CinematicWaypoint) => {
 export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter, onOpenNewTournament }) => {
   const { waypoint } = useScroll();
   const { isMuted, toggleMute } = useTournament();
-  const [hoveredItem, setHoveredItem] = useState<CinematicWaypoint | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <>
-      {/* ── Top Horizontal Nav (Desktop) ── */}
-      <nav
-        id="cg-floating-nav"
-        style={{
-          position: 'fixed',
-          top: '1.25rem',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 100,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.35rem',
-          padding: '0.45rem 0.85rem',
-          background: 'rgba(10, 10, 11, 0.85)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          border: '1px solid rgba(201,168,76,0.25)',
-          borderRadius: '9999px',
-          boxShadow: '0 12px 40px rgba(0,0,0,0.7), 0 0 20px rgba(201,168,76,0.08)',
-          whiteSpace: 'nowrap',
-        }}
-        className="cg-nav-desktop"
-      >
-        {/* Wordmark */}
-        <span
-          style={{
-            fontFamily: 'var(--font-cinematic)',
-            fontSize: '1.1rem',
-            fontWeight: 400,
-            letterSpacing: '0.18em',
-            color: 'var(--cg-ivory)',
-            marginRight: '1rem',
-            paddingRight: '1rem',
-            borderRight: '1px solid rgba(201,168,76,0.2)',
-            cursor: 'pointer',
-          }}
-          onClick={() => scrollToWaypoint('hero')}
-        >
-          CHESSGRID™
-        </span>
-
-        {/* Nav items */}
-        {NAV_ITEMS.slice(1).map(({ waypoint: wp, label }) => (
-          <button
-            key={wp}
-            onClick={() => scrollToWaypoint(wp)}
-            aria-label={`Go to ${label} section`}
-            style={{
-              background: 'none',
-              border: 'none',
-              padding: '0.35rem 0.65rem',
-              fontFamily: 'var(--font-sans)',
-              fontSize: '0.58rem',
-              fontWeight: 600,
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-              color: waypoint === wp ? 'var(--cg-gold)' : 'rgba(200,192,174,0.55)',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              borderRadius: '9999px',
-              backgroundColor: waypoint === wp ? 'rgba(201,168,76,0.1)' : 'transparent',
-            }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = 'var(--cg-ivory)'; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = waypoint === wp ? 'var(--cg-gold)' : 'rgba(200,192,174,0.55)'; }}
-          >
-            {label}
-          </button>
-        ))}
-
-        {/* Audio FX Toggle */}
+    <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-8 py-5 pointer-events-none">
+      <div className="max-w-[1720px] mx-auto flex items-center justify-between pointer-events-auto">
+        
+        {/* ── Left: Brand Logo (Knight Icon + CHESSGRID™) ── */}
         <button
-          onClick={toggleMute}
-          style={{
-            background: 'rgba(201,168,76,0.08)',
-            border: '1px solid rgba(201,168,76,0.2)',
-            borderRadius: '9999px',
-            padding: '0.35rem 0.6rem',
-            cursor: 'pointer',
-            color: isMuted ? '#ef4444' : '#22c55e',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.35rem',
-            fontSize: '0.58rem',
-            fontFamily: 'var(--font-mono)',
-          }}
-          title={isMuted ? 'Unmute Arena Sound Effects' : 'Mute Arena Sound Effects'}
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="flex items-center gap-3 group focus:outline-none transition-transform hover:scale-105"
         >
-          {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-          <span className="hidden lg:inline">{isMuted ? 'MUTED' : 'AUDIO ON'}</span>
-        </button>
+          {/* Detailed Knight Chess Icon */}
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center relative">
+            <svg
+              viewBox="0 0 48 48"
+              className="w-full h-full text-white/90 drop-shadow-[0_0_12px_rgba(255,255,255,0.6)]"
+              fill="currentColor"
+            >
+              {/* Knight Head & Mane Profile */}
+              <path d="M22 6C17 6 12 10 11 15C10 20 12 25 10 28C8 31 6 34 6 37C6 39 8 41 11 41H37C39 41 41 39 41 37C41 32 37 28 35 24C33 20 34 16 33 12C32 8 28 6 22 6ZM22 10C24 10 26 11 27 13C28 15 27 17 26 19C25 21 24 23 25 25C26 27 28 29 30 31C32 33 34 35 34 37H14C14 35 15 33 17 31C19 29 20 26 19 23C18 20 17 17 18 14C19 11 20 10 22 10Z" opacity="0.95" />
+              <path d="M19 14C19 12.9 19.9 12 21 12C22.1 12 23 12.9 23 14C23 15.1 22.1 16 21 16C19.9 16 19 15.1 19 14Z" fill="#e8c45a" />
+            </svg>
+          </div>
 
-        {/* New Tournament Launcher */}
-        {onOpenNewTournament && (
-          <button
-            onClick={onOpenNewTournament}
-            style={{
-              background: 'rgba(201,168,76,0.15)',
-              border: '1px solid rgba(201,168,76,0.35)',
-              borderRadius: '9999px',
-              padding: '0.35rem 0.75rem',
-              color: 'var(--cg-gold-bright)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.35rem',
-              fontSize: '0.58rem',
-              fontWeight: 700,
-              letterSpacing: '0.1em',
-              fontFamily: 'var(--font-sans)',
-            }}
-            title="Create a New Tournament"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span className="hidden xl:inline">NEW TOURNAMENT</span>
-          </button>
-        )}
-
-        {/* Command Center CTA */}
-        <button
-          className="cg-btn cg-btn-primary"
-          onClick={onCommandCenter}
-          id="cg-command-center-btn"
-          aria-label="Open Tournament Command Center"
-          style={{
-            padding: '0.35rem 1rem',
-            fontSize: '0.58rem',
-            borderRadius: '9999px',
-          }}
-        >
-          ⚙ COMMAND CENTER
-        </button>
-      </nav>
-
-
-
-      {/* ── Mobile Top Bar ── */}
-      <nav
-        id="cg-mobile-nav"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 100,
-          display: 'none',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0.75rem 1.25rem',
-          background: 'rgba(10,10,11,0.9)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          borderBottom: '1px solid rgba(201,168,76,0.15)',
-        }}
-        className="cg-nav-mobile"
-      >
-        <span
-          style={{
-            fontFamily: 'var(--font-cinematic)',
-            fontSize: '1rem',
-            letterSpacing: '0.15em',
-            color: 'var(--cg-ivory)',
-          }}
-        >
-          CHESSGRID™
-        </span>
-        <button
-          onClick={() => setIsMobileMenuOpen(o => !o)}
-          aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-          aria-expanded={isMobileMenuOpen}
-          style={{
-            background: 'none',
-            border: '1px solid rgba(201,168,76,0.3)',
-            color: 'var(--cg-ivory)',
-            padding: '0.35rem 0.65rem',
-            cursor: 'pointer',
-            fontSize: '0.75rem',
-            letterSpacing: '0.1em',
-          }}
-        >
-          {isMobileMenuOpen ? '✕' : '☰'}
-        </button>
-      </nav>
-
-      {/* Mobile menu drawer */}
-      {isMobileMenuOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            top: '48px',
-            left: 0,
-            right: 0,
-            zIndex: 99,
-            background: 'rgba(10,10,11,0.97)',
-            backdropFilter: 'blur(20px)',
-            borderBottom: '1px solid rgba(201,168,76,0.15)',
-            padding: '1rem',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.25rem',
-          }}
-        >
-          {NAV_ITEMS.map(({ waypoint: wp, label, icon }) => (
-            <button
-              key={wp}
-              onClick={() => { scrollToWaypoint(wp); setIsMobileMenuOpen(false); }}
-              aria-label={`Go to ${label} section`}
+          <div className="flex items-baseline tracking-widest text-white">
+            <span
               style={{
-                background: waypoint === wp ? 'rgba(201,168,76,0.08)' : 'none',
-                border: 'none',
-                borderLeft: waypoint === wp ? '2px solid var(--cg-gold)' : '2px solid transparent',
-                padding: '0.75rem 1rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-                fontFamily: 'var(--font-sans)',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                color: waypoint === wp ? 'var(--cg-gold)' : 'var(--cg-ivory-dim)',
-                cursor: 'pointer',
-                textAlign: 'left',
+                fontFamily: 'var(--font-cinzel), serif',
+                fontSize: 'clamp(1.1rem, 2vw, 1.45rem)',
+                fontWeight: 700,
+                letterSpacing: '0.18em',
+                color: '#ffffff',
+                textShadow: '0 2px 10px rgba(0,0,0,0.8), 0 0 20px rgba(255,255,255,0.3)',
               }}
             >
-              <span style={{ opacity: 0.7 }}>{icon}</span>
-              {label}
-            </button>
-          ))}
-          <button
-            className="cg-btn cg-btn-primary"
-            onClick={() => { onCommandCenter(); setIsMobileMenuOpen(false); }}
-            aria-label="Open Tournament Command Center"
-            style={{ marginTop: '0.75rem', width: '100%', justifyContent: 'center' }}
-          >
-            ⚙ COMMAND CENTER
-          </button>
-        </div>
+              CHESSGRID
+            </span>
+            <span className="text-[10px] text-[#c9a84c] font-mono ml-0.5 opacity-80">™</span>
+          </div>
+        </button>
 
-
-      )}
-
-      {/* ── Desktop Vertical Side Rail ── */}
-      <div
-        id="cg-side-rail"
-        style={{
-          position: 'fixed',
-          left: '1.5rem',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          zIndex: 100,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '0.5rem',
-        }}
-        className="cg-side-rail"
-      >
-        {NAV_ITEMS.map(({ waypoint: wp, label, icon }) => (
-          <div
-            key={wp}
-            style={{ position: 'relative', display: 'flex', alignItems: 'center' }}
-            onMouseEnter={() => setHoveredItem(wp)}
-            onMouseLeave={() => setHoveredItem(null)}
-          >
-            {/* Hovered label */}
-            {hoveredItem === wp && (
-              <div
+        {/* ── Center: Sci-Fi / High-Fantasy Angular HUD Navigation ── */}
+        <nav
+          className="hidden md:flex items-center px-7 py-2.5 cg-hud-nav-bar"
+          style={{
+            minWidth: '480px',
+            justifyContent: 'center',
+            gap: '2.5rem',
+          }}
+        >
+          {NAV_LINKS.map(({ waypoint: wp, label }) => {
+            const isActive = waypoint === wp;
+            return (
+              <button
+                key={wp}
+                onClick={() => scrollToWaypoint(wp)}
+                className="relative py-1 text-[11px] sm:text-[12px] font-bold tracking-[0.2em] transition-all duration-300 uppercase"
                 style={{
-                  position: 'absolute',
-                  left: '2.5rem',
-                  background: 'rgba(10,10,11,0.9)',
-                  border: '1px solid rgba(201,168,76,0.2)',
-                  padding: '0.25rem 0.75rem',
-                  whiteSpace: 'nowrap',
                   fontFamily: 'var(--font-sans)',
-                  fontSize: '0.6rem',
-                  fontWeight: 600,
-                  letterSpacing: '0.2em',
-                  color: 'var(--cg-gold)',
-                  borderRadius: '2px',
-                  pointerEvents: 'none',
+                  color: isActive ? '#fce8a6' : 'rgba(215, 222, 235, 0.75)',
+                  textShadow: isActive ? '0 0 15px rgba(232, 196, 90, 0.7)' : 'none',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#ffffff';
+                  e.currentTarget.style.textShadow = '0 0 12px rgba(255,255,255,0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = isActive ? '#fce8a6' : 'rgba(215, 222, 235, 0.75)';
+                  e.currentTarget.style.textShadow = isActive ? '0 0 15px rgba(232, 196, 90, 0.7)' : 'none';
                 }}
               >
                 {label}
-              </div>
-            )}
-            <button
-              onClick={() => scrollToWaypoint(wp)}
-              title={label}
-              aria-label={`Go to ${label} section`}
-              style={{
-                width: '32px',
-                height: '32px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: waypoint === wp ? 'rgba(201,168,76,0.15)' : 'rgba(10,10,11,0.6)',
-                border: waypoint === wp ? '1px solid rgba(201,168,76,0.5)' : '1px solid rgba(201,168,76,0.12)',
-                borderRadius: '2px',
-                color: waypoint === wp ? 'var(--cg-gold)' : 'rgba(200,192,174,0.4)',
-                fontSize: '0.9rem',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                backdropFilter: 'blur(10px)',
-                transform: hoveredItem === wp ? 'scale(1.15)' : 'scale(1)',
-              }}
-            >
-              {icon}
-            </button>
-          </div>
-        ))}
+                {isActive && (
+                  <span
+                    className="absolute -bottom-1 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#e8c45a] to-transparent shadow-[0_0_8px_#e8c45a]"
+                  />
+                )}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* ── Right: Audio Toggle & "→ GET STARTED" Action Button ── */}
+        <div className="flex items-center gap-3 sm:gap-4">
+          
+          {/* Mute/Audio toggle */}
+          <button
+            onClick={toggleMute}
+            className="p-2 sm:p-2.5 rounded-lg bg-black/40 border border-white/10 hover:border-amber-400/40 text-slate-300 hover:text-white transition-all shadow-lg"
+            title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
+          >
+            {isMuted ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
+          </button>
+
+          {/* GET STARTED Button */}
+          <button
+            onClick={onCommandCenter}
+            className="flex items-center gap-2 px-5 sm:px-6 py-2 sm:py-2.5 rounded-lg text-xs font-bold tracking-[0.16em] uppercase transition-all duration-300 group"
+            style={{
+              background: 'rgba(18, 22, 28, 0.85)',
+              border: '1px solid rgba(220, 230, 245, 0.4)',
+              backdropFilter: 'blur(16px)',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.25)',
+              color: '#ffffff',
+              fontFamily: 'var(--font-sans)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = '#e8c45a';
+              e.currentTarget.style.boxShadow = '0 0 25px rgba(201, 168, 76, 0.45), 0 8px 24px rgba(0,0,0,0.7)';
+              e.currentTarget.style.background = 'rgba(28, 34, 44, 0.95)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(220, 230, 245, 0.4)';
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.25)';
+              e.currentTarget.style.background = 'rgba(18, 22, 28, 0.85)';
+            }}
+          >
+            <ArrowRight className="w-3.5 h-3.5 text-[#e8c45a] group-hover:translate-x-1 transition-transform" />
+            <span>GET STARTED</span>
+          </button>
+
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 rounded-lg bg-black/60 border border-white/20 text-white"
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? '✕' : '☰'}
+          </button>
+        </div>
       </div>
 
-      {/* Responsive CSS */}
-      <style>{`
-        @media (max-width: 1024px) {
-          .cg-nav-desktop { display: none !important; }
-          .cg-side-rail    { display: none !important; }
-          .cg-nav-mobile   { display: flex !important; }
-        }
-        @media (min-width: 1025px) {
-          .cg-nav-mobile { display: none !important; }
-        }
-      `}</style>
-    </>
+      {/* Mobile Menu Drawer */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden mt-3 p-4 rounded-2xl bg-[#0e1218]/95 border border-white/20 backdrop-blur-2xl shadow-2xl flex flex-col gap-3 pointer-events-auto">
+          {NAV_LINKS.map(({ waypoint: wp, label }) => (
+            <button
+              key={wp}
+              onClick={() => {
+                scrollToWaypoint(wp);
+                setIsMobileMenuOpen(false);
+              }}
+              className="py-2 px-3 text-left text-xs font-bold tracking-widest text-slate-200 hover:text-[#e8c45a] hover:bg-white/5 rounded-lg transition-colors"
+            >
+              {label}
+            </button>
+          ))}
+          {onOpenNewTournament && (
+            <button
+              onClick={() => {
+                onOpenNewTournament();
+                setIsMobileMenuOpen(false);
+              }}
+              className="w-full py-2.5 text-center text-xs font-bold tracking-wider bg-[rgba(201,168,76,0.2)] text-[#e8c45a] border border-[#e8c45a]/40 rounded-lg"
+            >
+              + CREATE TOURNAMENT
+            </button>
+          )}
+        </div>
+      )}
+    </header>
   );
 };
 

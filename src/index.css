@@ -10,11 +10,13 @@
 @layer base {
   :root {
     /* ── Font Families ── */
-    --font-cinematic: 'Cormorant Garamond', Georgia, serif;
+    --font-cinzel:    'Cinzel', 'Cormorant Garamond', Georgia, serif;
+    --font-cinzel-dec:'Cinzel Decorative', 'Cinzel', serif;
+    --font-cinematic: 'Cinzel', 'Cormorant Garamond', Georgia, serif;
     --font-sans:      'Space Grotesk', system-ui, -apple-system, sans-serif;
     --font-stat:      'Bebas Neue', Impact, sans-serif;
     --font-mono:      'JetBrains Mono', 'Courier New', monospace;
-    --font-heading:   'Space Grotesk', var(--font-sans);
+    --font-heading:   'Cinzel', var(--font-sans);
 
     /* ── ChessGrid Color Palette ── */
     --cg-obsidian:      #0a0a0b;
@@ -914,3 +916,142 @@ button:focus-visible,
   will-change: transform, opacity;
   backface-visibility: hidden;
 }
+
+/* ============================================================
+   CHESSGRID FANTASY ARENA — HUD & METALLIC ASSETS (REF IMAGE)
+   ============================================================ */
+
+/* ── Top Angular HUD Navigation ── */
+.cg-hud-nav-bar {
+  background: rgba(14, 18, 24, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(200, 210, 225, 0.25);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 0 15px rgba(201, 168, 76, 0.08);
+  clip-path: polygon(
+    14px 0%, 
+    calc(100% - 14px) 0%, 
+    100% 14px, 
+    100% calc(100% - 14px), 
+    calc(100% - 14px) 100%, 
+    14px 100%, 
+    0% calc(100% - 14px), 
+    0% 14px
+  );
+  position: relative;
+}
+
+.cg-hud-nav-bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+}
+
+/* ── Chiseled 3D Metallic Hero Title ── */
+.cg-title-metallic {
+  font-family: 'Cinzel', 'Cinzel Decorative', Georgia, serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f2ebdb 22%,
+    #d8c69d 45%,
+    #c4a356 65%,
+    #8c6a28 85%,
+    #574013 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.9))
+          drop-shadow(0 0 25px rgba(232, 196, 90, 0.3));
+  position: relative;
+  letter-spacing: 0.08em;
+}
+
+/* ── Glowing Center Sword Star ── */
+.cg-star-cross {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: #ffd875;
+  filter: drop-shadow(0 0 12px #e8c45a) drop-shadow(0 0 24px #c9a84c);
+  margin: 0 0.15em;
+  transform: translateY(-2px);
+}
+
+/* ── Floating Side Docks ── */
+.cg-floating-dock {
+  background: rgba(14, 16, 22, 0.72);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(201, 168, 76, 0.22);
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.85),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 20px rgba(201, 168, 76, 0.06);
+  border-radius: 12px;
+}
+
+/* ── Hero Buttons ── */
+.cg-btn-hero-primary {
+  background: linear-gradient(180deg, rgba(201, 168, 76, 0.25) 0%, rgba(138, 102, 28, 0.45) 100%);
+  border: 1px solid #d4af37;
+  box-shadow: 
+    0 0 25px rgba(201, 168, 76, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    0 10px 25px rgba(0, 0, 0, 0.5);
+  color: #fce8a6;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cg-btn-hero-primary:hover {
+  background: linear-gradient(180deg, rgba(232, 196, 90, 0.35) 0%, rgba(170, 130, 40, 0.55) 100%);
+  border-color: #ffd875;
+  box-shadow: 
+    0 0 35px rgba(232, 196, 90, 0.55),
+    inset 0 1px 2px rgba(255, 255, 255, 0.6),
+    0 12px 30px rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.cg-btn-hero-secondary {
+  background: rgba(18, 22, 28, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  color: #e5dfd3;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cg-btn-hero-secondary:hover {
+  background: rgba(28, 34, 44, 0.9);
+  border-color: rgba(232, 196, 90, 0.6);
+  color: #ffffff;
+  box-shadow: 
+    0 0 20px rgba(201, 168, 76, 0.25),
+    0 12px 30px rgba(0, 0, 0, 0.6);
+  transform: translateY(-2px);
+}
+

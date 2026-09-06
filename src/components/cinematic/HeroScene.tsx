@@ -479,8 +479,26 @@ export const HeroScene: React.FC<{ isDev?: boolean }> = ({ isDev = false }) => {
       ref={containerRef}
       role="region"
       aria-label="3D Interactive Chessboard Scene"
-      style={{ width: '100%', height: '100%', background: '#0a0a0b' }}
+      className="relative w-full h-full overflow-hidden bg-[#0a0a0b]"
+      style={{ width: '100%', height: '100%' }}
     >
+      {/* ── Fantasy Chess Kingdom Epic Artwork Backdrop ── */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 scale-105 pointer-events-none"
+        style={{ 
+          backgroundImage: "url('/hero-arena-bg.png')",
+          filter: 'brightness(0.92) contrast(1.08)',
+        }} 
+      />
+
+      {/* Atmospheric Vignette & Sunbeams Overlay */}
+      <div 
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 40%, rgba(10,10,11,0.15) 0%, rgba(10,10,11,0.6) 60%, rgba(10,10,11,0.92) 100%)',
+        }}
+      />
+
       <Canvas
         id="cg-hero-canvas"
         frameloop={isInView ? 'always' : 'never'}
