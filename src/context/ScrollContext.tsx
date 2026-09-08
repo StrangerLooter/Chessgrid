@@ -21,32 +21,30 @@ export type CinematicWaypoint =
   | 'final'
   | 'champion';
 
-/** Scroll % ranges for each waypoint (0–100) */
-export const WAYPOINT_RANGES: Record<CinematicWaypoint, [number, number]> = {
-  hero:       [0,   10],
-  tournament: [10,  20],
-  players:    [20,  32],
-  pairing:    [32,  44],
-  bracket:    [44,  56],
-  match:      [56,  66],
-  projector:  [66,  76],
-  analysis:   [76,  86],
-  final:      [86,  94],
-  champion:   [94, 100],
+/** Scroll % ranges for active waypoints (0–100) */
+export const WAYPOINT_RANGES: Partial<Record<CinematicWaypoint, [number, number]>> = {
+  hero:       [0,   20],
+  players:    [20,  40],
+  pairing:    [40,  60],
+  bracket:    [60,  80],
+  projector:  [80,  92],
+  champion:   [92, 100],
 };
 
 function getWaypoint(pct: number): CinematicWaypoint {
-  for (const [key, [start, end]] of Object.entries(WAYPOINT_RANGES) as [CinematicWaypoint, [number, number]][]) {
-    if (pct >= start && pct <= end) return key;
+  for (const [key, range] of Object.entries(WAYPOINT_RANGES) as [CinematicWaypoint, [number, number]][]) {
+    if (range && pct >= range[0] && pct <= range[1]) return key;
   }
   return 'hero';
 }
 
 function getWaypointProgress(pct: number, waypoint: CinematicWaypoint): number {
-  const [start, end] = WAYPOINT_RANGES[waypoint];
-  const range = end - start;
-  if (range === 0) return 0;
-  return Math.max(0, Math.min(1, (pct - start) / range));
+  const range = WAYPOINT_RANGES[waypoint];
+  if (!range) return 0;
+  const [start, end] = range;
+  const diff = end - start;
+  if (diff === 0) return 0;
+  return Math.max(0, Math.min(1, (pct - start) / diff));
 }
 
 interface ScrollContextType extends ScrollState {
@@ -66,16 +64,31 @@ export const ScrollProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     waypoint: 'hero',
     waypointProgress: 0,
   });
+  const stateRef = React.useRef(state);
+  stateRef.current = state;
 
   const setProgress = useCallback((pct: number) => {
     const clamped = Math.max(0, Math.min(100, pct));
+    const current = stateRef.current;
     const waypoint = getWaypoint(clamped);
     const waypointProgress = getWaypointProgress(clamped, waypoint);
-    setState({ progress: clamped, waypoint, waypointProgress });
+    
+    // Only trigger React state updates when waypoint changes or progress changes by at least 0.35%
+    // This stops thousands of cascading component re-renders per second during fast scrolls
+    if (
+      waypoint !== current.waypoint ||
+      Math.abs(clamped - current.progress) >= 0.35 ||
+      clamped === 0 ||
+      clamped === 100
+    ) {
+      setState({ progress: clamped, waypoint, waypointProgress });
+    }
   }, []);
 
+  const value = React.useMemo(() => ({ ...state, setProgress }), [state, setProgress]);
+
   return (
-    <ScrollContext.Provider value={{ ...state, setProgress }}>
+    <ScrollContext.Provider value={value}>
       {children}
     </ScrollContext.Provider>
   );

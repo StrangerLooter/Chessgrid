@@ -13,7 +13,9 @@ import {
   Sparkles,
   Menu,
   X,
-  Plus
+  Plus,
+  Info,
+  Gamepad2
 } from 'lucide-react';
 import { ConfirmDialog } from '../common/ConfirmDialog';
 import { ChampionModal } from '../common/ChampionModal';
@@ -22,12 +24,16 @@ interface NavbarProps {
   onToggleSidebar?: () => void;
   isSidebarOpen?: boolean;
   onOpenNewTournament?: () => void;
+  onNavigateAbout?: () => void;
+  onNavigatePlay?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ 
   onToggleSidebar, 
   isSidebarOpen,
   onOpenNewTournament,
+  onNavigateAbout,
+  onNavigatePlay,
 }) => {
   const { 
     settings, 
@@ -147,6 +153,40 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Right: Action Buttons */}
           <div className="flex items-center gap-2">
+            {/* Play Chess Navigation Button */}
+            <button
+              onClick={() => {
+                if (onNavigatePlay) {
+                  onNavigatePlay();
+                } else {
+                  window.history.pushState({}, '', '/play');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+                }
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold transition-all bg-[rgba(34,166,122,0.15)] border border-[rgba(34,166,122,0.4)] text-emerald-300 hover:bg-[rgba(34,166,122,0.28)] hover:text-white"
+              title="Play Chess vs Stockfish / Human & Engine Analysis"
+            >
+              <Gamepad2 className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="hidden sm:inline">PLAY CHESS</span>
+            </button>
+
+            {/* About Navigation Button */}
+            <button
+              onClick={() => {
+                if (onNavigateAbout) {
+                  onNavigateAbout();
+                } else {
+                  window.history.pushState({}, '', '/about');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+                }
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold transition-all bg-[rgba(220,38,38,0.12)] border border-[rgba(220,38,38,0.35)] text-red-300 hover:bg-[rgba(220,38,38,0.25)] hover:text-white"
+              title="About ChessGrid Platform & Creator"
+            >
+              <Info className="w-3.5 h-3.5 text-red-400" />
+              <span className="hidden sm:inline">ABOUT</span>
+            </button>
+
             {onOpenNewTournament && (
               <button
                 onClick={onOpenNewTournament}

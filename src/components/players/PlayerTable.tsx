@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useTournament } from '../../context/TournamentContext';
 import type { Player } from '../../types/tournament';
 import { 
@@ -43,20 +43,24 @@ export const PlayerTable: React.FC<PlayerTableProps> = ({
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   // Filter players
-  const filteredPlayers = players.filter(p => {
-    const matchesSearch =
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.rollNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.course.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredPlayers = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    return players.filter(p => {
+      const matchesSearch =
+        !q ||
+        p.name.toLowerCase().includes(q) ||
+        p.rollNumber.toLowerCase().includes(q) ||
+        p.course.toLowerCase().includes(q);
 
-    const matchesStatus = statusFilter === 'all' || p.status === statusFilter;
-    const matchesCourse = courseFilter === 'all' || p.course === courseFilter;
+      const matchesStatus = statusFilter === 'all' || p.status === statusFilter;
+      const matchesCourse = courseFilter === 'all' || p.course === courseFilter;
 
-    return matchesSearch && matchesStatus && matchesCourse;
-  });
+      return matchesSearch && matchesStatus && matchesCourse;
+    });
+  }, [players, searchQuery, statusFilter, courseFilter]);
 
   // Extract unique courses for filtering
-  const courses = Array.from(new Set(players.map(p => p.course)));
+  const courses = useMemo(() => Array.from(new Set(players.map(p => p.course))), [players]);
 
   return (
     <div className="space-y-5">

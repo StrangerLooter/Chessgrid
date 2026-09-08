@@ -50,6 +50,8 @@ class PerformanceTelemetry {
   }
 
   private startFpsLoop() {
+    let rafId: number | null = null;
+
     const loop = () => {
       this.frameCount++;
       const now = performance.now();
@@ -58,9 +60,26 @@ class PerformanceTelemetry {
         this.frameCount = 0;
         this.lastFpsUpdate = now;
       }
-      requestAnimationFrame(loop);
+      if (typeof document !== 'undefined' && document.hidden) {
+        rafId = null;
+        return;
+      }
+      rafId = requestAnimationFrame(loop);
     };
-    requestAnimationFrame(loop);
+
+    const handleVisibility = () => {
+      if (typeof document !== 'undefined' && !document.hidden && !rafId) {
+        this.lastFpsUpdate = performance.now();
+        this.frameCount = 0;
+        rafId = requestAnimationFrame(loop);
+      }
+    };
+
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', handleVisibility);
+    }
+
+    rafId = requestAnimationFrame(loop);
   }
 
   public getMetrics(): TelemetryMetrics {

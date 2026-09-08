@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { useTournament } from '../../context/TournamentContext';
 import type { Match } from '../../types/tournament';
 import { BracketMatchNode } from './BracketMatchNode';
@@ -21,20 +21,23 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
   onOpenMatchModal,
   onOpenShuffleModal,
 }) => {
-  const { matches, players, settings, stats } = useTournament();
+  const { matches, playerMap, settings, stats } = useTournament();
   const [zoomLevel, setZoomLevel] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const roundNames = getRoundNames(settings.totalPlayers);
+  const roundNames: string[] = useMemo(() => getRoundNames(settings.totalPlayers), [settings.totalPlayers]);
 
   // Group matches by roundIndex
-  const matchesByRound: { [roundIndex: number]: Match[] } = {};
-  matches.forEach(m => {
-    if (!matchesByRound[m.roundIndex]) {
-      matchesByRound[m.roundIndex] = [];
-    }
-    matchesByRound[m.roundIndex].push(m);
-  });
+  const matchesByRound = useMemo(() => {
+    const grouped: { [roundIndex: number]: Match[] } = {};
+    matches.forEach(m => {
+      if (!grouped[m.roundIndex]) {
+        grouped[m.roundIndex] = [];
+      }
+      grouped[m.roundIndex].push(m);
+    });
+    return grouped;
+  }, [matches]);
 
   const handleZoomIn = () => setZoomLevel(prev => Math.min(1.4, prev + 0.1));
   const handleZoomOut = () => setZoomLevel(prev => Math.max(0.65, prev - 0.1));
@@ -199,7 +202,7 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
                     <div key={match.id} className="relative flex items-center">
                       <BracketMatchNode
                         match={match}
-                        players={players}
+                        playerMap={playerMap}
                         onClick={onOpenMatchModal}
                       />
                       {!isLastRound && (

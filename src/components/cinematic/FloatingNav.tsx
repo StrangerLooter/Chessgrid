@@ -6,16 +6,20 @@ import { Volume2, VolumeX } from 'lucide-react';
 interface FloatingNavProps {
   onCommandCenter: () => void;
   onOpenNewTournament?: () => void;
+  onNavigateAbout?: () => void;
+  onNavigatePlay?: () => void;
 }
 
 const scrollToWaypoint = (waypoint: CinematicWaypoint) => {
-  const [start] = WAYPOINT_RANGES[waypoint];
+  const range = WAYPOINT_RANGES[waypoint];
+  if (!range) return;
+  const [start] = range;
   const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
   const targetY = (start / 100) * totalHeight;
   window.scrollTo({ top: targetY, behavior: 'smooth' });
 };
 
-export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter }) => {
+export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter, onNavigateAbout, onNavigatePlay }) => {
   const { isMuted, toggleMute } = useTournament();
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -58,7 +62,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter }) => 
 
           {/* ── Hotspot 2: TOURNAMENTS ── */}
           <button
-            onClick={() => scrollToWaypoint('tournament')}
+            onClick={() => scrollToWaypoint('bracket')}
             style={{
               position: 'absolute',
               left: '29.0%',
@@ -90,7 +94,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter }) => 
 
           {/* ── Hotspot 4: FEATURES ── */}
           <button
-            onClick={() => scrollToWaypoint('match')}
+            onClick={() => scrollToWaypoint('pairing')}
             style={{
               position: 'absolute',
               left: '48.8%',
@@ -122,7 +126,14 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter }) => 
 
           {/* ── Hotspot 6: ABOUT ── */}
           <button
-            onClick={() => scrollToWaypoint('analysis')}
+            onClick={() => {
+              if (onNavigateAbout) {
+                onNavigateAbout();
+              } else {
+                window.history.pushState({}, '', '/about');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }
+            }}
             style={{
               position: 'absolute',
               left: '68.2%',
@@ -132,8 +143,8 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter }) => 
               borderRadius: '4px',
             }}
             className="focus:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/40 hover:bg-white/[0.04] transition-colors cursor-pointer"
-            title="About"
-            aria-label="About"
+            title="About ChessGrid"
+            aria-label="About ChessGrid"
           />
 
           {/* ── Hotspot 7: GET STARTED → ── */}
@@ -161,12 +172,16 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter }) => 
             <input
               type="text"
               autoFocus
-              placeholder="Search tournaments, players..."
+              placeholder="Search tournaments, players, play..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
-                  onCommandCenter();
+                  if (searchQuery.toLowerCase().includes('play') && onNavigatePlay) {
+                    onNavigatePlay();
+                  } else {
+                    onCommandCenter();
+                  }
                   setIsSearchOpen(false);
                 }
                 if (e.key === 'Escape') {
@@ -177,10 +192,14 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ onCommandCenter }) => 
             />
             <button
               onClick={() => {
-                onCommandCenter();
+                if (searchQuery.toLowerCase().includes('play') && onNavigatePlay) {
+                  onNavigatePlay();
+                } else {
+                  onCommandCenter();
+                }
                 setIsSearchOpen(false);
               }}
-              className="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30"
+              className="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 cursor-pointer"
             >
               Go
             </button>

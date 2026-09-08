@@ -7,20 +7,19 @@ import {
   CalendarDays, 
   Activity, 
   BookOpen, 
-  GitBranch, 
-  Radio, 
-  BarChart2, 
   Plus, 
-  Compass 
+  Compass,
+  Gamepad2
 } from 'lucide-react';
 import { useTournament } from '../../context/TournamentContext';
 
 interface HeroTypographyProps {
   onEnter: () => void;
   onOpenNewTournament?: () => void;
+  onNavigatePlay?: () => void;
 }
 
-export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter, onOpenNewTournament }) => {
+export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter, onOpenNewTournament, onNavigatePlay }) => {
   const { setActiveTab } = useTournament();
   const containerRef = useRef<HTMLDivElement>(null);
   const heroContentRef = useRef<HTMLDivElement>(null);
@@ -46,6 +45,15 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter, onOpenN
   const handleNavClick = (tab: string) => {
     setActiveTab(tab as any);
     onEnter();
+  };
+
+  const handlePlayClick = () => {
+    if (onNavigatePlay) {
+      onNavigatePlay();
+    } else {
+      window.history.pushState({}, '', '/play');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
   };
 
   const scrollToNext = () => {
@@ -94,6 +102,10 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter, onOpenN
         <button onClick={() => handleNavClick('history')} className="cg-sl-item" title="Resources">
           <BookOpen />
           <span>Resources</span>
+        </button>
+        <button onClick={handlePlayClick} className="cg-sl-item" title="Play Chess vs Engine & Local">
+          <Gamepad2 />
+          <span>Play</span>
         </button>
       </aside>
 
@@ -159,33 +171,6 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({ onEnter, onOpenN
           <p className="cg-hero-subtitle-bottom">
             CHESS TOURNAMENTS
           </p>
-        </div>
-
-        {/* ── 4 Feature Icons Row ── */}
-        <div className="cg-hero-features">
-          {/* Players */}
-          <button className="cg-hero-feat" onClick={() => handleNavClick('players')}>
-            <Users />
-            <span>PLAYERS</span>
-          </button>
-
-          {/* Brackets */}
-          <button className="cg-hero-feat" onClick={() => handleNavClick('bracket')}>
-            <GitBranch />
-            <span>BRACKETS</span>
-          </button>
-
-          {/* Live Matches */}
-          <button className="cg-hero-feat" onClick={() => handleNavClick('live')}>
-            <Radio />
-            <span>LIVE MATCHES</span>
-          </button>
-
-          {/* Real Results */}
-          <button className="cg-hero-feat" onClick={() => handleNavClick('history')}>
-            <BarChart2 />
-            <span>REAL RESULTS</span>
-          </button>
         </div>
 
         {/* ── Dual Hero CTA Buttons ── */}

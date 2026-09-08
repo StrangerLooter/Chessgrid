@@ -90,6 +90,7 @@ interface TournamentContextType {
   deleteAnnouncement: (id: string) => void;
 
   // Calculated stats & helpers
+  playerMap: Map<string, Player>;
   stats: {
     totalRegistered: number;
     totalRequired: TournamentSize;
@@ -160,7 +161,12 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [isProjectorMode, setIsProjectorMode] = useState<boolean>(false);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
-  // Sync to LocalStorage
+  // Memoized Player Lookup Map for O(1) Access across all components
+  const playerMap = useMemo(() => new Map<string, Player>(players.map(p => [p.id, p])), [players]);
+
+  // Sync to LocalStorage (Throttled for live matches to prevent 10x/sec main-thread blocking)
+  const matchesSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
   }, [settings]);
@@ -170,7 +176,37 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   }, [players]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_MATCHES, JSON.stringify(matches));
+    const isAnyClockRunning = matches.some(m => m.status === 'live' && m.isTimerRunning);
+    if (!isAnyClockRunning) {
+      if (matchesSaveTimerRef.current) {
+        clearTimeout(matchesSaveTimerRef.current);
+        matchesSaveTimerRef.current = null;
+      }
+      localStorage.setItem(STORAGE_KEY_MATCHES, JSON.stringify(matches));
+      return;
+    }
+
+    // When timers are actively running, throttle disk writes to once every 3.5 seconds
+    if (!matchesSaveTimerRef.current) {
+      matchesSaveTimerRef.current = setTimeout(() => {
+        localStorage.setItem(STORAGE_KEY_MATCHES, JSON.stringify(matches));
+        matchesSaveTimerRef.current = null;
+      }, 3500);
+    }
+  }, [matches]);
+
+  // Flush unsaved matches on beforeunload
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.setItem(STORAGE_KEY_MATCHES, JSON.stringify(matches));
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      if (matchesSaveTimerRef.current) {
+        clearTimeout(matchesSaveTimerRef.current);
+      }
+    };
   }, [matches]);
 
   useEffect(() => {
@@ -223,16 +259,18 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   }, []);
 
   // Timer Tick Engine: Runs countdown every 100ms for active live matches
-  const lastTickRef = useRef<number>(Date.now());
+  const lastTickRef = useRef<number | null>(null);
   const playersRef = useRef(players);
   useEffect(() => {
     playersRef.current = players;
   }, [players]);
 
   useEffect(() => {
+    lastTickRef.current = Date.now();
     const interval = setInterval(() => {
       const now = Date.now();
-      const delta = now - lastTickRef.current;
+      const last = lastTickRef.current ?? now;
+      const delta = now - last;
       lastTickRef.current = now;
 
       setMatches(prevMatches => {
@@ -737,56 +775,104 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     };
   }, [players, settings.totalPlayers, matches]);
 
+  const contextValue = useMemo<TournamentContextType>(() => ({
+    settings,
+    players,
+    playerMap,
+    matches,
+    boards,
+    announcements,
+    historyLogs,
+    activeTab,
+    isDark,
+    isMuted,
+    isProjectorMode,
+    toasts,
+    setActiveTab,
+    toggleTheme,
+    toggleMute,
+    setIsProjectorMode,
+    addToast,
+    removeToast,
+    updateSettings,
+    startNewTournament,
+    clearAllPlayers,
+    loadDemoTournament,
+    resetTournament,
+    addPlayer,
+    updatePlayer,
+    deletePlayer,
+    bulkAddPlayers,
+    shuffleAndPairPlayers,
+    confirmPairings,
+    manualSwapPlayers,
+    startMatch,
+    pauseMatch,
+    resumeMatch,
+    switchActiveClock,
+    resetMatchClock,
+    adjustPlayerClock,
+    recordResult,
+    undoOrRepairResult,
+    undoLastAction,
+    assignMatchToBoard,
+    freeBoard,
+    updateBoardCount,
+    addAnnouncement,
+    updateAnnouncement,
+    deleteAnnouncement,
+    stats,
+  }), [
+    settings,
+    players,
+    playerMap,
+    matches,
+    boards,
+    announcements,
+    historyLogs,
+    activeTab,
+    isDark,
+    isMuted,
+    isProjectorMode,
+    toasts,
+    setActiveTab,
+    toggleTheme,
+    toggleMute,
+    setIsProjectorMode,
+    addToast,
+    removeToast,
+    updateSettings,
+    startNewTournament,
+    clearAllPlayers,
+    loadDemoTournament,
+    resetTournament,
+    addPlayer,
+    updatePlayer,
+    deletePlayer,
+    bulkAddPlayers,
+    shuffleAndPairPlayers,
+    confirmPairings,
+    manualSwapPlayers,
+    startMatch,
+    pauseMatch,
+    resumeMatch,
+    switchActiveClock,
+    resetMatchClock,
+    adjustPlayerClock,
+    recordResult,
+    undoOrRepairResult,
+    undoLastAction,
+    assignMatchToBoard,
+    freeBoard,
+    updateBoardCount,
+    addAnnouncement,
+    updateAnnouncement,
+    deleteAnnouncement,
+    stats,
+  ]);
+
   return (
-    <TournamentContext.Provider
-      value={{
-        settings,
-        players,
-        matches,
-        boards,
-        announcements,
-        historyLogs,
-        activeTab,
-        isDark,
-        isMuted,
-        isProjectorMode,
-        toasts,
-        setActiveTab,
-        toggleTheme,
-        toggleMute,
-        setIsProjectorMode,
-        addToast,
-        removeToast,
-        updateSettings,
-        startNewTournament,
-        clearAllPlayers,
-        loadDemoTournament,
-        resetTournament,
-        addPlayer,
-        updatePlayer,
-        deletePlayer,
-        bulkAddPlayers,
-        shuffleAndPairPlayers,
-        confirmPairings,
-        manualSwapPlayers,
-        startMatch,
-        pauseMatch,
-        resumeMatch,
-        switchActiveClock,
-        resetMatchClock,
-        adjustPlayerClock,
-        recordResult,
-        undoOrRepairResult,
-        undoLastAction,
-        assignMatchToBoard,
-        freeBoard,
-        updateBoardCount,
-        addAnnouncement,
-        updateAnnouncement,
-        deleteAnnouncement,
-        stats,
-      }}
-    >
+    <TournamentContext.Provider value={contextValue}>
       {children}
     </TournamentContext.Provider>
   );

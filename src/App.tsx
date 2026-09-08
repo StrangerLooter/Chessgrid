@@ -1,4 +1,4 @@
-import React, { useState, useCallback, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { TournamentProvider, useTournament } from './context/TournamentContext';
 import { LoadingScreen } from './components/cinematic/LoadingScreen';
 import { Navbar } from './components/layout/Navbar';
@@ -6,9 +6,11 @@ import { Sidebar } from './components/layout/Sidebar';
 import { Footer } from './components/layout/Footer';
 import { ToastContainer } from './components/common/ToastContainer';
 
-// Lazy-load Cinematic Shell
+// Lazy-load Cinematic Shell & About Page & Play Chess Hub
 const CinematicShell = lazy(() => import('./components/cinematic/CinematicShell').then(m => ({ default: m.CinematicShell })));
 const PublicDisplayMode = lazy(() => import('./components/projector/PublicDisplayMode').then(m => ({ default: m.PublicDisplayMode })));
+const AboutPage = lazy(() => import('./components/about/AboutPage').then(m => ({ default: m.AboutPage })));
+const PlayChessPage = lazy(() => import('./components/chess/PlayChessPage').then(m => ({ default: m.PlayChessPage })));
 
 // Dashboard Widgets
 import { TournamentOverview } from './components/dashboard/TournamentOverview';
@@ -54,8 +56,12 @@ const TabFallback = () => (
   </div>
 );
 
+interface MainAppProps {
+  onNavigateAbout?: () => void;
+  onNavigatePlay?: () => void;
+}
 
-const MainApp: React.FC = () => {
+const MainApp: React.FC<MainAppProps> = ({ onNavigateAbout, onNavigatePlay }) => {
   const { activeTab, isProjectorMode } = useTournament();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -112,6 +118,8 @@ const MainApp: React.FC = () => {
         onToggleSidebar={() => setIsSidebarOpen(prev => !prev)}
         isSidebarOpen={isSidebarOpen}
         onOpenNewTournament={() => setIsNewTournamentOpen(true)}
+        onNavigateAbout={onNavigateAbout}
+        onNavigatePlay={onNavigatePlay}
       />
 
       {/* Main Container */}
@@ -121,6 +129,8 @@ const MainApp: React.FC = () => {
         <Sidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          onNavigateAbout={onNavigateAbout}
+          onNavigatePlay={onNavigatePlay}
         />
 
         {/* Dynamic Main Viewport */}
@@ -201,7 +211,7 @@ const MainApp: React.FC = () => {
               </div>
             )}
 
-            {/* Live Matches Tab */}
+            {/* Live Clocks & Boards Tab */}
             {activeTab === 'live' && (
               <div className="animate-in fade-in duration-150">
                 <LiveMatchesView
@@ -211,7 +221,7 @@ const MainApp: React.FC = () => {
               </div>
             )}
 
-            {/* Boards / Table Tab */}
+            {/* Boards & Tables Tab */}
             {activeTab === 'boards' && (
               <div className="animate-in fade-in duration-150">
                 <BoardManagement
@@ -230,7 +240,7 @@ const MainApp: React.FC = () => {
               </div>
             )}
 
-            {/* Match History Tab */}
+            {/* History & Logs Tab */}
             {activeTab === 'history' && (
               <div className="animate-in fade-in duration-150">
                 <HistoryView
@@ -240,7 +250,7 @@ const MainApp: React.FC = () => {
               </div>
             )}
 
-            {/* Tournament Settings Tab */}
+            {/* Settings Tab */}
             {activeTab === 'settings' && (
               <div className="space-y-6 animate-in fade-in duration-150">
                 <TournamentSettingsView />
@@ -255,10 +265,7 @@ const MainApp: React.FC = () => {
       {/* Footer */}
       <Footer />
 
-      {/* Global Toast Container */}
-      <ToastContainer />
-
-      {/* Modals with Lazy Suspense */}
+      {/* Global Modals */}
       <Suspense fallback={null}>
         <NewTournamentModal
           isOpen={isNewTournamentOpen}
@@ -266,14 +273,17 @@ const MainApp: React.FC = () => {
         />
 
         <PlayerRegistrationModal
-          isOpen={isRegisterOpen}
-          onClose={() => setIsRegisterOpen(false)}
           playerToEdit={playerToEdit}
+          isOpen={isRegisterOpen}
+          onClose={() => {
+            setIsRegisterOpen(false);
+            setPlayerToEdit(null);
+          }}
         />
 
         <PlayerProfileModal
           player={selectedProfilePlayer}
-          isOpen={selectedProfilePlayer !== null}
+          isOpen={!!selectedProfilePlayer}
           onClose={() => setSelectedProfilePlayer(null)}
         />
 
@@ -316,71 +326,155 @@ const MainApp: React.FC = () => {
   );
 };
 
-type ViewMode = 'loading' | 'cinematic' | 'command';
+type ViewMode = 'loading' | 'cinematic' | 'command' | 'about' | 'play';
 
-export function App() {
-  const [viewMode, setViewMode] = useState<ViewMode>('loading');
+function getInitialViewMode(): ViewMode {
+  if (typeof window !== 'undefined') {
+    const path = window.location.pathname.toLowerCase();
+    if (path === '/about' || path.startsWith('/about/')) {
+      return 'about';
+    }
+    if (path === '/play' || path.startsWith('/play/')) {
+      return 'play';
+    }
+  }
+  return 'loading';
+}
+
+function AppContent() {
+  const [viewMode, setViewMode] = useState<ViewMode>(getInitialViewMode);
+
+  // Sync route with browser history (popstate)
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname.toLowerCase();
+      if (path === '/about' || path.startsWith('/about/')) {
+        setViewMode('about');
+      } else if (path === '/play' || path.startsWith('/play/')) {
+        setViewMode('play');
+      } else if (path === '/command' || path.startsWith('/command/')) {
+        setViewMode('command');
+      } else {
+        setViewMode('cinematic');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const handleLoadComplete = useCallback(() => {
     setViewMode('cinematic');
   }, []);
 
   const handleEnterCommand = useCallback(() => {
+    if (window.location.pathname !== '/command') {
+      window.history.pushState({}, '', '/command');
+    }
     setViewMode('command');
   }, []);
 
   const handleBackToCinematic = useCallback(() => {
+    if (window.location.pathname !== '/') {
+      window.history.pushState({}, '', '/');
+    }
     setViewMode('cinematic');
+  }, []);
+
+  const handleNavigateToAbout = useCallback(() => {
+    if (window.location.pathname !== '/about') {
+      window.history.pushState({}, '', '/about');
+    }
+    setViewMode('about');
+  }, []);
+
+  const handleNavigateToPlay = useCallback(() => {
+    if (window.location.pathname !== '/play') {
+      window.history.pushState({}, '', '/play');
+    }
+    setViewMode('play');
   }, []);
 
   if (viewMode === 'loading') {
     return <LoadingScreen onComplete={handleLoadComplete} />;
   }
 
+  if (viewMode === 'about') {
+    return (
+      <Suspense fallback={<LoadingScreen onComplete={() => {}} />}>
+        <AboutPage
+          onNavigateHome={handleBackToCinematic}
+          onNavigateCommand={handleEnterCommand}
+          onNavigatePlay={handleNavigateToPlay}
+        />
+      </Suspense>
+    );
+  }
+
+  if (viewMode === 'play') {
+    return (
+      <Suspense fallback={<LoadingScreen onComplete={() => {}} />}>
+        <PlayChessPage
+          onNavigateHome={handleBackToCinematic}
+          onNavigateCommand={handleEnterCommand}
+        />
+      </Suspense>
+    );
+  }
+
   if (viewMode === 'cinematic') {
     return (
-      <TournamentProvider>
-        <Suspense fallback={<LoadingScreen onComplete={() => {}} />}>
-          <CinematicShell onCommandCenter={handleEnterCommand} />
-        </Suspense>
-      </TournamentProvider>
+      <Suspense fallback={<LoadingScreen onComplete={() => {}} />}>
+        <CinematicShell 
+          onCommandCenter={handleEnterCommand} 
+          onNavigateAbout={handleNavigateToAbout}
+          onNavigatePlay={handleNavigateToPlay}
+        />
+      </Suspense>
     );
   }
 
   // 'command' mode — full admin dashboard
   return (
+    <div style={{ position: 'relative' }}>
+      {/* Back to Arena button */}
+      <button
+        onClick={handleBackToCinematic}
+        style={{
+          position: 'fixed',
+          bottom: '1.5rem',
+          right: '1.5rem',
+          zIndex: 9999,
+          background: 'rgba(10,10,11,0.9)',
+          border: '1px solid rgba(201,168,76,0.35)',
+          color: 'var(--cg-gold)',
+          padding: '0.6rem 1.2rem',
+          fontFamily: 'var(--font-sans)',
+          fontSize: '0.6rem',
+          fontWeight: 600,
+          letterSpacing: '0.2em',
+          textTransform: 'uppercase',
+          cursor: 'pointer',
+          backdropFilter: 'blur(12px)',
+          borderRadius: '2px',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+          transition: 'all 0.3s ease',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(201,168,76,0.12)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(10,10,11,0.9)'; }}
+      >
+        ♛ &nbsp; Back to Arena
+      </button>
+      <MainApp onNavigateAbout={handleNavigateToAbout} onNavigatePlay={handleNavigateToPlay} />
+    </div>
+  );
+}
+
+export function App() {
+  return (
     <TournamentProvider>
-      <div style={{ position: 'relative' }}>
-        {/* Back to Arena button */}
-        <button
-          onClick={handleBackToCinematic}
-          style={{
-            position: 'fixed',
-            bottom: '1.5rem',
-            right: '1.5rem',
-            zIndex: 9999,
-            background: 'rgba(10,10,11,0.9)',
-            border: '1px solid rgba(201,168,76,0.35)',
-            color: 'var(--cg-gold)',
-            padding: '0.6rem 1.2rem',
-            fontFamily: 'var(--font-sans)',
-            fontSize: '0.6rem',
-            fontWeight: 600,
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            cursor: 'pointer',
-            backdropFilter: 'blur(12px)',
-            borderRadius: '2px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-            transition: 'all 0.3s ease',
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(201,168,76,0.12)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(10,10,11,0.9)'; }}
-        >
-          ♛ &nbsp; Back to Arena
-        </button>
-        <MainApp />
-      </div>
+      <AppContent />
+      <ToastContainer />
     </TournamentProvider>
   );
 }

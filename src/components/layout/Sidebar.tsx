@@ -12,15 +12,18 @@ import {
   History, 
   Settings2,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  Gamepad2
 } from 'lucide-react';
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  onNavigateAbout?: () => void;
+  onNavigatePlay?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onNavigateAbout, onNavigatePlay }) => {
   const { activeTab, setActiveTab, stats } = useTournament();
 
   const navItems: { id: NavTab; label: string; icon: React.ReactNode; badge?: string | number; badgeColor?: string }[] = [
@@ -82,6 +85,26 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const handleNavClick = (tabId: NavTab) => {
     setActiveTab(tabId);
     onClose();
+  };
+
+  const handlePlayClick = () => {
+    onClose();
+    if (onNavigatePlay) {
+      onNavigatePlay();
+    } else {
+      window.history.pushState({}, '', '/play');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
+  };
+
+  const handleAboutClick = () => {
+    onClose();
+    if (onNavigateAbout) {
+      onNavigateAbout();
+    } else {
+      window.history.pushState({}, '', '/about');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
   };
 
   return (
@@ -226,31 +249,90 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </nav>
         </div>
 
-        {/* Arbiter / Developer Attribution badge */}
-        <div
-          className="p-3 rounded text-center mt-4"
-          style={{
-            background: 'rgba(17, 17, 20, 0.6)',
-            border: '1px solid rgba(201, 168, 76, 0.1)',
-          }}
-        >
-          <div
-            className="flex items-center justify-center gap-1.5 text-[10px]"
+        {/* Bottom Section: Play Chess + About Button & Creator Attribution */}
+        <div className="space-y-2 mt-4">
+          <button
+            onClick={handlePlayClick}
+            className="w-full flex items-center justify-between px-3 py-2 rounded transition-all text-left"
             style={{
+              background: 'rgba(34, 166, 122, 0.1)',
+              border: '1px solid rgba(34, 166, 122, 0.35)',
+              color: '#34d399',
               fontFamily: 'var(--font-sans)',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'var(--cg-gold)',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              letterSpacing: '0.06em',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(34, 166, 122, 0.2)';
+              e.currentTarget.style.borderColor = 'rgba(34, 166, 122, 0.6)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(34, 166, 122, 0.1)';
+              e.currentTarget.style.borderColor = 'rgba(34, 166, 122, 0.35)';
             }}
           >
-            <Sparkles className="w-3 h-3 text-amber-400" />
-            <span>GLOBAL ARBITRATION</span>
-          </div>
-          <div
-            className="text-[10px] font-medium mt-0.5"
-            style={{ color: 'rgba(200, 192, 174, 0.5)' }}
+            <div className="flex items-center gap-2">
+              <Gamepad2 className="w-3.5 h-3.5 text-emerald-400" />
+              <span>PLAY CHESS & ANALYSIS</span>
+            </div>
+            <ChevronRight className="w-3.5 h-3.5 text-emerald-400" />
+          </button>
+
+          <button
+            onClick={handleAboutClick}
+            className="w-full flex items-center justify-between px-3 py-2 rounded transition-all text-left"
+            style={{
+              background: 'rgba(239, 68, 68, 0.08)',
+              border: '1px solid rgba(239, 68, 68, 0.25)',
+              color: '#f87171',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              letterSpacing: '0.06em',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(239, 68, 68, 0.18)';
+              e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(239, 68, 68, 0.08)';
+              e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.25)';
+            }}
           >
-            Dev: Ram Vishwakarma
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              <span>ABOUT CHESSGRID</span>
+            </div>
+            <ChevronRight className="w-3.5 h-3.5 text-red-400" />
+          </button>
+
+          {/* Arbiter / Developer Attribution badge */}
+          <div
+            className="p-3 rounded text-center"
+            style={{
+              background: 'rgba(17, 17, 20, 0.6)',
+              border: '1px solid rgba(201, 168, 76, 0.1)',
+            }}
+          >
+            <div
+              className="flex items-center justify-center gap-1.5 text-[10px]"
+              style={{
+                fontFamily: 'var(--font-sans)',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: 'var(--cg-gold)',
+              }}
+            >
+              <Sparkles className="w-3 h-3 text-amber-400" />
+              <span>GLOBAL ARBITRATION</span>
+            </div>
+            <div
+              className="text-[10px] font-medium mt-0.5"
+              style={{ color: 'rgba(200, 192, 174, 0.5)' }}
+            >
+              Dev: Ram Vishwakarma
+            </div>
           </div>
         </div>
       </aside>

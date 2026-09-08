@@ -5,14 +5,18 @@ import { formatTime, formatResultBadge } from '../../utils/formatters';
 
 interface BracketMatchNodeProps {
   match: Match;
-  players: Player[];
+  players?: Player[];
+  playerMap?: Map<string, Player>;
   onClick: (match: Match) => void;
 }
 
-export const BracketMatchNode: React.FC<BracketMatchNodeProps> = ({ match, players, onClick }) => {
-  const playerMap = new Map<string, Player>(players.map(p => [p.id, p]));
-  const whitePlayer = match.whitePlayerId ? playerMap.get(match.whitePlayerId) : null;
-  const blackPlayer = match.blackPlayerId ? playerMap.get(match.blackPlayerId) : null;
+export const BracketMatchNode: React.FC<BracketMatchNodeProps> = React.memo(({ match, players, playerMap, onClick }) => {
+  const whitePlayer = match.whitePlayerId 
+    ? (playerMap ? playerMap.get(match.whitePlayerId) : players?.find(p => p.id === match.whitePlayerId)) 
+    : null;
+  const blackPlayer = match.blackPlayerId 
+    ? (playerMap ? playerMap.get(match.blackPlayerId) : players?.find(p => p.id === match.blackPlayerId)) 
+    : null;
 
   const isCompleted = match.status === 'completed';
   const isLive = match.status === 'live';
@@ -143,6 +147,6 @@ export const BracketMatchNode: React.FC<BracketMatchNodeProps> = ({ match, playe
       </div>
     </div>
   );
-};
+});
 
 export default BracketMatchNode;

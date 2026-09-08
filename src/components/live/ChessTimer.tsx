@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import type { Match, Player } from '../../types/tournament';
+import type { Match } from '../../types/tournament';
 import { useTournament } from '../../context/TournamentContext';
 import { Play, Pause, RotateCcw, AlertCircle } from 'lucide-react';
 import { formatTime } from '../../utils/formatters';
@@ -9,9 +9,9 @@ interface ChessTimerProps {
   onOpenResultModal: (match: Match) => void;
 }
 
-export const ChessTimer: React.FC<ChessTimerProps> = ({ match, onOpenResultModal }) => {
+export const ChessTimer: React.FC<ChessTimerProps> = React.memo(({ match, onOpenResultModal }) => {
   const { 
-    players, 
+    playerMap, 
     pauseMatch, 
     resumeMatch, 
     switchActiveClock, 
@@ -19,7 +19,6 @@ export const ChessTimer: React.FC<ChessTimerProps> = ({ match, onOpenResultModal
     adjustPlayerClock 
   } = useTournament();
 
-  const playerMap = new Map<string, Player>(players.map(p => [p.id, p]));
   const whitePlayer = match.whitePlayerId ? playerMap.get(match.whitePlayerId) : null;
   const blackPlayer = match.blackPlayerId ? playerMap.get(match.blackPlayerId) : null;
 
@@ -33,6 +32,10 @@ export const ChessTimer: React.FC<ChessTimerProps> = ({ match, onOpenResultModal
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space' && match.status === 'live') {
+        const target = e.target as HTMLElement;
+        if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) {
+          return;
+        }
         e.preventDefault();
         switchActiveClock(match.id);
       }
@@ -290,6 +293,6 @@ export const ChessTimer: React.FC<ChessTimerProps> = ({ match, onOpenResultModal
       </div>
     </div>
   );
-};
+});
 
 export default ChessTimer;

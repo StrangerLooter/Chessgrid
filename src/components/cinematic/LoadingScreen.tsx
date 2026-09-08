@@ -18,10 +18,28 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
   const [isExiting, setIsExiting] = useState(false);
   const rafRef = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
-  const DURATION = 3200; // ms total load time
+  const completedRef = useRef<boolean>(false);
+  const DURATION = 1200; // ms total load time (snappy, fast boot)
+
+  const handleSkip = () => {
+    if (completedRef.current) return;
+    completedRef.current = true;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    setProgress(100);
+    setIsExiting(true);
+    setTimeout(onComplete, 250);
+  };
 
   useEffect(() => {
+    const handleKeyDown = () => {
+      handleSkip();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('pointerdown', handleKeyDown);
+
     const animate = (timestamp: number) => {
+      if (completedRef.current) return;
       if (!startRef.current) startRef.current = timestamp;
       const elapsed = timestamp - startRef.current;
       const pct = Math.min((elapsed / DURATION) * 100, 100);
@@ -37,17 +55,20 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
       if (pct < 100) {
         rafRef.current = requestAnimationFrame(animate);
       } else {
-        // Slight pause at 100%, then exit
+        completedRef.current = true;
+        // Quick exit
         setTimeout(() => {
           setIsExiting(true);
-          setTimeout(onComplete, 800);
-        }, 400);
+          setTimeout(onComplete, 300);
+        }, 150);
       }
     };
 
     rafRef.current = requestAnimationFrame(animate);
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('pointerdown', handleKeyDown);
     };
   }, [onComplete]);
 
@@ -261,6 +282,29 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
             </div>
           ))}
         </div>
+
+        {/* Instant Skip prompt */}
+        <button
+          onClick={handleSkip}
+          className="cursor-pointer transition-opacity duration-300 hover:opacity-100 opacity-60"
+          style={{
+            background: 'transparent',
+            border: 'none',
+            color: 'var(--cg-gold)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.65rem',
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.4rem',
+            padding: '0.3rem 0.6rem',
+            marginTop: '-0.5rem',
+          }}
+          title="Click or press any key to enter immediately"
+        >
+          <span>[ Click or press any key to skip ⏭ ]</span>
+        </button>
       </div>
     </div>
   );

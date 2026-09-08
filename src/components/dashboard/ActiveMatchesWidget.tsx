@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTournament } from '../../context/TournamentContext';
-import type { Match, Player } from '../../types/tournament';
+import type { Match } from '../../types/tournament';
 import { Clock, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { formatTime } from '../../utils/formatters';
 
@@ -9,13 +9,12 @@ interface ActiveMatchesWidgetProps {
   onOpenResultModal: (match: Match) => void;
 }
 
-export const ActiveMatchesWidget: React.FC<ActiveMatchesWidgetProps> = ({
+export const ActiveMatchesWidget: React.FC<ActiveMatchesWidgetProps> = React.memo(({
   onOpenResultModal,
 }) => {
-  const { matches, players, switchActiveClock, setActiveTab } = useTournament();
+  const { matches, playerMap, switchActiveClock, setActiveTab } = useTournament();
 
-  const liveMatches = matches.filter(m => m.status === 'live');
-  const playerMap = new Map<string, Player>(players.map(p => [p.id, p]));
+  const liveMatches = useMemo(() => matches.filter(m => m.status === 'live'), [matches]);
 
   if (liveMatches.length === 0) {
     return null;
@@ -219,6 +218,6 @@ export const ActiveMatchesWidget: React.FC<ActiveMatchesWidgetProps> = ({
       </div>
     </div>
   );
-};
+});
 
 export default ActiveMatchesWidget;
