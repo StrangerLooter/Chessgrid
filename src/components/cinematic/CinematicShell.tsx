@@ -4,7 +4,9 @@ import { ScrollOrchestrator } from './ScrollOrchestrator';
 import { FloatingNav } from './FloatingNav';
 import { HeroTypography } from './HeroTypography';
 import { NewTournamentModal } from '../common/NewTournamentModal';
-import { CinematicVideoBackground } from './CinematicVideoBackground';
+import { ScrollSequenceCanvas } from './ScrollSequenceCanvas';
+import { LenisSmoothScroll } from './LenisSmoothScroll';
+import { TechfestAtmosphere } from './TechfestAtmosphere';
 
 // Lazy-load rich cinematic scenes for instant initial boot performance
 const PlayerGalleryScene = React.lazy(() => import('./PlayerGalleryScene'));
@@ -40,21 +42,25 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({
 
   return (
     <ScrollProvider>
-      {/* GSAP ScrollTrigger controller that maps scroll percentage to context */}
-      <ScrollOrchestrator />
+      <LenisSmoothScroll>
+        {/* GSAP ScrollTrigger controller that maps scroll percentage to context */}
+        <ScrollOrchestrator />
 
-      {/* Floating navigation dock */}
-      <FloatingNav 
-        onCommandCenter={onCommandCenter} 
-        onOpenNewTournament={handleOpenTournament}
-        onNavigateAbout={onNavigateAbout}
-        onNavigatePlay={onNavigatePlay}
-      />
+        {/* Floating navigation dock */}
+        <FloatingNav 
+          onCommandCenter={onCommandCenter} 
+          onOpenNewTournament={handleOpenTournament}
+          onNavigateAbout={onNavigateAbout}
+          onNavigatePlay={onNavigatePlay}
+        />
 
-      {/* Persistent Hardware-Accelerated Video Background Engine */}
-      <CinematicVideoBackground />
+        {/* Apple-Grade 60+ FPS Scroll-Locked Canvas Sequence Engine */}
+        <ScrollSequenceCanvas totalFrames={240} />
 
-      {/* Main interactive UI overlay container */}
+        {/* Techfest IIT Bombay-Grade Interactive Cybernetic Particle & Mouse Aura Layer */}
+        <TechfestAtmosphere />
+
+        {/* Main interactive UI overlay container */}
       <main
         ref={scrollContainerRef}
         id="cg-cinematic-container"
@@ -178,6 +184,7 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({
         isOpen={isLocalNewTournamentOpen}
         onClose={() => setIsLocalNewTournamentOpen(false)}
       />
+      </LenisSmoothScroll>
     </ScrollProvider>
   );
 };
