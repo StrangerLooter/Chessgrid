@@ -7,6 +7,7 @@ import { NewTournamentModal } from '../common/NewTournamentModal';
 import { ScrollSequenceCanvas } from './ScrollSequenceCanvas';
 import { LenisSmoothScroll } from './LenisSmoothScroll';
 import { TechfestAtmosphere } from './TechfestAtmosphere';
+import { LandingContentSections } from './LandingContentSections';
 
 // Lazy-load rich cinematic scenes for instant initial boot performance
 const PlayerGalleryScene = React.lazy(() => import('./PlayerGalleryScene'));
@@ -177,6 +178,15 @@ export const CinematicShell: React.FC<CinematicShellProps> = ({
             <ChampionPodiumScene />
           </Suspense>
         </section>
+
+        {/* ════════════════════════════════════════════
+            FOREGROUND CONTENT SUITE (FEATURES, WORKFLOW, MODULES, CTA)
+            ════════════════════════════════════════════ */}
+        <LandingContentSections
+          onCommandCenter={onCommandCenter}
+          onOpenNewTournament={handleOpenTournament}
+          onNavigatePlay={onNavigatePlay}
+        />
       </main>
 
       {/* New Tournament Creation Modal */}

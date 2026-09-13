@@ -182,19 +182,19 @@ export const ChessBoard: React.FC<ChessBoardProps> = ({
 
   return (
     <div className="relative w-full max-w-[560px] aspect-square mx-auto select-none">
-      {/* Outer Luxury Chassis */}
+      {/* Outer Luxury Chassis — Dark Beveled Walnut Frame */}
       <div
         ref={boardContainerRef}
         id="cg-chessboard-chassis"
-        className="w-full h-full rounded-xl overflow-hidden p-2 sm:p-3 relative flex flex-col justify-between"
+        className="w-full h-full rounded-2xl overflow-hidden p-2 sm:p-3 relative flex flex-col justify-between"
         style={{
-          background: 'linear-gradient(145deg, #18181d 0%, #0c0c0f 100%)',
-          border: '1px solid rgba(201, 168, 76, 0.35)',
-          boxShadow: '0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(201,168,76,0.1), inset 0 1px 0 rgba(255,255,255,0.08)',
+          background: 'linear-gradient(145deg, #28170f 0%, #160c07 100%)',
+          border: '2px solid rgba(201, 168, 76, 0.4)',
+          boxShadow: '0 25px 60px rgba(0,0,0,0.9), 0 0 35px rgba(201,168,76,0.18), inset 0 1px 1px rgba(255,255,255,0.15)',
         }}
       >
-        {/* 8x8 Grid Container */}
-        <div className="w-full h-full grid grid-cols-8 grid-rows-8 rounded-lg overflow-hidden relative shadow-inner">
+        {/* Board Playing Surface with Inset Bevel */}
+        <div className="w-full h-full grid grid-cols-8 grid-rows-8 rounded-xl overflow-hidden relative shadow-[inset_0_0_15px_rgba(0,0,0,0.6)] border border-[#3d2315]">
           {ranks.map((rank, rIdx) =>
             files.map((file, fIdx) => {
               const sq = `${file}${rank}` as Square;
@@ -216,23 +216,50 @@ export const ChessBoard: React.FC<ChessBoardProps> = ({
                   onClick={() => handleSquareClick(sq)}
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, sq)}
-                  className="relative flex items-center justify-center cursor-pointer transition-colors duration-150 group"
+                  className="relative flex items-center justify-center cursor-pointer transition-colors duration-150 group select-none"
                   style={{
-                    backgroundColor: isLight ? '#2a2a34' : '#141419',
-                    backgroundImage: isLight
-                      ? 'radial-gradient(circle at 50% 50%, rgba(201,168,76,0.04) 0%, transparent 80%)'
-                      : 'radial-gradient(circle at 50% 50%, rgba(10,10,14,0.4) 0%, transparent 80%)',
-                    boxShadow: isLight ? 'inset 0 0 8px rgba(0,0,0,0.25)' : 'inset 0 0 12px rgba(0,0,0,0.45)',
+                    background: isLight 
+                      ? 'linear-gradient(135deg, #d8ac72 0%, #c4965c 60%, #cc9f65 100%)' 
+                      : 'linear-gradient(135deg, #744626 0%, #563319 60%, #683d20 100%)',
+                    boxShadow: isLight 
+                      ? 'inset 0 0 4px rgba(0,0,0,0.12)' 
+                      : 'inset 0 0 7px rgba(0,0,0,0.35)',
                     ...customSquareStyles[sq],
                   }}
                 >
-                  {/* Last Move Overlay */}
+                  {/* Coordinate Label: Top-Left of Leftmost Squares (Ranks 8 to 1) */}
+                  {fIdx === 0 && (
+                    <span
+                      className="absolute top-0.5 left-1 text-[9px] sm:text-[10px] font-mono font-bold pointer-events-none select-none"
+                      style={{
+                        color: isLight ? '#5a351a' : '#dfb87f',
+                        opacity: 0.85,
+                      }}
+                    >
+                      {rank}
+                    </span>
+                  )}
+
+                  {/* Coordinate Label: Bottom-Right of Bottom Squares (Files a to h) */}
+                  {rIdx === 7 && (
+                    <span
+                      className="absolute bottom-0.5 right-1 text-[9px] sm:text-[10px] font-mono font-bold pointer-events-none select-none"
+                      style={{
+                        color: isLight ? '#5a351a' : '#dfb87f',
+                        opacity: 0.85,
+                      }}
+                    >
+                      {file}
+                    </span>
+                  )}
+
+                  {/* Last Move Overlay (Reference Image Warm Golden Amber Glow) */}
                   {isLastMove && (
                     <div
                       className="absolute inset-0 pointer-events-none"
                       style={{
-                        background: 'rgba(201, 168, 76, 0.22)',
-                        boxShadow: 'inset 0 0 10px rgba(201, 168, 76, 0.3)',
+                        background: 'rgba(232, 196, 90, 0.42)',
+                        boxShadow: 'inset 0 0 12px rgba(201, 168, 76, 0.65), 0 0 8px rgba(232, 196, 90, 0.3)',
                       }}
                     />
                   )}
