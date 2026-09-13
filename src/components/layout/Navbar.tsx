@@ -43,7 +43,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     isMuted, 
     toggleMute, 
     setIsProjectorMode,
-    loadDemoTournament
+    resetTournament,
   } = useTournament();
 
   const [showResetConfirm, setShowResetConfirm] = useState(false);
@@ -106,7 +106,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span
                   className="text-xs truncate max-w-[200px] sm:max-w-xs font-mono text-[rgba(200,192,174,0.6)] text-[11px]"
                 >
-                  {settings.name} • {settings.collegeName || 'Global Masters Arena'}
+                  {settings.name} • {settings.collegeName || 'Tournament Arena'}
                 </span>
               </div>
             </div>
@@ -224,6 +224,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 border: '1px solid rgba(201, 168, 76, 0.12)',
               }}
               title="Print Tournament Report"
+              aria-label="Print Tournament Report"
             >
               <Printer className="w-4 h-4" />
             </button>
@@ -238,6 +239,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 color: isMuted ? 'var(--cg-red-bright)' : 'var(--cg-emerald-bright)',
               }}
               title={isMuted ? 'Unmute Sound Effects' : 'Mute Sound Effects'}
+              aria-label={isMuted ? 'Unmute Sound Effects' : 'Mute Sound Effects'}
             >
               {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
             </button>
@@ -251,6 +253,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 border: '1px solid rgba(201, 168, 76, 0.12)',
               }}
               title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             >
               {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-amber-200" />}
             </button>
@@ -264,6 +267,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 border: '1px solid rgba(201, 168, 76, 0.12)',
               }}
               title="Reset Tournament / Load Sample Data"
+              aria-label="Reset Tournament or Load Sample Data"
             >
               <RefreshCw className="w-4 h-4" />
             </button>
@@ -274,12 +278,15 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Reset Confirmation Dialog */}
       <ConfirmDialog
         isOpen={showResetConfirm}
-        title="Reset or Reload Tournament?"
-        message="Would you like to reload the Masters Demo Championship or wipe all data to start fresh?"
-        confirmLabel="Reload Masters Demo"
+        title="Reset Tournament Session?"
+        message="Would you like to wipe current matches and start a clean tournament ready for real contender registration?"
+        confirmLabel="Start Clean Tournament"
         cancelLabel="Cancel"
         variant="warning"
-        onConfirm={loadDemoTournament}
+        onConfirm={() => {
+          resetTournament();
+          setShowResetConfirm(false);
+        }}
         onCancel={() => setShowResetConfirm(false)}
       />
 

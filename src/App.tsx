@@ -19,6 +19,7 @@ import { RoundProgress } from './components/dashboard/RoundProgress';
 import { ActiveMatchesWidget } from './components/dashboard/ActiveMatchesWidget';
 import { UpcomingMatchesWidget } from './components/dashboard/UpcomingMatchesWidget';
 import { AnnouncementsWidget } from './components/dashboard/AnnouncementsWidget';
+import { TournamentActionCenter } from './components/dashboard/TournamentActionCenter';
 
 // Lazy-load Heavy Views & Tabs
 const PlayerTable = lazy(() => import('./components/players/PlayerTable').then(m => ({ default: m.PlayerTable })));
@@ -154,6 +155,15 @@ const MainApp: React.FC<MainAppProps> = ({ onNavigateAbout, onNavigatePlay }) =>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   <div className="lg:col-span-2 space-y-6">
+                    <TournamentActionCenter
+                      onOpenRegisterModal={() => {
+                        setPlayerToEdit(null);
+                        setIsRegisterOpen(true);
+                      }}
+                      onOpenBulkImportModal={() => setIsBulkImportOpen(true)}
+                      onOpenShuffleModal={() => setIsShuffleModalOpen(true)}
+                    />
+
                     <ActiveMatchesWidget
                       onOpenMatchModal={handleOpenMatchDetails}
                       onOpenResultModal={handleOpenResultEntry}

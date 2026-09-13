@@ -103,6 +103,7 @@ interface TournamentContextType {
     currentRoundName: string;
     championPlayer: Player | null;
     runnerUpPlayer: Player | null;
+    availableBoardsCount: number;
   };
 }
 
@@ -127,15 +128,59 @@ function safeLoadFromStorage<T>(key: string, fallback: T): T {
   }
 }
 
+const DEFAULT_REAL_SETTINGS: TournamentSettings = {
+  id: 'cg-championship-2026',
+  name: 'ChessGrid Championship 2026',
+  collegeName: 'Tournament Arena',
+  departmentName: 'Championship Division',
+  academicSession: 'Season 2026',
+  date: '2026-09-15',
+  venue: 'Main Arena Hall',
+  organizerName: 'Chief Arbiter',
+  totalPlayers: 8,
+  status: 'setup',
+  currentRoundIndex: 0,
+  rulesText: `1. Official FIDE Rapid Knockout Tournament Rules apply.
+2. Default Time Control is 10 minutes + 5 seconds increment per move.
+3. Touch-move rule is strictly enforced across all active boards.
+4. In the event of a drawn match, an Armageddon playoff match will determine the advancing contender.
+5. Chief Arbiter & Tournament Director decisions are final and binding.`,
+  defaultTimeControl: {
+    type: 'rapid',
+    initialMinutes: 10,
+    incrementSeconds: 5,
+    label: '10 + 5 Rapid',
+  },
+  maxBoards: 4,
+  autoAdvanceWalkovers: true,
+};
+
+const DEFAULT_REAL_BOARDS: Board[] = Array.from({ length: 4 }, (_, i) => ({
+  number: i + 1,
+  currentMatchId: null,
+  status: 'empty',
+}));
+
+const DEFAULT_REAL_ANNOUNCEMENTS: Announcement[] = [
+  {
+    id: 'ann-init-1',
+    title: 'Tournament Roster Enrollment Open',
+    content: 'Welcome to ChessGrid Championship 2026. Player registration is now open. Contenders may register directly with the Chief Arbiter or be imported via CSV.',
+    timestamp: new Date().toISOString(),
+    priority: 'high',
+    isPinned: true,
+  },
+];
+
 const TournamentContext = createContext<TournamentContextType | undefined>(undefined);
 
 export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Load initial states from LocalStorage safely or Fallback to DEMO
-  const [settings, setSettings] = useState<TournamentSettings>(() => safeLoadFromStorage(STORAGE_KEY_SETTINGS, DEMO_SETTINGS));
-  const [players, setPlayers] = useState<Player[]>(() => safeLoadFromStorage(STORAGE_KEY_PLAYERS, DEMO_PLAYERS));
-  const [matches, setMatches] = useState<Match[]>(() => safeLoadFromStorage(STORAGE_KEY_MATCHES, DEMO_MATCHES));
-  const [boards, setBoards] = useState<Board[]>(() => safeLoadFromStorage(STORAGE_KEY_BOARDS, DEMO_BOARDS));
-  const [announcements, setAnnouncements] = useState<Announcement[]>(() => safeLoadFromStorage(STORAGE_KEY_ANNOUNCEMENTS, DEMO_ANNOUNCEMENTS));
+  // Load initial states from LocalStorage safely or Fallback to clean real tournament setup
+  const [settings, setSettings] = useState<TournamentSettings>(() => safeLoadFromStorage(STORAGE_KEY_SETTINGS, DEFAULT_REAL_SETTINGS));
+  const [players, setPlayers] = useState<Player[]>(() => safeLoadFromStorage(STORAGE_KEY_PLAYERS, []));
+  const [matches, setMatches] = useState<Match[]>(() => safeLoadFromStorage(STORAGE_KEY_MATCHES, generateInitialMatches(8, DEFAULT_REAL_SETTINGS.defaultTimeControl)));
+  const [boards, setBoards] = useState<Board[]>(() => safeLoadFromStorage(STORAGE_KEY_BOARDS, DEFAULT_REAL_BOARDS));
+  const [announcements, setAnnouncements] = useState<Announcement[]>(() => safeLoadFromStorage(STORAGE_KEY_ANNOUNCEMENTS, DEFAULT_REAL_ANNOUNCEMENTS));
   const [historyLogs, setHistoryLogs] = useState<HistoryLog[]>(() => safeLoadFromStorage(STORAGE_KEY_HISTORY, []));
 
   const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
@@ -387,8 +432,18 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     localStorage.removeItem(STORAGE_KEY_BOARDS);
     localStorage.removeItem(STORAGE_KEY_ANNOUNCEMENTS);
     localStorage.removeItem(STORAGE_KEY_HISTORY);
-    loadDemoTournament();
-  }, [loadDemoTournament]);
+    startNewTournament({
+      name: 'Collegiate Chess Championship 2026',
+      collegeName: 'Tournament Arena',
+      departmentName: 'Championship Division',
+      venue: 'Main Arena Hall',
+      organizerName: 'Chief Arbiter',
+      totalPlayers: 8,
+      status: 'setup',
+      maxBoards: 4,
+    });
+    addToast('warning', 'Tournament Reset', 'Clean tournament session initialized. You may now register contenders.');
+  }, [startNewTournament, addToast]);
 
   // Player Management
   const addPlayer = useCallback((playerData: Omit<Player, 'id' | 'matchesPlayed' | 'wins' | 'losses' | 'draws' | 'currentRound' | 'score' | 'status'>) => {
@@ -743,6 +798,8 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       if (activeMatch) currentRoundName = activeMatch.roundName;
     }
 
+    const availableBoardsCount = boards.filter(b => b.status === 'empty').length;
+
     return {
       totalRegistered,
       totalRequired,
@@ -755,8 +812,9 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       currentRoundName,
       championPlayer,
       runnerUpPlayer,
+      availableBoardsCount,
     };
-  }, [players, settings.totalPlayers, matches]);
+  }, [players, settings.totalPlayers, matches, boards]);
 
   const contextValue = useMemo<TournamentContextType>(() => ({
     settings,
