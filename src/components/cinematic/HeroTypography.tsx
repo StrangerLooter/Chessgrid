@@ -1,11 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { 
+  Home, 
+  Trophy, 
+  Users, 
+  CalendarDays, 
+  Activity, 
+  BookOpen, 
   Plus, 
-  Compass, 
-  Gamepad2, 
-  ChevronDown
+  Compass,
+  Gamepad2
 } from 'lucide-react';
+import { useTournament } from '../../context/TournamentContext';
 
 interface HeroTypographyProps {
   onEnter: () => void;
@@ -18,6 +24,7 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({
   onOpenNewTournament, 
   onNavigatePlay 
 }) => {
+  const { setActiveTab } = useTournament();
   const containerRef = useRef<HTMLDivElement>(null);
   const heroContentRef = useRef<HTMLDivElement>(null);
 
@@ -32,12 +39,17 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({
     const tl = gsap.timeline({ delay: 0.15 });
     tl.fromTo(
       heroContentRef.current,
-      { opacity: 0, y: 30, scale: 0.98 },
-      { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: 'power3.out' }
+      { opacity: 0, y: 35, scale: 0.97 },
+      { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: 'power3.out' }
     );
 
     return () => { tl.kill(); };
   }, []);
+
+  const handleNavClick = (tab: string) => {
+    setActiveTab(tab as any);
+    onEnter();
+  };
 
   const handlePlayClick = () => {
     if (onNavigatePlay) {
@@ -49,11 +61,13 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({
   };
 
   const scrollToNext = () => {
-    const nextSection = document.getElementById('cg-section-features') || document.getElementById('cg-section-players');
+    const nextSection = 
+      document.getElementById('cg-section-players') || 
+      document.getElementById('cg-section-features');
     if (nextSection) {
       nextSection.scrollIntoView({ behavior: 'smooth' });
     } else {
-      window.scrollTo({ top: window.innerHeight * 1.1, behavior: 'smooth' });
+      window.scrollTo({ top: window.innerHeight * 1.2, behavior: 'smooth' });
     }
   };
 
@@ -61,69 +75,130 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({
     <div
       ref={containerRef}
       id="cg-hero-typography"
-      className="absolute inset-0 flex flex-col justify-between items-center pointer-events-none z-20 px-4 sm:px-6 lg:px-8 py-6"
+      className="absolute inset-0 flex flex-col justify-between items-center pointer-events-none z-20 px-4 sm:px-8 py-4"
     >
-      {/* Top Spacer to accommodate navigation */}
+      {/* Top Spacer for Nav */}
       <div className="h-16 sm:h-20" />
+
+      {/* ── Left Sidebar Dock (Desktop) ── */}
+      <aside className="cg-sidebar-left pointer-events-auto" aria-label="Quick Navigation">
+        <button onClick={() => handleNavClick('dashboard')} className="cg-sl-item" title="Home">
+          <Home />
+          <span>Home</span>
+        </button>
+        <button onClick={() => handleNavClick('bracket')} className="cg-sl-item" title="Tournaments">
+          <Trophy />
+          <span>Tournaments</span>
+        </button>
+        <button onClick={() => handleNavClick('players')} className="cg-sl-item" title="Players">
+          <Users />
+          <span>Players</span>
+        </button>
+        <button onClick={() => handleNavClick('matches')} className="cg-sl-item" title="Events">
+          <CalendarDays />
+          <span>Events</span>
+        </button>
+        <button onClick={() => handleNavClick('live')} className="cg-sl-item" title="Live Matches">
+          <Activity />
+          <span>Live</span>
+        </button>
+        <button onClick={() => handleNavClick('history')} className="cg-sl-item" title="Resources">
+          <BookOpen />
+          <span>Resources</span>
+        </button>
+        <button onClick={handlePlayClick} className="cg-sl-item" title="Play Chess vs Engine & Local">
+          <Gamepad2 />
+          <span>Play</span>
+        </button>
+      </aside>
+
+      {/* ── Right Sidebar Dock (Desktop Social Icons) ── */}
+      <aside className="cg-sidebar-right pointer-events-auto" aria-label="Social Links">
+        {/* Discord */}
+        <a href="https://discord.com" target="_blank" rel="noreferrer" className="cg-sr-icon" title="Discord">
+          <svg viewBox="0 0 24 24"><path d="M20.3 4.4A18.4 18.4 0 0015.5 3c-.2.4-.5.9-.6 1.3a17 17 0 00-5.7 0C9 3.9 8.6 3.4 8.4 3a18.5 18.5 0 00-4.8 1.4C1.1 8.6.5 12.6 1 16.5a18.6 18.6 0 005.7 2.9c.5-.6.9-1.3 1.2-2a12 12 0 01-1.9-1c.2-.1.3-.2.5-.3a13.2 13.2 0 0011.4 0l.4.3a12 12 0 01-1.9 1c.4.7.8 1.4 1.2 2a18.5 18.5 0 005.7-2.9c.5-4.5-.8-8.4-3.4-12.1zM8.5 14.1c-1.1 0-2-1-2-2.3s.9-2.3 2-2.3c1.1 0 2 1 2 2.3s-.9 2.3-2 2.3zm7 0c-1.1 0-2-1-2-2.3s.9-2.3 2-2.3c1.1 0 2 1 2 2.3s-.9 2.3-2 2.3z"/></svg>
+        </a>
+        {/* X / Twitter */}
+        <a href="https://x.com" target="_blank" rel="noreferrer" className="cg-sr-icon" title="X (Twitter)">
+          <svg viewBox="0 0 24 24"><path d="M18.3 3h3.1L14.5 11l8 10.5h-6.8l-4.9-6.4-5.6 6.4H2.1l7.5-8.6L2 3h7l4.4 5.8L18.3 3z"/></svg>
+        </a>
+        {/* Instagram */}
+        <a href="https://instagram.com" target="_blank" rel="noreferrer" className="cg-sr-icon" title="Instagram">
+          <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" fill="none" stroke="currentColor" strokeWidth="1.6"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="1.6"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg>
+        </a>
+        {/* YouTube */}
+        <a href="https://youtube.com" target="_blank" rel="noreferrer" className="cg-sr-icon" title="YouTube">
+          <svg viewBox="0 0 24 24"><path d="M22.5 6.5a3 3 0 00-2.1-2.1C18.6 4 12 4 12 4s-6.6 0-8.4.4A3 3 0 001.5 6.5C1 8.3 1 12 1 12s0 3.7.5 5.5a3 3 0 002.1 2.1C5.4 20 12 20 12 20s6.6 0 8.4-.4a3 3 0 002.1-2.1C23 15.7 23 12 23 12s0-3.7-.5-5.5z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor"/></svg>
+        </a>
+        {/* LinkedIn */}
+        <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="cg-sr-icon" title="LinkedIn">
+          <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        </a>
+        {/* GitHub */}
+        <a href="https://github.com/StrangerLooter/Chessgrid" target="_blank" rel="noreferrer" className="cg-sr-icon" title="GitHub Repository">
+          <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+      </aside>
+
+      {/* ── Right Vertical Side Banner ── */}
+      <div className="cg-side-banner">
+        STRATEGY &nbsp;·&nbsp; BRINGS &nbsp;·&nbsp; PEOPLE &nbsp;·&nbsp; TOGETHER
+      </div>
 
       {/* ── Main Centerpiece Hero Content ── */}
       <div
         ref={heroContentRef}
-        className="pointer-events-auto max-w-4xl mx-auto flex flex-col items-center text-center space-y-4 sm:space-y-5 my-auto"
+        className="cg-hero-content pointer-events-auto"
       >
         {/* Eyebrow */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[11px] sm:text-xs font-mono font-bold tracking-widest uppercase bg-[rgba(201,168,76,0.12)] border border-[rgba(201,168,76,0.3)] text-[var(--cg-gold)] shadow-[0_0_15px_rgba(201,168,76,0.15)]">
-          <span className="w-2 h-2 rounded-full bg-[var(--cg-gold)] animate-pulse" />
-          <span>COLLEGIATE CHESS TOURNAMENT MANAGEMENT</span>
-        </div>
+        <p className="cg-hero-eyebrow">
+          PLAN <span>·</span> ORGANIZE <span>·</span> COMPETE <span>·</span> EXPERIENCE
+        </p>
 
-        {/* Brand Logo Asset */}
-        <div className="w-full flex justify-center py-1">
+        {/* ── High-Res Chiseled Metallic Logo Image Asset ── */}
+        <div className="cg-hero-logo-container my-2 sm:my-3">
           <img
             src="/chessgrid-logo.png"
-            alt="CHESSGRID"
-            className="w-full max-w-[480px] sm:max-w-[620px] md:max-w-[720px] lg:max-w-[800px] h-auto object-contain select-none pointer-events-none drop-shadow-[0_10px_35px_rgba(0,0,0,0.8)]"
+            alt="CHESSGRID — The Digital Arena For Chess Tournaments"
+            className="cg-hero-logo-img w-full max-w-[560px] sm:max-w-[700px] md:max-w-[820px] lg:max-w-[920px] xl:max-w-[980px] h-auto object-contain select-none pointer-events-none"
             loading="eager"
             decoding="async"
           />
         </div>
 
-        {/* Headline */}
-        <h1
-          className="text-xl sm:text-2xl md:text-3xl font-bold uppercase tracking-wider text-[var(--cg-ivory)]"
-          style={{ fontFamily: 'var(--font-cinematic)', letterSpacing: '0.08em', textShadow: '0 2px 20px rgba(0,0,0,0.8)' }}
-        >
-          THE DIGITAL ARENA FOR CHESS TOURNAMENTS
-        </h1>
+        {/* ── Subtitle Block ── */}
+        <div className="cg-hero-subtitle-block">
+          <p className="cg-hero-subtitle-top">
+            THE DIGITAL ARENA FOR
+          </p>
+          <p className="cg-hero-subtitle-bottom">
+            CHESS TOURNAMENTS
+          </p>
+        </div>
 
-        {/* Short Product Description */}
-        <p className="max-w-xl text-xs sm:text-sm md:text-base text-[rgba(200,192,174,0.85)] font-sans leading-relaxed text-center px-4" style={{ textShadow: '0 1px 10px rgba(0,0,0,0.9)' }}>
-          Organize knockout brackets, manage players, control live matches, and track every result in one place.
-        </p>
-
-        {/* Dual Primary Action Buttons + Play Chess Trigger */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 w-full max-w-md">
-          {/* Primary: OPEN COMMAND CENTER */}
-          <button
-            onClick={onEnter}
-            className="cg-btn cg-btn-primary w-full sm:w-auto px-6 py-3 text-xs sm:text-sm font-bold tracking-wider uppercase justify-center shadow-[0_0_25px_rgba(201,168,76,0.4)] hover:scale-105 transition-all"
-          >
-            <Compass className="w-4 h-4 text-[#0a0a0b]" />
-            <span>OPEN COMMAND CENTER</span>
-          </button>
-
-          {/* Secondary: CREATE TOURNAMENT */}
+        {/* ── Dual Hero CTA Buttons ── */}
+        <div className="cg-hero-actions">
+          {/* + CREATE TOURNAMENT */}
           <button
             onClick={onOpenNewTournament || onEnter}
-            className="cg-btn cg-btn-ghost w-full sm:w-auto px-6 py-3 text-xs sm:text-sm font-bold tracking-wider uppercase justify-center border border-[rgba(201,168,76,0.4)] bg-[rgba(10,10,12,0.7)] hover:bg-[rgba(201,168,76,0.15)] hover:border-[var(--cg-gold)] transition-all"
+            className="cg-btn-primary"
           >
-            <Plus className="w-4 h-4 text-[var(--cg-gold)]" />
+            <Plus className="w-4 h-4 text-[#ffe699]" />
             <span>CREATE TOURNAMENT</span>
+          </button>
+
+          {/* EXPLORE TOURNAMENTS */}
+          <button
+            onClick={onEnter}
+            className="cg-btn-secondary"
+          >
+            <Compass className="w-4 h-4 text-[#e8c45a]" />
+            <span>EXPLORE TOURNAMENTS</span>
           </button>
         </div>
 
-        {/* Optional small action: PLAY CHESS */}
-        <div className="pt-1">
+        {/* ── Play Chess Trigger ── */}
+        <div className="pt-2">
           <button
             onClick={handlePlayClick}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold text-emerald-300 bg-[rgba(34,166,122,0.12)] border border-[rgba(34,166,122,0.3)] hover:bg-[rgba(34,166,122,0.25)] hover:text-white transition-all cursor-pointer"
@@ -135,34 +210,32 @@ export const HeroTypography: React.FC<HeroTypographyProps> = ({
         </div>
       </div>
 
-      {/* ── Bottom Section: Scroll Indicator & Discrete GitHub Link ── */}
-      <div className="w-full max-w-5xl mx-auto flex items-center justify-between pointer-events-auto pb-2 text-xs font-mono text-[rgba(200,192,174,0.6)]">
-        <a
-          href="https://github.com/StrangerLooter/Chessgrid"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-1.5 text-[11px] text-[rgba(200,192,174,0.5)] hover:text-[var(--cg-gold)] transition-colors"
-          title="ChessGrid on GitHub"
-        >
-          <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-            <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-          </svg>
-          <span className="hidden sm:inline">StrangerLooter/Chessgrid</span>
-        </a>
+      {/* ── Bottom Section: Left Quote, Center Scroll, Right Quote ── */}
+      <div className="w-full max-w-[1720px] mx-auto flex items-end justify-between pointer-events-auto pb-1">
+        
+        {/* Bottom Left Quote */}
+        <div className="cg-corner-text-left">
+          <b>MORE</b><br />
+          THAN A GAME<br />
+          A BIGGER STAGE
+        </div>
 
         {/* Center Scroll Prompt */}
         <button
           onClick={scrollToNext}
-          className="flex flex-col items-center gap-1 text-[11px] uppercase tracking-widest text-[var(--cg-gold)] hover:text-[var(--cg-gold-bright)] transition-colors group cursor-pointer"
+          className="cg-scroll-indicator cursor-pointer"
           aria-label="Scroll to explore features"
         >
-          <span>EXPLORE FEATURES</span>
-          <ChevronDown className="w-4 h-4 animate-bounce text-[var(--cg-gold)]" />
+          <span>SCROLL</span>
+          <div className="cg-scroll-arrow" />
         </button>
 
-        <span className="text-[11px] text-[rgba(200,192,174,0.4)] hidden sm:inline">
-          FIDE KNOCKOUT ENGINE
-        </span>
+        {/* Bottom Right Quote */}
+        <div className="cg-corner-text-right">
+          <b>PLAY</b><br />
+          ORGANIZE<br />
+          INSPIRE
+        </div>
       </div>
     </div>
   );
