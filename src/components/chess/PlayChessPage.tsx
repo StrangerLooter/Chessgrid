@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useChessGame, TIME_CONTROL_PRESETS, type GameMode, type PlayerSideChoice, type SavedGameRecord } from '../../hooks/useChessGame';
+import { useChessVoice } from '../../hooks/useChessVoice';
 import { ChessBoard } from './ChessBoard';
 import { ChessPieceSvg } from './ChessPieceSvg';
 import { AnalysisView } from './AnalysisView';
+import { VoiceControl } from './VoiceControl';
+import { VoiceMovePreview } from './VoiceMovePreview';
 import { DIFFICULTY_PRESETS, type EngineDifficulty } from '../../services/chessEngine';
 import { 
   Bot, 
@@ -60,9 +63,11 @@ export const PlayChessPage: React.FC<PlayChessPageProps> = ({
     whiteTimeMs,
     blackTimeMs,
     isClockRunning,
+    isEngineThinking,
     capturedPieces,
     isFlipped,
     pendingPromotion,
+    makeMove,
     handleSquareClickMove,
     resolvePromotion,
     getLegalMoves,
@@ -79,6 +84,20 @@ export const PlayChessPage: React.FC<PlayChessPageProps> = ({
     timeControl: selectedTimeControl,
     whitePlayerName: activeTab === 'vs_computer' && playerSide === 'black' ? 'Stockfish Engine' : 'You (White)',
     blackPlayerName: activeTab === 'vs_computer' && playerSide === 'white' ? 'Stockfish Engine' : 'Player 2',
+  });
+
+  const voice = useChessVoice({
+    chess,
+    fen,
+    turn,
+    humanColor,
+    mode: activeTab,
+    isGameOver,
+    isEngineThinking,
+    makeMove,
+    undoMove,
+    toggleFlip,
+    resign: () => resign(),
   });
 
   const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
@@ -375,9 +394,23 @@ export const PlayChessPage: React.FC<PlayChessPageProps> = ({
                 selectedSquare={selectedSquare as any}
                 legalMoves={legalMoves as any}
                 pendingPromotion={pendingPromotion}
+                voicePreviewMove={voice.previewMove}
+                ambiguousSquares={voice.ambiguousSquares}
                 onSquareClick={handleSquareClick}
                 onResolvePromotion={resolvePromotion}
               />
+
+              {/* ── Voice Candidate Move Preview or Resign Prompt ── */}
+              {(voice.previewMove || voice.ambiguousCandidates.length > 0 || voice.status === 'CONFIRMING_RESIGN') && (
+                <VoiceMovePreview
+                  previewMove={voice.previewMove}
+                  ambiguousCandidates={voice.ambiguousCandidates}
+                  isConfirmingResign={voice.status === 'CONFIRMING_RESIGN'}
+                  onConfirm={voice.status === 'CONFIRMING_RESIGN' ? voice.confirmResign : voice.confirmMove}
+                  onCancel={voice.cancelPreview}
+                  onSelectCandidate={voice.selectCandidate}
+                />
+              )}
 
               {/* ── Bottom Player Card (White / Flipped Black) ── */}
               <div className="w-full max-w-[560px] p-3 rounded-xl glass-panel border border-white/10 flex items-center justify-between gap-4">
@@ -466,6 +499,24 @@ export const PlayChessPage: React.FC<PlayChessPageProps> = ({
 
             {/* Right Column: Game Setup & Move Notation (4 cols) */}
             <div className="lg:col-span-4 space-y-4">
+              
+              {/* ── Voice Control Module (VS Computer Mode) ── */}
+              {activeTab === 'vs_computer' && (
+                <VoiceControl
+                  isSupported={voice.isSupported}
+                  enabled={voice.enabled}
+                  status={voice.status}
+                  listenMode={voice.listenMode}
+                  isPushToTalkActive={voice.isPushToTalkActive}
+                  transcript={voice.transcript}
+                  feedbackMessage={voice.feedbackMessage}
+                  error={voice.error}
+                  onToggleEnabled={voice.toggleEnabled}
+                  onSetListenMode={voice.setListenMode}
+                  onStartPushToTalk={voice.startPushToTalk}
+                  onStopPushToTalk={voice.stopPushToTalk}
+                />
+              )}
               
               {/* ── Game Over Banner ── */}
               {isGameOver && gameResult && (

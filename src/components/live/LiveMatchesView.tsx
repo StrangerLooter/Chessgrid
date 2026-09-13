@@ -17,6 +17,12 @@ export const LiveMatchesView: React.FC<LiveMatchesViewProps> = ({
   const liveMatches = matches.filter(m => m.status === 'live');
   const readyMatches = matches.filter(m => m.status === 'ready');
 
+  const [focusedMatchId, setFocusedMatchId] = React.useState<string | null>(null);
+
+  const activeFocusedId = focusedMatchId && liveMatches.some(m => m.id === focusedMatchId)
+    ? focusedMatchId
+    : (liveMatches[0]?.id ?? null);
+
   return (
     <div className="space-y-6">
       
@@ -149,6 +155,8 @@ export const LiveMatchesView: React.FC<LiveMatchesViewProps> = ({
               key={match.id}
               match={match}
               onOpenResultModal={onOpenResultModal}
+              isFocused={match.id === activeFocusedId}
+              onFocus={setFocusedMatchId}
             />
           ))}
         </div>

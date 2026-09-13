@@ -8,8 +8,10 @@ import {
   ZoomIn, 
   ZoomOut, 
   RotateCcw, 
-  Shuffle,
-  Crown
+  Shuffle, 
+  Crown,
+  GitFork,
+  LayoutList
 } from 'lucide-react';
 
 interface KnockoutBracketProps {
@@ -23,7 +25,10 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
 }) => {
   const { matches, playerMap, settings, stats } = useTournament();
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [activeRoundTab, setActiveRoundTab] = useState<number>(() => Math.min(settings.currentRoundIndex || 0, Math.max(0, getRoundNames(settings.totalPlayers).length - 1)));
+  const [displayMode, setDisplayMode] = useState<'tree' | 'rounds'>('tree');
   const containerRef = useRef<HTMLDivElement>(null);
+  const roundColumnRefs = useRef<{ [idx: number]: HTMLDivElement | null }>({});
 
   const roundNames: string[] = useMemo(() => getRoundNames(settings.totalPlayers), [settings.totalPlayers]);
 
@@ -42,6 +47,14 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
   const handleZoomIn = () => setZoomLevel(prev => Math.min(1.4, prev + 0.1));
   const handleZoomOut = () => setZoomLevel(prev => Math.max(0.65, prev - 0.1));
   const handleResetZoom = () => setZoomLevel(1);
+
+  const scrollToRound = (rIdx: number) => {
+    setActiveRoundTab(rIdx);
+    if (displayMode === 'tree') {
+      const el = roundColumnRefs.current[rIdx];
+      el?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -145,35 +158,132 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
         </div>
       </div>
 
-      {/* Interactive Bracket Canvas Container */}
-      <div 
-        ref={containerRef}
-        className="w-full overflow-x-auto overflow-y-hidden p-6 sm:p-8 rounded min-h-[580px] flex items-center justify-start relative bracket-scroll"
-        style={{
-          background: 'rgba(10, 10, 11, 0.94)',
-          border: '1px solid rgba(201, 168, 76, 0.22)',
-          boxShadow: 'inset 0 0 60px rgba(0,0,0,0.85), 0 8px 32px rgba(0,0,0,0.6)',
-        }}
+      {/* Round Jumper Navigation & View Mode Selector */}
+      <div
+        className="p-3 rounded-lg flex flex-col sm:flex-row items-center justify-between gap-3 glass-panel border border-[rgba(201,168,76,0.18)]"
       >
-        <div
-          className="flex items-stretch gap-10 sm:gap-14 transition-transform duration-200 origin-top-left py-4"
-          style={{ transform: `scale(${zoomLevel})` }}
-        >
-          {roundNames.map((roundName, rIndex) => {
-            const roundMatches = matchesByRound[rIndex] || [];
-            const isLastRound = rIndex === roundNames.length - 1;
+        {/* Round Pills Selector */}
+        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 scrollbar-none">
+          {roundNames.map((rName, idx) => {
+            const isCurrent = idx === activeRoundTab;
+            const roundMatches = matchesByRound[idx] || [];
+            const completedCount = roundMatches.filter(m => m.status === 'completed').length;
+            const isAllCompleted = roundMatches.length > 0 && completedCount === roundMatches.length;
 
             return (
-              <div key={roundName} className="flex flex-col justify-around min-w-[260px] space-y-6 relative">
-                
-                {/* Round Header Label */}
-                <div
-                  className="text-center pb-2 sticky top-0 backdrop-blur-md z-10 rounded-t"
-                  style={{
-                    borderBottom: '1px solid rgba(201, 168, 76, 0.3)',
-                    background: 'rgba(19, 19, 20, 0.75)',
-                  }}
+              <button
+                key={rName}
+                onClick={() => scrollToRound(idx)}
+                className={`px-3 py-1.5 rounded text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
+                  isCurrent
+                    ? 'bg-[rgba(201,168,76,0.2)] text-[var(--cg-gold-bright)] border border-[rgba(201,168,76,0.5)] gold-glow'
+                    : 'bg-white/5 hover:bg-white/10 text-slate-400 hover:text-slate-200 border border-transparent'
+                }`}
+              >
+                <span>{rName}</span>
+                {isAllCompleted ? (
+                  <span className="text-emerald-400 text-[10px] font-bold">✓</span>
+                ) : (
+                  <span className="text-[10px] font-mono text-[rgba(200,192,174,0.5)]">
+                    {completedCount}/{roundMatches.length}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* View Mode Switcher: Tree vs Round List */}
+        <div className="flex items-center gap-1 p-1 rounded bg-[#0a0a0b]/80 border border-[rgba(201,168,76,0.2)] self-end sm:self-auto">
+          <button
+            onClick={() => setDisplayMode('tree')}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono font-semibold transition-all cursor-pointer ${
+              displayMode === 'tree'
+                ? 'bg-[rgba(201,168,76,0.2)] text-[var(--cg-gold-bright)] border border-[rgba(201,168,76,0.4)]'
+                : 'text-slate-400 hover:text-white'
+            }`}
+            title="Interactive Visual Bracket Tree"
+          >
+            <GitFork className="w-3.5 h-3.5 rotate-90" />
+            <span className="hidden sm:inline">TREE VIEW</span>
+          </button>
+          <button
+            onClick={() => setDisplayMode('rounds')}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono font-semibold transition-all cursor-pointer ${
+              displayMode === 'rounds'
+                ? 'bg-[rgba(201,168,76,0.2)] text-[var(--cg-gold-bright)] border border-[rgba(201,168,76,0.4)]'
+                : 'text-slate-400 hover:text-white'
+            }`}
+            title="Mobile Round Matches List"
+          >
+            <LayoutList className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">ROUND LIST</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Conditionally Render Round List or Tree Canvas */}
+      {displayMode === 'rounds' ? (
+        <div className="p-6 rounded-lg glass-panel space-y-4 border border-[rgba(201,168,76,0.18)] animate-in fade-in duration-200">
+          <div className="flex items-center justify-between pb-3 border-b border-white/10">
+            <div>
+              <h3 className="text-base font-bold text-[var(--cg-ivory)] uppercase tracking-wider" style={{ fontFamily: 'var(--font-cinematic)' }}>
+                {roundNames[activeRoundTab]}
+              </h3>
+              <p className="text-xs text-[rgba(200,192,174,0.6)] font-sans">
+                {(matchesByRound[activeRoundTab] || []).length} matches in this round • Click any match to view clocks and arbitrate
+              </p>
+            </div>
+            <span className="text-xs font-mono font-bold text-[var(--cg-gold)]">
+              ROUND {activeRoundTab + 1} OF {roundNames.length}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
+            {(matchesByRound[activeRoundTab] || []).map(match => (
+              <BracketMatchNode
+                key={match.id}
+                match={match}
+                playerMap={playerMap}
+                onClick={onOpenMatchModal}
+              />
+            ))}
+          </div>
+        </div>
+      ) : (
+        /* Interactive Bracket Canvas Container */
+        <div 
+          ref={containerRef}
+          className="w-full overflow-x-auto overflow-y-hidden p-6 sm:p-8 rounded min-h-[580px] flex items-center justify-start relative bracket-scroll"
+          style={{
+            background: 'rgba(10, 10, 11, 0.94)',
+            border: '1px solid rgba(201, 168, 76, 0.22)',
+            boxShadow: 'inset 0 0 60px rgba(0,0,0,0.85), 0 8px 32px rgba(0,0,0,0.6)',
+          }}
+        >
+          <div
+            className="flex items-stretch gap-10 sm:gap-14 transition-transform duration-200 origin-top-left py-4"
+            style={{ transform: `scale(${zoomLevel})` }}
+          >
+            {roundNames.map((roundName, rIndex) => {
+              const roundMatches = matchesByRound[rIndex] || [];
+              const isLastRound = rIndex === roundNames.length - 1;
+
+              return (
+                <div 
+                  key={roundName} 
+                  ref={(el) => { roundColumnRefs.current[rIndex] = el; }}
+                  className="flex flex-col justify-around min-w-[260px] space-y-6 relative"
                 >
+                  
+                  {/* Round Header Label */}
+                  <div
+                    className="text-center pb-2 sticky top-0 backdrop-blur-md z-10 rounded-t"
+                    style={{
+                      borderBottom: '1px solid rgba(201, 168, 76, 0.3)',
+                      background: 'rgba(19, 19, 20, 0.75)',
+                    }}
+                  >
                   <span
                     style={{
                       fontFamily: 'var(--font-cinematic)',
@@ -325,6 +435,7 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
           </div>
         </div>
       </div>
+      )}
 
       {/* Bracket Visual State Legend */}
       <div

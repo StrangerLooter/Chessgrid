@@ -7,9 +7,16 @@ import { formatTime } from '../../utils/formatters';
 interface ChessTimerProps {
   match: Match;
   onOpenResultModal: (match: Match) => void;
+  isFocused?: boolean;
+  onFocus?: (matchId: string) => void;
 }
 
-export const ChessTimer: React.FC<ChessTimerProps> = React.memo(({ match, onOpenResultModal }) => {
+export const ChessTimer: React.FC<ChessTimerProps> = React.memo(({ 
+  match, 
+  onOpenResultModal,
+  isFocused = true,
+  onFocus,
+}) => {
   const { 
     playerMap, 
     pauseMatch, 
@@ -28,8 +35,10 @@ export const ChessTimer: React.FC<ChessTimerProps> = React.memo(({ match, onOpen
   const isWhiteFlag = match.whiteTimeRemainingMs <= 0;
   const isBlackFlag = match.blackTimeRemainingMs <= 0;
 
-  // Spacebar keyboard listener to switch active clock turn
+  // Spacebar keyboard listener to switch active clock turn only on the focused board
   useEffect(() => {
+    if (!isFocused) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space' && match.status === 'live') {
         const target = e.target as HTMLElement;
@@ -43,10 +52,17 @@ export const ChessTimer: React.FC<ChessTimerProps> = React.memo(({ match, onOpen
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [match.id, match.status, switchActiveClock]);
+  }, [match.id, match.status, switchActiveClock, isFocused]);
 
   return (
-    <div className="glass-panel-active p-5 sm:p-6 rounded-lg space-y-5 relative overflow-hidden">
+    <div 
+      onClick={() => onFocus?.(match.id)}
+      className={`p-5 sm:p-6 rounded-lg space-y-5 relative overflow-hidden transition-all duration-200 cursor-pointer ${
+        isFocused 
+          ? 'glass-panel-active ring-1 ring-[var(--cg-gold)] shadow-[0_0_25px_rgba(201,168,76,0.15)]' 
+          : 'glass-panel opacity-95 hover:opacity-100 hover:border-[rgba(201,168,76,0.3)]'
+      }`}
+    >
       {/* Timer Header */}
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2.5">
@@ -56,6 +72,11 @@ export const ChessTimer: React.FC<ChessTimerProps> = React.memo(({ match, onOpen
           >
             BOARD {match.boardNumber || 1}
           </span>
+          {isFocused && (
+            <span className="hidden sm:inline-flex px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[rgba(201,168,76,0.2)] text-[var(--cg-gold-bright)] border border-[rgba(201,168,76,0.4)]">
+              ⌨ SPACEBAR ACTIVE
+            </span>
+          )}
           <span
             style={{
               fontFamily: 'var(--font-cinematic)',

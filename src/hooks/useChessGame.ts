@@ -85,9 +85,11 @@ export function useChessGame(options: UseChessGameOptions = {}) {
   });
 
   // Core chess state
-  const chessRef = useRef<Chess>(new Chess(initialFen));
-  const [fen, setFen] = useState<string>(() => chessRef.current.fen());
-  const [turn, setTurn] = useState<Color>(() => chessRef.current.turn());
+  const initialChessInstance = useMemo(() => new Chess(initialFen), [initialFen]);
+  const chessRef = useRef<Chess>(initialChessInstance);
+  const [fen, setFen] = useState<string>(() => initialChessInstance.fen());
+  const [turn, setTurn] = useState<Color>(() => initialChessInstance.turn());
+  const [pgn, setPgn] = useState<string>(() => initialChessInstance.pgn());
   const [moveHistory, setMoveHistory] = useState<MoveRecord[]>([]);
   const [lastMove, setLastMove] = useState<{ from: Square; to: Square } | null>(null);
   const [inCheck, setInCheck] = useState(false);
@@ -255,6 +257,7 @@ export function useChessGame(options: UseChessGameOptions = {}) {
       setLastMove({ from, to });
       setFen(fenAfter);
       setTurn(chess.turn());
+      setPgn(chess.pgn());
       setMoveHistory(prev => [
         ...prev,
         {
@@ -413,6 +416,7 @@ export function useChessGame(options: UseChessGameOptions = {}) {
 
     setFen(chess.fen());
     setTurn(chess.turn());
+    setPgn(chess.pgn());
     setMoveHistory(newHistory);
     setLastMove(lastRec ? { from: lastRec.from, to: lastRec.to } : null);
     setInCheck(chess.inCheck());
@@ -451,6 +455,7 @@ export function useChessGame(options: UseChessGameOptions = {}) {
     chessRef.current = new Chess(initialFen);
     setFen(chessRef.current.fen());
     setTurn(chessRef.current.turn());
+    setPgn(chessRef.current.pgn());
     setMoveHistory([]);
     setLastMove(null);
     setInCheck(false);
@@ -496,6 +501,6 @@ export function useChessGame(options: UseChessGameOptions = {}) {
     agreeDraw,
     restartGame,
     toggleFlip,
-    pgn: chessRef.current.pgn(),
+    pgn,
   };
 }

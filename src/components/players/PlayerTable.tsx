@@ -272,8 +272,104 @@ export const PlayerTable: React.FC<PlayerTableProps> = ({
         </div>
       </div>
 
-      {/* Players Data Table */}
-      <div className="glass-panel overflow-hidden rounded-lg">
+      {/* Status Badge Helper */}
+      {/* Mobile Contender Cards (< 768px) */}
+      <div className="block md:hidden space-y-3">
+        {filteredPlayers.length === 0 ? (
+          <div className="p-8 text-center glass-panel rounded-lg text-[rgba(200,192,174,0.4)] text-xs">
+            No grandmaster contenders found matching your filter criteria.
+          </div>
+        ) : (
+          filteredPlayers.map(player => (
+            <div
+              key={player.id}
+              className="p-4 rounded-lg glass-panel space-y-3 border border-[rgba(201,168,76,0.18)]"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2.5">
+                  <span className="font-mono font-bold text-xs text-[var(--cg-gold)] px-2 py-0.5 rounded bg-[rgba(201,168,76,0.1)] border border-[rgba(201,168,76,0.25)]">
+                    #{player.seed}
+                  </span>
+                  <div>
+                    <button
+                      onClick={() => onOpenProfileModal(player)}
+                      className="text-left font-bold text-sm text-[var(--cg-ivory)] hover:underline flex items-center gap-1.5"
+                    >
+                      <span>{player.name}</span>
+                      {player.seed <= 4 && (
+                        <span className="px-1 py-0.2 rounded text-[8px] font-mono font-bold bg-[rgba(201,168,76,0.2)] text-[var(--cg-gold-bright)] border border-[rgba(201,168,76,0.4)]">
+                          GM
+                        </span>
+                      )}
+                    </button>
+                    <p className="text-[11px] font-mono text-[rgba(200,192,174,0.6)]">
+                      {player.rollNumber} • {player.course}
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  {player.status === 'champion' ? (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold bg-[rgba(201,168,76,0.2)] text-[var(--cg-gold-bright)] border border-[rgba(201,168,76,0.5)] gold-glow">
+                      <Crown className="w-3 h-3 text-amber-300" /> Champion
+                    </span>
+                  ) : player.status === 'eliminated' ? (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold bg-[rgba(192,57,43,0.12)] text-[var(--cg-red-bright)] border border-[rgba(192,57,43,0.3)]">
+                      <UserMinus className="w-3 h-3" /> Out ({player.eliminatedInRound || 'R1'})
+                    </span>
+                  ) : player.status === 'registered' ? (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold bg-[rgba(201,168,76,0.08)] text-[rgba(200,192,174,0.6)] border border-[rgba(201,168,76,0.2)]">
+                      Registered
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold bg-[rgba(34,166,122,0.12)] text-[var(--cg-emerald-bright)] border border-[rgba(34,166,122,0.3)] emerald-glow">
+                      Active
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between text-xs py-2 px-3 rounded bg-[#0a0a0b]/60 border border-white/5 font-mono">
+                <span className="text-[rgba(200,192,174,0.6)]">Division: <strong className="text-white">{player.year} • {player.section}</strong></span>
+                <div>
+                  <span className="font-bold text-emerald-400">{player.wins}W</span>
+                  <span className="text-slate-500 mx-1">-</span>
+                  <span className="font-bold text-red-400">{player.losses}L</span>
+                  {player.draws > 0 && <span className="text-slate-400 ml-1 font-mono">({player.draws}D)</span>}
+                </div>
+              </div>
+
+              {/* Touch-Friendly Action Row */}
+              <div className="flex items-center gap-2 pt-1 border-t border-white/5">
+                <button
+                  onClick={() => onOpenProfileModal(player)}
+                  className="flex-1 min-h-[40px] flex items-center justify-center gap-1.5 px-3 py-2 rounded text-xs font-semibold bg-[rgba(201,168,76,0.08)] hover:bg-[rgba(201,168,76,0.18)] text-[var(--cg-ivory)] border border-[rgba(201,168,76,0.25)] transition-all cursor-pointer"
+                >
+                  <Eye className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Profile</span>
+                </button>
+                <button
+                  onClick={() => onOpenEditModal(player)}
+                  className="flex-1 min-h-[40px] flex items-center justify-center gap-1.5 px-3 py-2 rounded text-xs font-semibold bg-white/5 hover:bg-white/10 text-[var(--cg-ivory)] border border-white/10 transition-all cursor-pointer"
+                >
+                  <Edit2 className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Edit</span>
+                </button>
+                <button
+                  onClick={() => setPlayerToDelete(player)}
+                  className="min-h-[40px] px-3 py-2 rounded text-xs font-semibold bg-[rgba(192,57,43,0.12)] hover:bg-[rgba(192,57,43,0.22)] text-red-400 border border-[rgba(192,57,43,0.3)] transition-all cursor-pointer"
+                  title="Delete Player"
+                  aria-label={`Delete ${player.name}`}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop Players Data Table (>= 768px) */}
+      <div className="hidden md:block glass-panel overflow-hidden rounded-lg">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>

@@ -115,49 +115,32 @@ const STORAGE_KEY_HISTORY = 'chess_tm_history_v1';
 const STORAGE_KEY_THEME = 'chess_tm_dark_v1';
 const STORAGE_KEY_MUTE = 'chess_tm_mute_v1';
 
+function safeLoadFromStorage<T>(key: string, fallback: T): T {
+  if (typeof window === 'undefined') return fallback;
+  try {
+    const saved = localStorage.getItem(key);
+    if (!saved) return fallback;
+    return JSON.parse(saved) as T;
+  } catch (err) {
+    console.warn(`[TournamentContext] Failed to parse localStorage key "${key}", safely using fallback:`, err);
+    return fallback;
+  }
+}
+
 const TournamentContext = createContext<TournamentContextType | undefined>(undefined);
 
 export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Load initial states from LocalStorage or Fallback to DEMO
-  const [settings, setSettings] = useState<TournamentSettings>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY_SETTINGS);
-    return saved ? JSON.parse(saved) : DEMO_SETTINGS;
-  });
-
-  const [players, setPlayers] = useState<Player[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY_PLAYERS);
-    return saved ? JSON.parse(saved) : DEMO_PLAYERS;
-  });
-
-  const [matches, setMatches] = useState<Match[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY_MATCHES);
-    return saved ? JSON.parse(saved) : DEMO_MATCHES;
-  });
-
-  const [boards, setBoards] = useState<Board[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY_BOARDS);
-    return saved ? JSON.parse(saved) : DEMO_BOARDS;
-  });
-
-  const [announcements, setAnnouncements] = useState<Announcement[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY_ANNOUNCEMENTS);
-    return saved ? JSON.parse(saved) : DEMO_ANNOUNCEMENTS;
-  });
-
-  const [historyLogs, setHistoryLogs] = useState<HistoryLog[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY_HISTORY);
-    return saved ? JSON.parse(saved) : [];
-  });
+  // Load initial states from LocalStorage safely or Fallback to DEMO
+  const [settings, setSettings] = useState<TournamentSettings>(() => safeLoadFromStorage(STORAGE_KEY_SETTINGS, DEMO_SETTINGS));
+  const [players, setPlayers] = useState<Player[]>(() => safeLoadFromStorage(STORAGE_KEY_PLAYERS, DEMO_PLAYERS));
+  const [matches, setMatches] = useState<Match[]>(() => safeLoadFromStorage(STORAGE_KEY_MATCHES, DEMO_MATCHES));
+  const [boards, setBoards] = useState<Board[]>(() => safeLoadFromStorage(STORAGE_KEY_BOARDS, DEMO_BOARDS));
+  const [announcements, setAnnouncements] = useState<Announcement[]>(() => safeLoadFromStorage(STORAGE_KEY_ANNOUNCEMENTS, DEMO_ANNOUNCEMENTS));
+  const [historyLogs, setHistoryLogs] = useState<HistoryLog[]>(() => safeLoadFromStorage(STORAGE_KEY_HISTORY, []));
 
   const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY_THEME);
-    return saved !== null ? JSON.parse(saved) : true;
-  });
-  const [isMuted, setIsMuted] = useState<boolean>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY_MUTE);
-    return saved !== null ? JSON.parse(saved) : false;
-  });
+  const [isDark, setIsDark] = useState<boolean>(() => safeLoadFromStorage(STORAGE_KEY_THEME, true));
+  const [isMuted, setIsMuted] = useState<boolean>(() => safeLoadFromStorage(STORAGE_KEY_MUTE, false));
   const [isProjectorMode, setIsProjectorMode] = useState<boolean>(false);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 

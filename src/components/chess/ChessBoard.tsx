@@ -16,6 +16,13 @@ export interface ChessBoardProps {
   onMove?: (from: Square, to: Square) => void;
   onResolvePromotion?: (piece: PieceSymbol) => void;
   customSquareStyles?: Record<string, React.CSSProperties>;
+  voicePreviewMove?: {
+    from: Square;
+    to: Square;
+    san?: string;
+    promotion?: PieceSymbol;
+  } | null;
+  ambiguousSquares?: Square[];
 }
 
 const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
@@ -35,6 +42,8 @@ export const ChessBoard: React.FC<ChessBoardProps> = ({
   onMove,
   onResolvePromotion,
   customSquareStyles = {},
+  voicePreviewMove = null,
+  ambiguousSquares = [],
 }) => {
   const [localSelectedSquare, setLocalSelectedSquare] = useState<Square | null>(null);
   const [draggedSquare, setDraggedSquare] = useState<Square | null>(null);
@@ -153,6 +162,24 @@ export const ChessBoard: React.FC<ChessBoardProps> = ({
   const ranks = isFlipped ? [...RANKS].reverse() : RANKS;
   const files = isFlipped ? [...FILES].reverse() : FILES;
 
+  // Calculate percentage coordinates for Voice Preview Arrow (0 to 100)
+  const arrowPoints = React.useMemo(() => {
+    if (!voicePreviewMove) return null;
+    const fromF = files.indexOf(voicePreviewMove.from[0]);
+    const fromR = ranks.indexOf(voicePreviewMove.from[1]);
+    const toF = files.indexOf(voicePreviewMove.to[0]);
+    const toR = ranks.indexOf(voicePreviewMove.to[1]);
+
+    if (fromF === -1 || fromR === -1 || toF === -1 || toR === -1) return null;
+
+    const x1 = fromF * 12.5 + 6.25;
+    const y1 = fromR * 12.5 + 6.25;
+    const x2 = toF * 12.5 + 6.25;
+    const y2 = toR * 12.5 + 6.25;
+
+    return { x1, y1, x2, y2 };
+  }, [voicePreviewMove, files, ranks]);
+
   return (
     <div className="relative w-full max-w-[560px] aspect-square mx-auto select-none">
       {/* Outer Luxury Chassis */}
@@ -178,6 +205,9 @@ export const ChessBoard: React.FC<ChessBoardProps> = ({
               const isLastMove = lastMove?.from === sq || lastMove?.to === sq;
               const isLegal = controlledLegalMoves?.includes(sq);
               const isKingCheck = kingInCheckSquare === sq;
+              const isVoiceSource = voicePreviewMove?.from === sq;
+              const isVoiceTarget = voicePreviewMove?.to === sq;
+              const isAmbiguous = ambiguousSquares?.includes(sq);
 
               return (
                 <div
@@ -203,6 +233,45 @@ export const ChessBoard: React.FC<ChessBoardProps> = ({
                       style={{
                         background: 'rgba(201, 168, 76, 0.22)',
                         boxShadow: 'inset 0 0 10px rgba(201, 168, 76, 0.3)',
+                      }}
+                    />
+                  )}
+
+                  {/* Voice Move Candidate Source Highlight */}
+                  {isVoiceSource && (
+                    <div
+                      className="absolute inset-0 pointer-events-none animate-pulse"
+                      style={{
+                        background: 'radial-gradient(circle, rgba(232, 196, 90, 0.45) 0%, rgba(201, 168, 76, 0.15) 70%, transparent 100%)',
+                        border: '2px solid #e8c45a',
+                        boxShadow: '0 0 18px rgba(232, 196, 90, 0.6), inset 0 0 10px rgba(201, 168, 76, 0.4)',
+                        zIndex: 2,
+                      }}
+                    />
+                  )}
+
+                  {/* Voice Move Candidate Target Highlight */}
+                  {isVoiceTarget && (
+                    <div
+                      className="absolute inset-0 pointer-events-none animate-pulse"
+                      style={{
+                        background: 'radial-gradient(circle, rgba(34, 166, 122, 0.45) 0%, rgba(26, 122, 94, 0.15) 70%, transparent 100%)',
+                        border: '2px solid #22a67a',
+                        boxShadow: '0 0 18px rgba(34, 166, 122, 0.65), inset 0 0 10px rgba(34, 166, 122, 0.4)',
+                        zIndex: 2,
+                      }}
+                    />
+                  )}
+
+                  {/* Voice Ambiguous Candidate Square Highlight */}
+                  {isAmbiguous && (
+                    <div
+                      className="absolute inset-0 pointer-events-none animate-pulse"
+                      style={{
+                        border: '2px dashed #e8c45a',
+                        background: 'rgba(232, 196, 90, 0.22)',
+                        boxShadow: '0 0 15px rgba(232, 196, 90, 0.5)',
+                        zIndex: 2,
                       }}
                     />
                   )}
@@ -302,6 +371,43 @@ export const ChessBoard: React.FC<ChessBoardProps> = ({
                 </div>
               );
             })
+          )}
+
+          {/* ── Voice Move Directional SVG Arrow Overlay ── */}
+          {arrowPoints && (
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none z-20"
+              viewBox="0 0 100 100"
+            >
+              <defs>
+                <marker
+                  id="cg-voice-arrowhead"
+                  viewBox="0 0 10 10"
+                  refX="6"
+                  refY="5"
+                  markerWidth="5"
+                  markerHeight="5"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#22a67a" />
+                </marker>
+                <filter id="cg-arrow-glow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="1.5" floodColor="#22a67a" />
+                </filter>
+              </defs>
+              <line
+                x1={`${arrowPoints.x1}`}
+                y1={`${arrowPoints.y1}`}
+                x2={`${arrowPoints.x2}`}
+                y2={`${arrowPoints.y2}`}
+                stroke="#22a67a"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeDasharray="4 2"
+                markerEnd="url(#cg-voice-arrowhead)"
+                filter="url(#cg-arrow-glow)"
+              />
+            </svg>
           )}
         </div>
 
